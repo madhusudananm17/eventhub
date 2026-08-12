@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | My Events</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .my-events-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .my-events-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+        }
+
+        .event-count {
+            background: #e8e7ff;
+            color: #635bff;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* FILTERS */
+
+        .filters {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            display: grid;
+            grid-template-columns: 1fr 220px;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .filters input,
+        .filters select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .filters input:focus,
+        .filters select:focus {
+            border-color: #635bff;
+        }
+
+        /* EVENTS GRID */
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+        }
+
+        .event-image {
+            height: 170px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+
+        .technology {
+            background: #e8e7ff;
+        }
+
+        .sports {
+            background: #fff1dc;
+        }
+
+        .music {
+            background: #ffe8f1;
+        }
+
+        .cultural {
+            background: #f3e8ff;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-content h3 {
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .event-detail {
+            color: #667085;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        /* STATUS */
+
+        .status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .confirmed {
+            background: #e5f7ed;
+            color: #16834b;
+        }
+
+        .completed {
+            background: #e5f1ff;
+            color: #1769aa;
+        }
+
+        .cancelled {
+            background: #ffe8e8;
+            color: #d93025;
+        }
+
+        /* BOTTOM */
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .ticket-btn {
+            background: #635bff;
+            color: white;
+            padding: 9px 13px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .ticket-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* NO EVENTS */
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 70px 20px;
+        }
+
+        .no-results div {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .no-results h3 {
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            color: #667085;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1000px) {
+
+            .events-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .events-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="my-events.html"
+               class="active">
+                My Events
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= MY EVENTS ================= -->
+
+<section class="my-events-section">
+
+    <div class="my-events-container">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    My Events
+                </h1>
+
+                <p>
+                    View all events you have registered for.
+                </p>
+
+            </div>
+
+            <span
+                class="event-count"
+                id="eventCount"
+            >
+                4 Events
+            </span>
+
+        </div>
+
+
+        <!-- FILTERS -->
+
+        <div class="filters">
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search my events..."
+            >
+
+
+            <select id="statusFilter">
+
+                <option value="all">
+                    All Status
+                </option>
+
+                <option value="Confirmed">
+                    Confirmed
+                </option>
+
+                <option value="Completed">
+                    Completed
+                </option>
+
+                <option value="Cancelled">
+                    Cancelled
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- EVENTS -->
+
+        <div
+            class="events-grid"
+            id="eventsGrid"
+        >
+
+
+            <!-- EVENT 1 -->
+
+            <div
+                class="event-card"
+                data-status="Confirmed"
+            >
+
+                <div class="event-image technology">
+                    💻
+                </div>
+
+                <div class="card-content">
+
+                    <h3>
+                        Tech Conference 2026
+                    </h3>
+
+                    <p class="event-detail">
+                        📅 25 August 2026
+                    </p>
+
+                    <p class="event-detail">
+                        ⏰ 10:00 AM
+                    </p>
+
+                    <p class="event-detail">
+                        📍 Bengaluru
+                    </p>
+
+                    <span class="status confirmed">
+                        Confirmed
+                    </span>
+
+                    <div class="card-bottom">
+
+                        <strong>
+                            ₹499
+                        </strong>
+
+                        <a
+                            href="ticket.html"
+                            class="ticket-btn"
+                        >
+                            View Ticket
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVENT 2 -->
+
+            <div
+                class="event-card"
+                data-status="Confirmed"
+            >
+
+                <div class="event-image sports">
+                    ⚽
+                </div>
+
+                <div class="card-content">
+
+                    <h3>
+                        Football Championship
+                    </h3>
+
+                    <p class="event-detail">
+                        📅 12 September 2026
+                    </p>
+
+                    <p class="event-detail">
+                        ⏰ 4:00 PM
+                    </p>
+
+                    <p class="event-detail">
+                        📍 Chikkaballapur
+                    </p>
+
+                    <span class="status confirmed">
+                        Confirmed
+                    </span>
+
+                    <div class="card-bottom">
+
+                        <strong>
+                            ₹199
+                        </strong>
+
+                        <a
+                            href="ticket.html"
+                            class="ticket-btn"
+                        >
+                            View Ticket
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVENT 3 -->
+
+            <div
+                class="event-card"
+                data-status="Confirmed"
+            >
+
+                <div class="event-image music">
+                    🎵
+                </div>
+
+                <div class="card-content">
+
+                    <h3>
+                        Summer Music Festival
+                    </h3>
+
+                    <p class="event-detail">
+                        📅 30 August 2026
+                    </p>
+
+                    <p class="event-detail">
+                        ⏰ 6:00 PM
+                    </p>
+
+                    <p class="event-detail">
+                        📍 Mangaluru
+                    </p>
+
+                    <span class="status confirmed">
+                        Confirmed
+                    </span>
+
+                    <div class="card-bottom">
+
+                        <strong>
+                            ₹799
+                        </strong>
+
+                        <a
+                            href="ticket.html"
+                            class="ticket-btn"
+                        >
+                            View Ticket
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- EVENT 4 -->
+
+            <div
+                class="event-card"
+                data-status="Completed"
+            >
+
+                <div class="event-image cultural">
+                    🎨
+                </div>
+
+                <div class="card-content">
+
+                    <h3>
+                        Cultural Heritage Festival
+                    </h3>
+
+                    <p class="event-detail">
+                        📅 25 September 2026
+                    </p>
+
+                    <p class="event-detail">
+                        ⏰ 5:00 PM
+                    </p>
+
+                    <p class="event-detail">
+                        📍 Chikkaballapur
+                    </p>
+
+                    <span class="status completed">
+                        Completed
+                    </span>
+
+                    <div class="card-bottom">
+
+                        <strong>
+                            Free
+                        </strong>
+
+                        <a
+                            href="ticket.html"
+                            class="ticket-btn"
+                        >
+                            View Ticket
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- NO RESULTS -->
+
+        <div
+            class="no-results"
+            id="noResults"
+        >
+
+            <div>
+                😔
+            </div>
+
+            <h3>
+                No Events Found
+            </h3>
+
+            <p>
+                You don't have any events matching your search.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="../js/main.js"></script>
+
+<script>
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const statusFilter =
+        document.getElementById("statusFilter");
+
+    const eventsGrid =
+        document.getElementById("eventsGrid");
+
+    const noResults =
+        document.getElementById("noResults");
+
+    const eventCount =
+        document.getElementById("eventCount");
+
+
+    function filterMyEvents() {
+
+        const searchValue =
+            searchInput.value
+            .toLowerCase()
+            .trim();
+
+        const selectedStatus =
+            statusFilter.value;
+
+
+        const cards =
+            eventsGrid.querySelectorAll(
+                ".event-card"
+            );
+
+
+        let visibleEvents = 0;
+
+
+        cards.forEach(function(card) {
+
+            const eventText =
+                card.textContent.toLowerCase();
+
+
+            const eventStatus =
+                card.dataset.status;
+
+
+            const searchMatch =
+                eventText.includes(searchValue);
+
+
+            const statusMatch =
+                selectedStatus === "all" ||
+                eventStatus === selectedStatus;
+
+
+            if (
+                searchMatch &&
+                statusMatch
+            ) {
+
+                card.style.display = "";
+
+                visibleEvents++;
+
+            }
+
+            else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+
+        eventCount.textContent =
+            visibleEvents + " Events";
+
+
+        if (visibleEvents === 0) {
+
+            noResults.style.display =
+                "block";
+
+        }
+
+        else {
+
+            noResults.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    searchInput.addEventListener(
+        "input",
+        filterMyEvents
+    );
+
+
+    statusFilter.addEventListener(
+        "change",
+        filterMyEvents
+    );
+
+</script>
+
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+
+</html>

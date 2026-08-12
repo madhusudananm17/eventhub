@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Create Event</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .create-event-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .create-event-container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .page-heading {
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-heading p {
+            color: #667085;
+        }
+
+        /* ================= FORM CARD ================= */
+
+        .event-form-card {
+            background: white;
+            padding: 35px;
+            border-radius: 16px;
+            border: 1px solid #eee;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        .form-section-title {
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* ================= FORM GRID ================= */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #635bff;
+        }
+
+        /* ================= REQUIRED ================= */
+
+        .required {
+            color: red;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .cancel-btn {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .create-btn {
+            background: #635bff;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .cancel-btn:hover,
+        .create-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* ================= SUCCESS ================= */
+
+        .success-message {
+            display: none;
+            background: #e5f7ed;
+            color: #16834b;
+            padding: 13px 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 650px) {
+
+            .event-form-card {
+                padding: 22px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .cancel-btn,
+            .create-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="create-event.html"
+               class="active">
+                Create Event
+            </a>
+
+            <a href="manage-events.html">
+                Manage Events
+            </a>
+
+            <a href="attendees.html">
+                Attendees
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= CREATE EVENT ================= -->
+
+<section class="create-event-section">
+
+    <div class="create-event-container">
+
+
+        <!-- PAGE HEADING -->
+
+        <div class="page-heading">
+
+            <h1>
+                Create New Event
+            </h1>
+
+            <p>
+                Add the details of your upcoming event.
+            </p>
+
+        </div>
+
+
+        <!-- FORM CARD -->
+
+        <div class="event-form-card">
+
+
+            <!-- SUCCESS MESSAGE -->
+
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+                ✓ Event created successfully!
+            </div>
+
+
+            <form id="createEventForm">
+
+
+                <!-- ================= BASIC INFORMATION ================= -->
+
+                <h2 class="form-section-title">
+                    Event Information
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <!-- EVENT TITLE -->
+
+                    <div class="form-group full">
+
+                        <label for="eventTitle">
+
+                            Event Title
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="eventTitle"
+                            placeholder="Enter event title"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+                        <label for="category">
+
+                            Category
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="category"
+                            required
+                        >
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <option value="Technology">
+                                Technology
+                            </option>
+
+                            <option value="Education">
+                                Education
+                            </option>
+
+                            <option value="Music">
+                                Music
+                            </option>
+
+                            <option value="Sports">
+                                Sports
+                            </option>
+
+                            <option value="Business">
+                                Business
+                            </option>
+
+                            <option value="Cultural">
+                                Cultural
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+
+                    <div class="form-group">
+
+                        <label for="capacity">
+
+                            Maximum Attendees
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="capacity"
+                            min="1"
+                            placeholder="Example: 100"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- DATE -->
+
+                    <div class="form-group">
+
+                        <label for="eventDate">
+
+                            Event Date
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="date"
+                            id="eventDate"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- TIME -->
+
+                    <div class="form-group">
+
+                        <label for="eventTime">
+
+                            Event Time
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="time"
+                            id="eventTime"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ================= LOCATION ================= -->
+
+                <h2 class="form-section-title">
+                    Location Details
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <!-- KARNATAKA LOCATION -->
+
+                    <div class="form-group">
+
+                        <label for="location">
+
+                            City
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <select
+                            id="location"
+                            required
+                        >
+                            <option value="">Select Location</option>
+                            <option value="Bagalkote">Bagalkote</option>
+                            <option value="Ballari">Ballari (Bellary)</option>
+                            <option value="Belagavi">Belagavi (Belgaum)</option>
+                            <option value="Bengaluru">Bengaluru Urban (Bengaluru)</option>
+                            <option value="Bengaluru Rural">Bengaluru Rural</option>
+                            <option value="Bidar">Bidar</option>
+                            <option value="Chamarajanagara">Chamarajanagara</option>
+                            <option value="Chikkaballapur">Chikkaballapur</option>
+                            <option value="Chikkamagaluru">Chikkamagaluru</option>
+                            <option value="Chitradurga">Chitradurga</option>
+                            <option value="Dakshina Kannada">Dakshina Kannada (Mangaluru)</option>
+                            <option value="Davanagere">Davanagere</option>
+                            <option value="Dharwad">Dharwad</option>
+                            <option value="Gadag">Gadag</option>
+                            <option value="Hassan">Hassan</option>
+                            <option value="Haveri">Haveri</option>
+                            <option value="Hubballi">Hubballi</option>
+                            <option value="Kalaburagi">Kalaburagi (Gulbarga)</option>
+                            <option value="Kodagu">Kodagu (Coorg)</option>
+                            <option value="Kolar">Kolar</option>
+                            <option value="Koppal">Koppal</option>
+                            <option value="Mandya">Mandya</option>
+                            <option value="Mangaluru">Mangaluru</option>
+                            <option value="Mysuru">Mysuru (Mysore)</option>
+                            <option value="Raichur">Raichur</option>
+                            <option value="Ramanagara">Ramanagara</option>
+                            <option value="Shivamogga">Shivamogga (Shimoga)</option>
+                            <option value="Tumakuru">Tumakuru (Tumkur)</option>
+                            <option value="Udupi">Udupi</option>
+                            <option value="Uttara Kannada">Uttara Kannada (Karwar)</option>
+                            <option value="Vijayanagara">Vijayanagara (Hospet)</option>
+                            <option value="Vijayapura">Vijayapura (Bijapur)</option>
+                            <option value="Yadgir">Yadgir</option>
+                        </select>
+
+                    </div>
+
+
+                    <!-- VENUE -->
+
+                    <div class="form-group">
+
+                        <label for="venue">
+
+                            Venue
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="venue"
+                            placeholder="Example: Convention Hall"
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ================= PRICE ================= -->
+
+                <h2 class="form-section-title">
+                    Ticket Information
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <!-- PRICE -->
+
+                    <div class="form-group">
+
+                        <label for="price">
+
+                            Ticket Price (₹)
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="price"
+                            min="0"
+                            value="0"
+                            placeholder="Enter 0 for free event"
+                        >
+
+                    </div>
+
+
+                    <!-- EVENT TYPE -->
+
+                    <div class="form-group">
+
+                        <label for="eventType">
+                            Event Type
+                        </label>
+
+                        <select id="eventType">
+
+                            <option value="Paid">
+                                Paid Event
+                            </option>
+
+                            <option value="Free">
+                                Free Event
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ================= DESCRIPTION ================= -->
+
+                <h2 class="form-section-title">
+                    Event Description
+                </h2>
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group full">
+
+                        <label for="description">
+
+                            Description
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <textarea
+                            id="description"
+                            placeholder="Describe your event..."
+                            required
+                        ></textarea>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- ================= BUTTONS ================= -->
+
+                <div class="form-actions">
+
+                    <button
+                        type="button"
+                        class="cancel-btn"
+                        onclick="cancelEvent()"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="create-btn"
+                    >
+                        Create Event
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+
+
+<script>
+    function cancelEvent() {
+        const createEventForm = document.getElementById("createEventForm");
+        if (createEventForm) createEventForm.reset();
+    }
+</script>
+
+
+</body>
+
+</html>

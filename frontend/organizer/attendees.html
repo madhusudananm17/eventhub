@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Attendees</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .attendees-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .attendees-container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+        }
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h2 {
+            font-size: 27px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        /* ================= FILTER BAR ================= */
+
+        .filter-bar {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box {
+            flex: 1;
+        }
+
+        .search-box input,
+        .event-filter select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .search-box input:focus,
+        .event-filter select:focus {
+            border-color: #635bff;
+        }
+
+        .event-filter {
+            width: 250px;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            overflow-x: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        th {
+            background: #f8f9fc;
+            text-align: left;
+            padding: 16px;
+            font-size: 13px;
+            color: #667085;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 17px 16px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .attendee-name {
+            font-weight: 700;
+        }
+
+        .attendee-email {
+            color: #667085;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .event-name {
+            font-weight: 600;
+        }
+
+        .event-location {
+            color: #667085;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .confirmed {
+            background: #e5f7ed;
+            color: #16834b;
+        }
+
+        .pending {
+            background: #fff1dc;
+            color: #a15c00;
+        }
+
+        /* ================= EMPTY ================= */
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-results div {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .no-results h3 {
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            color: #667085;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .event-filter {
+                width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="create-event.html">
+                Create Event
+            </a>
+
+            <a href="manage-events.html">
+                Manage Events
+            </a>
+
+            <a href="attendees.html"
+               class="active">
+                Attendees
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= ATTENDEES ================= -->
+
+<section class="attendees-section">
+
+    <div class="attendees-container">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <h1>
+                Event Attendees
+            </h1>
+
+            <p>
+                View and manage people registered
+                for your events.
+            </p>
+
+        </div>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <h2 id="totalAttendees">
+                    105
+                </h2>
+
+                <p>
+                    Total Attendees
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <h2>
+                    98
+                </h2>
+
+                <p>
+                    Confirmed Registrations
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <h2>
+                    7
+                </h2>
+
+                <p>
+                    Pending Registrations
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= FILTER ================= -->
+
+        <div class="filter-bar">
+
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search attendee name or email..."
+                >
+
+            </div>
+
+
+            <div class="event-filter">
+
+                <select id="eventFilter">
+
+                    <option value="all">
+                        All Events
+                    </option>
+
+                    <option value="Tech Conference 2026">
+                        Tech Conference 2026
+                    </option>
+
+                    <option value="Web Development Workshop">
+                        Web Development Workshop
+                    </option>
+
+                    <option value="Football Championship">
+                        Football Championship
+                    </option>
+
+                    <option value="Cultural Heritage Festival">
+                        Cultural Heritage Festival
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= TABLE ================= -->
+
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Attendee
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Event
+                        </th>
+
+                        <th>
+                            Registration Date
+                        </th>
+
+                        <th>
+                            Ticket
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="attendeesTable">
+
+
+                    <!-- ATTENDEE 1 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="attendee-name">
+                                Rahul Kumar
+                            </div>
+
+                            <div class="attendee-email">
+                                rahul@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            +91 9876543210
+                        </td>
+
+                        <td>
+
+                            <div class="event-name">
+                                Tech Conference 2026
+                            </div>
+
+                            <div class="event-location">
+                                📍 Bengaluru
+                            </div>
+
+                        </td>
+
+                        <td>
+                            05 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ATTENDEE 2 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="attendee-name">
+                                Priya Sharma
+                            </div>
+
+                            <div class="attendee-email">
+                                priya@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            +91 9988776655
+                        </td>
+
+                        <td>
+
+                            <div class="event-name">
+                                Tech Conference 2026
+                            </div>
+
+                            <div class="event-location">
+                                📍 Bengaluru
+                            </div>
+
+                        </td>
+
+                        <td>
+                            06 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ATTENDEE 3 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="attendee-name">
+                                Arjun R
+                            </div>
+
+                            <div class="attendee-email">
+                                arjun@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            +91 9123456789
+                        </td>
+
+                        <td>
+
+                            <div class="event-name">
+                                Web Development Workshop
+                            </div>
+
+                            <div class="event-location">
+                                📍 Mysuru
+                            </div>
+
+                        </td>
+
+                        <td>
+                            07 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ATTENDEE 4 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="attendee-name">
+                                Sneha Gowda
+                            </div>
+
+                            <div class="attendee-email">
+                                sneha@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            +91 9012345678
+                        </td>
+
+                        <td>
+
+                            <div class="event-name">
+                                Football Championship
+                            </div>
+
+                            <div class="event-location">
+                                📍 Chikkaballapur
+                            </div>
+
+                        </td>
+
+                        <td>
+                            08 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status pending">
+                                Pending
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ATTENDEE 5 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="attendee-name">
+                                Manjunath K
+                            </div>
+
+                            <div class="attendee-email">
+                                manjunath@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            +91 8899776655
+                        </td>
+
+                        <td>
+
+                            <div class="event-name">
+                                Cultural Heritage Festival
+                            </div>
+
+                            <div class="event-location">
+                                📍 Chikkaballapur
+                            </div>
+
+                        </td>
+
+                        <td>
+                            08 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+
+            <!-- NO RESULTS -->
+
+            <div
+                class="no-results"
+                id="noResults"
+            >
+
+                <div>
+                    😔
+                </div>
+
+                <h3>
+                    No Attendees Found
+                </h3>
+
+                <p>
+                    Try changing your search or event filter.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="../js/main.js"></script>
+
+
+<script>
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const eventFilter =
+        document.getElementById("eventFilter");
+
+    const attendeesTable =
+        document.getElementById("attendeesTable");
+
+    const noResults =
+        document.getElementById("noResults");
+
+
+    function filterAttendees() {
+
+        const searchValue =
+            searchInput.value
+            .toLowerCase()
+            .trim();
+
+        const selectedEvent =
+            eventFilter.value;
+
+
+        const rows =
+            attendeesTable.querySelectorAll("tr");
+
+        let visibleRows = 0;
+
+
+        rows.forEach(function(row) {
+
+            const rowText =
+                row.textContent.toLowerCase();
+
+            const eventName =
+                row.querySelector(".event-name")
+                ?.textContent
+                .trim();
+
+
+            const matchesSearch =
+                rowText.includes(searchValue);
+
+
+            const matchesEvent =
+                selectedEvent === "all" ||
+                eventName === selectedEvent;
+
+
+            if (
+                matchesSearch &&
+                matchesEvent
+            ) {
+
+                row.style.display = "";
+
+                visibleRows++;
+
+            }
+
+            else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        if (visibleRows === 0) {
+
+            noResults.style.display =
+                "block";
+
+        }
+
+        else {
+
+            noResults.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    searchInput.addEventListener(
+        "input",
+        filterAttendees
+    );
+
+
+    eventFilter.addEventListener(
+        "change",
+        filterAttendees
+    );
+
+</script>
+
+
+<script src="../js/dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | My Ticket</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .ticket-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .ticket-container {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #667085;
+        }
+
+        /* TICKET */
+
+        .ticket {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+            border: 1px solid #eee;
+        }
+
+        .ticket-header {
+            background: linear-gradient(
+                135deg,
+                #635bff,
+                #7c74ff
+            );
+
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .ticket-logo {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .ticket-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .ticket-header p {
+            opacity: 0.9;
+        }
+
+        .ticket-body {
+            padding: 30px;
+        }
+
+        .ticket-event {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .ticket-event-icon {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+
+        .ticket-event h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .ticket-event p {
+            color: #667085;
+        }
+
+        /* DETAILS */
+
+        .ticket-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 25px 0;
+        }
+
+        .detail-box {
+            padding: 5px;
+        }
+
+        .detail-box span {
+            display: block;
+            color: #667085;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .detail-box strong {
+            font-size: 15px;
+        }
+
+        /* USER */
+
+        .user-details {
+            padding: 25px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .user-details h3 {
+            margin-bottom: 15px;
+        }
+
+        .user-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            font-size: 14px;
+        }
+
+        .user-row span {
+            color: #667085;
+        }
+
+        /* STATUS */
+
+        .ticket-status {
+            text-align: center;
+            padding: 25px 0;
+        }
+
+        .confirmed {
+            display: inline-block;
+            background: #e5f7ed;
+            color: #16834b;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* QR */
+
+        .qr-section {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .qr-code {
+            width: 140px;
+            height: 140px;
+            margin: auto;
+            background:
+                repeating-linear-gradient(
+                    45deg,
+                    #111 0px,
+                    #111 4px,
+                    white 4px,
+                    white 8px
+                );
+            border: 10px solid white;
+            outline: 1px solid #ddd;
+        }
+
+        .qr-section p {
+            color: #667085;
+            font-size: 12px;
+            margin-top: 15px;
+        }
+
+        /* ACTIONS */
+
+        .ticket-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .action-btn {
+            padding: 12px 22px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+        }
+
+        .primary-btn {
+            background: #635bff;
+            color: white;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: #635bff;
+            border: 1px solid #635bff;
+        }
+
+        .action-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 600px) {
+
+            .ticket-section {
+                padding: 40px 15px;
+            }
+
+            .ticket-header h2 {
+                font-size: 23px;
+            }
+
+            .ticket-body {
+                padding: 20px;
+            }
+
+            .ticket-details {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .ticket-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                text-align: center;
+            }
+
+        /* PRINT SPECIFIC STYLES */
+        @media print {
+            .navbar, .footer, .page-title, .ticket-actions, .menu-btn {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+            }
+            .ticket-section {
+                padding: 0 !important;
+                background: white !important;
+                min-height: auto !important;
+            }
+            .ticket {
+                box-shadow: none !important;
+                border: 1px solid #111 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="my-events.html">
+                My Events
+            </a>
+
+            <a href="profile.html">
+                Profile
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= TICKET ================= -->
+
+<section class="ticket-section">
+
+    <div class="ticket-container">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="page-title">
+
+            <h1>
+                My Ticket
+            </h1>
+
+            <p>
+                Your event registration ticket
+            </p>
+
+        </div>
+
+
+        <!-- TICKET -->
+
+        <div class="ticket">
+
+
+            <!-- TICKET HEADER -->
+
+            <div class="ticket-header">
+
+                <div class="ticket-logo">
+                    🎫 EventHub
+                </div>
+
+                <h2>
+                    EVENT TICKET
+                </h2>
+
+                <p>
+                    Registration Confirmed
+                </p>
+
+            </div>
+
+
+            <!-- TICKET BODY -->
+
+            <div class="ticket-body">
+
+
+                <!-- EVENT -->
+
+                <div class="ticket-event">
+
+                    <div class="ticket-event-icon">
+                        💻
+                    </div>
+
+                    <h2>
+                        Tech Conference 2026
+                    </h2>
+
+                    <p>
+                        Technology Event
+                    </p>
+
+                </div>
+
+
+                <!-- EVENT DETAILS -->
+
+                <div class="ticket-details">
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            DATE
+                        </span>
+
+                        <strong>
+                            25 August 2026
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            TIME
+                        </span>
+
+                        <strong>
+                            10:00 AM
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            LOCATION
+                        </span>
+
+                        <strong>
+                            Bengaluru, Karnataka
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            TICKET PRICE
+                        </span>
+
+                        <strong>
+                            ₹499
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            TICKET ID
+                        </span>
+
+                        <strong>
+                            EH-2026-001
+                        </strong>
+
+                    </div>
+
+
+                    <div class="detail-box">
+
+                        <span>
+                            REGISTRATION DATE
+                        </span>
+
+                        <strong>
+                            08 August 2026
+                        </strong>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- USER DETAILS -->
+
+                <div class="user-details">
+
+                    <h3>
+                        Attendee Information
+                    </h3>
+
+
+                    <div class="user-row">
+
+                        <span>
+                            Name
+                        </span>
+
+                        <strong>
+                            User
+                        </strong>
+
+                    </div>
+
+
+                    <div class="user-row">
+
+                        <span>
+                            Email
+                        </span>
+
+                        <strong>
+                            user@gmail.com
+                        </strong>
+
+                    </div>
+
+
+                    <div class="user-row">
+
+                        <span>
+                            Phone
+                        </span>
+
+                        <strong>
+                            +91 8088169018
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STATUS -->
+
+                <div class="ticket-status">
+
+                    <span class="confirmed">
+                        ✓ Confirmed
+                    </span>
+
+                </div>
+
+
+                <!-- QR -->
+
+                <div class="qr-section">
+
+                    <div class="qr-code"></div>
+
+                    <p>
+                        Show this ticket at the event entrance
+                    </p>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="ticket-actions">
+
+                    <button
+                        class="action-btn primary-btn"
+                        onclick="window.print()"
+                    >
+                        🖨️ Print Ticket
+                    </button>
+
+
+                    <a
+                        href="my-events.html"
+                        class="action-btn secondary-btn"
+                    >
+                        ← Back to My Events
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+
+
+</body>
+
+</html>

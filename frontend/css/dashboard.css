@@ -1,0 +1,139 @@
+.dashboard-section {
+    background: #f8f9fc;
+    padding: 60px 0;
+    min-height: 80vh;
+}
+
+.dashboard-header {
+    margin-bottom: 35px;
+}
+
+.dashboard-header h1 {
+    font-size: 34px;
+    margin-bottom: 8px;
+}
+
+.dashboard-header p {
+    color: #667085;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.stat-icon {
+    font-size: 32px;
+}
+
+.stat-card span {
+    color: #667085;
+    font-size: 14px;
+}
+
+.stat-card h2 {
+    font-size: 28px;
+    margin-top: 5px;
+}
+
+.dashboard-actions {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 20px;
+    margin-bottom: 35px;
+}
+
+.action-card {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+    transition: 0.3s;
+}
+
+.action-card:hover {
+    transform: translateY(-4px);
+}
+
+.action-card div {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.action-card p {
+    color: #667085;
+    font-size: 14px;
+}
+
+.dashboard-panel {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.panel-header a {
+    color: #635bff;
+    text-decoration: none;
+}
+
+.upcoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #eee;
+}
+
+.event-emoji {
+    font-size: 36px;
+}
+
+.upcoming-item p {
+    color: #667085;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+
+    .stats-grid,
+    .dashboard-actions {
+        grid-template-columns: repeat(2,1fr);
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .stats-grid,
+    .dashboard-actions {
+        grid-template-columns: 1fr;
+    }
+
+}

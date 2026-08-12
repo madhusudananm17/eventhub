@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Events</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/events.css">
+
+</head>
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="logo">
+            <span>🎫</span> EventHub
+        </a>
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="index.html">Home</a>
+
+            <a href="events.html" class="active">Events</a>
+
+            <a href="login.html">Login</a>
+
+            <a href="register.html" class="register-btn">
+                Register
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= PAGE HEADER ================= -->
+
+<section class="events-header">
+
+    <div class="container">
+
+        <span>EXPLORE EVENTS</span>
+
+        <h1>Find Your Next Event</h1>
+
+        <p>
+            Discover exciting events, workshops, conferences,
+            concerts and more.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ================= EVENTS SECTION ================= -->
+
+<section class="events-section">
+
+    <div class="container">
+
+
+        <!-- ================= SEARCH ================= -->
+
+        <div class="event-search">
+
+            <div class="search-field">
+
+                <span>🔍</span>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search events..."
+                >
+
+            </div>
+
+            <button id="searchBtn">
+                Search
+            </button>
+
+        </div>
+
+
+        <!-- ================= FILTERS ================= -->
+
+        <div class="filters">
+
+
+            <!-- CATEGORY -->
+
+            <div class="filter-group">
+
+                <label>Category</label>
+
+                <select id="categoryFilter">
+
+                    <option value="all">
+                        All Categories
+                    </option>
+
+                    <option value="Technology">
+                        Technology
+                    </option>
+
+                    <option value="Education">
+                        Education
+                    </option>
+
+                    <option value="Music">
+                        Music
+                    </option>
+
+                    <option value="Sports">
+                        Sports
+                    </option>
+
+                    <option value="Business">
+                        Business
+                    </option>
+
+                    <option value="Cultural">
+                        Cultural
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- LOCATION -->
+
+            <div class="filter-group">
+
+                <label>Location</label>
+
+                <select id="locationFilter">
+                    <option value="all">All Karnataka Locations</option>
+                    <option value="Bagalkote">Bagalkote</option>
+                    <option value="Ballari">Ballari (Bellary)</option>
+                    <option value="Belagavi">Belagavi (Belgaum)</option>
+                    <option value="Bengaluru">Bengaluru Urban (Bengaluru)</option>
+                    <option value="Bengaluru Rural">Bengaluru Rural</option>
+                    <option value="Bidar">Bidar</option>
+                    <option value="Chamarajanagara">Chamarajanagara</option>
+                    <option value="Chikkaballapur">Chikkaballapur</option>
+                    <option value="Chikkamagaluru">Chikkamagaluru</option>
+                    <option value="Chitradurga">Chitradurga</option>
+                    <option value="Dakshina Kannada">Dakshina Kannada (Mangaluru)</option>
+                    <option value="Davanagere">Davanagere</option>
+                    <option value="Dharwad">Dharwad</option>
+                    <option value="Gadag">Gadag</option>
+                    <option value="Hassan">Hassan</option>
+                    <option value="Haveri">Haveri</option>
+                    <option value="Hubballi">Hubballi</option>
+                    <option value="Kalaburagi">Kalaburagi (Gulbarga)</option>
+                    <option value="Kodagu">Kodagu (Coorg)</option>
+                    <option value="Kolar">Kolar</option>
+                    <option value="Koppal">Koppal</option>
+                    <option value="Mandya">Mandya</option>
+                    <option value="Mangaluru">Mangaluru</option>
+                    <option value="Mysuru">Mysuru (Mysore)</option>
+                    <option value="Raichur">Raichur</option>
+                    <option value="Ramanagara">Ramanagara</option>
+                    <option value="Shivamogga">Shivamogga (Shimoga)</option>
+                    <option value="Tumakuru">Tumakuru (Tumkur)</option>
+                    <option value="Udupi">Udupi</option>
+                    <option value="Uttara Kannada">Uttara Kannada (Karwar)</option>
+                    <option value="Vijayanagara">Vijayanagara (Hospet)</option>
+                    <option value="Vijayapura">Vijayapura (Bijapur)</option>
+                    <option value="Yadgir">Yadgir</option>
+                </select>
+
+            </div>
+
+
+            <!-- PRICE -->
+
+            <div class="filter-group">
+
+                <label>Price</label>
+
+                <select id="priceFilter">
+
+                    <option value="all">
+                        All Prices
+                    </option>
+
+                    <option value="free">
+                        Free
+                    </option>
+
+                    <option value="under500">
+                        Under ₹500
+                    </option>
+
+                    <option value="above500">
+                        Above ₹500
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- SORT -->
+
+            <div class="filter-group">
+
+                <label>Sort By</label>
+
+                <select id="sortFilter">
+
+                    <option value="default">
+                        Default
+                    </option>
+
+                    <option value="low">
+                        Price: Low to High
+                    </option>
+
+                    <option value="high">
+                        Price: High to Low
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= EVENT COUNT ================= -->
+
+        <div class="event-result">
+
+            <h2>
+                Upcoming Events
+            </h2>
+
+            <span id="eventCount">
+                0 Events
+            </span>
+
+        </div>
+
+
+        <!-- ================= EVENT GRID ================= -->
+
+        <!-- IMPORTANT:
+             Keep this EMPTY.
+             events.js will create the event cards here.
+        -->
+
+        <div
+            class="events-grid"
+            id="eventsGrid"
+        ></div>
+
+
+        <!-- ================= NO RESULTS ================= -->
+
+        <div
+            class="no-results"
+            id="noResults"
+        >
+
+            <div>😔</div>
+
+            <h3>
+                No Events Found
+            </h3>
+
+            <p>
+                Try changing your search or filters.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="container footer-content">
+
+
+        <!-- FOOTER BRAND -->
+
+        <div class="footer-brand">
+
+            <h2>
+                🎫 EventHub
+            </h2>
+
+            <p>
+                Discover, register and experience
+                amazing events.
+            </p>
+
+        </div>
+
+
+        <!-- QUICK LINKS -->
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html">
+                Register
+            </a>
+
+        </div>
+
+
+        <!-- EVENT CATEGORIES -->
+
+        <div class="footer-links">
+
+            <h3>
+                Event Categories
+            </h3>
+
+            <a href="events.html?category=Technology">
+                Technology
+            </a>
+
+            <a href="events.html?category=Education">
+                Education
+            </a>
+
+            <a href="events.html?category=Music">
+                Music
+            </a>
+
+            <a href="events.html?category=Sports">
+                Sports
+            </a>
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        <div class="footer-contact">
+
+            <h3>
+                Contact Us
+            </h3>
+
+            <p>
+                📍 Chikkaballapur, Karnataka
+            </p>
+
+            <p>
+                📧 eventhub@gmail.com
+            </p>
+
+            <p>
+                📞 +91 8088169018
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER BOTTOM -->
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script src="js/main.js"></script>
+
+<script src="js/events.js"></script>
+
+
+</body>
+
+</html>

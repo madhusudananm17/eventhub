@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Discover Amazing Events</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+
+        <div class="container nav-container">
+
+            <a href="index.html" class="logo">
+                <span>🎫</span> EventHub
+            </a>
+
+            <nav class="nav-menu" id="navMenu">
+
+                <a href="index.html" class="active">Home</a>
+
+                <a href="events.html">Events</a>
+
+                <a href="login.html">Login</a>
+
+                <a href="register.html" class="register-btn">
+                    Register
+                </a>
+
+            </nav>
+
+            <button class="menu-btn" id="menuBtn">
+                ☰
+            </button>
+
+        </div>
+
+    </header>
+
+
+    <!-- ================= HERO SECTION ================= -->
+
+    <section class="hero">
+
+        <div class="container hero-content">
+
+            <div class="hero-text">
+
+                <span class="hero-badge">
+                    🎉 Discover • Register • Experience
+                </span>
+
+                <h1>
+                    Discover Amazing
+                    <span>Events</span>
+                    Near You
+                </h1>
+
+                <p>
+                    Find exciting events, workshops, conferences,
+                    concerts and more. Register for your favorite
+                    events and create unforgettable experiences.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="events.html" class="primary-btn">
+                        Explore Events →
+                    </a>
+
+                    <a href="#categories" class="secondary-btn">
+                        Browse Categories
+                    </a>
+
+                </div>
+
+            </div>
+
+            <div class="hero-image">
+
+                <div class="hero-card">
+
+                    <div class="calendar-icon">
+                        📅
+                    </div>
+
+                    <h3>Upcoming Events</h3>
+
+                    <p>Discover what's happening around you</p>
+
+                    <div class="mini-event">
+                        <span>🎤</span>
+                        <div>
+                            <strong>Tech Conference</strong>
+                            <small>25 Aug 2026</small>
+                        </div>
+                    </div>
+
+                    <div class="mini-event">
+                        <span>🎵</span>
+                        <div>
+                            <strong>Music Festival</strong>
+                            <small>30 Aug 2026</small>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SEARCH SECTION ================= -->
+
+    <section class="search-section">
+
+        <div class="container">
+
+            <div class="search-box">
+
+                <div class="search-input">
+
+                    <span>🔍</span>
+
+                    <input
+                        type="text"
+                        id="eventSearch"
+                        placeholder="Search for events..."
+                    >
+
+                </div>
+
+                <a href="events.html" class="search-btn">
+                    Search
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CATEGORIES ================= -->
+
+    <section class="categories" id="categories">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span>EXPLORE</span>
+
+                <h2>Event Categories</h2>
+
+                <p>
+                    Find events that match your interests
+                </p>
+
+            </div>
+
+
+            <div class="category-grid">
+
+                <a href="events.html?category=Technology"
+                   class="category-card">
+
+                    <div class="category-icon">💻</div>
+
+                    <h3>Technology</h3>
+
+                    <p>Tech events & conferences</p>
+
+                </a>
+
+
+                <a href="events.html?category=Education"
+                   class="category-card">
+
+                    <div class="category-icon">🎓</div>
+
+                    <h3>Education</h3>
+
+                    <p>Workshops & seminars</p>
+
+                </a>
+
+
+                <a href="events.html?category=Music"
+                   class="category-card">
+
+                    <div class="category-icon">🎵</div>
+
+                    <h3>Music</h3>
+
+                    <p>Concerts & festivals</p>
+
+                </a>
+
+
+                <a href="events.html?category=Sports"
+                   class="category-card">
+
+                    <div class="category-icon">⚽</div>
+
+                    <h3>Sports</h3>
+
+                    <p>Sports & competitions</p>
+
+                </a>
+
+
+                <a href="events.html?category=Business"
+                   class="category-card">
+
+                    <div class="category-icon">💼</div>
+
+                    <h3>Business</h3>
+
+                    <p>Business & networking</p>
+
+                </a>
+
+
+                <a href="events.html?category=Cultural"
+                   class="category-card">
+
+                    <div class="category-icon">🎨</div>
+
+                    <h3>Cultural</h3>
+
+                    <p>Arts & cultural events</p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FEATURED EVENTS ================= -->
+
+    <section class="featured-events">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span>DON'T MISS OUT</span>
+
+                <h2>Featured Events</h2>
+
+                <p>
+                    Check out some of the most popular upcoming events
+                </p>
+
+            </div>
+
+
+            <div class="event-grid">
+
+                <!-- EVENT 1 -->
+
+                <div class="event-card">
+
+                    <div class="event-image technology">
+
+                        <span class="event-category">
+                            Technology
+                        </span>
+
+                        <span class="event-icon">
+                            💻
+                        </span>
+
+                    </div>
+
+                    <div class="event-content">
+
+                        <div class="event-date">
+                            <strong>25</strong>
+                            <span>AUG</span>
+                        </div>
+
+                        <div class="event-info">
+
+                            <h3>Tech Conference 2026</h3>
+
+                            <p>📍 Bengaluru</p>
+
+                            <p>⏰ 10:00 AM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="event-footer">
+
+                        <strong>₹499</strong>
+
+                        <a href="event-details.html">
+                            View Details →
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT 2 -->
+
+                <div class="event-card">
+
+                    <div class="event-image music">
+
+                        <span class="event-category">
+                            Music
+                        </span>
+
+                        <span class="event-icon">
+                            🎵
+                        </span>
+
+                    </div>
+
+                    <div class="event-content">
+
+                        <div class="event-date">
+                            <strong>30</strong>
+                            <span>AUG</span>
+                        </div>
+
+                        <div class="event-info">
+
+                            <h3>Summer Music Festival</h3>
+
+                            <p>📍 Mumbai</p>
+
+                            <p>⏰ 6:00 PM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="event-footer">
+
+                        <strong>₹799</strong>
+
+                        <a href="event-details.html">
+                            View Details →
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EVENT 3 -->
+
+                <div class="event-card">
+
+                    <div class="event-image education">
+
+                        <span class="event-category">
+                            Education
+                        </span>
+
+                        <span class="event-icon">
+                            🎓
+                        </span>
+
+                    </div>
+
+                    <div class="event-content">
+
+                        <div class="event-date">
+                            <strong>05</strong>
+                            <span>SEP</span>
+                        </div>
+
+                        <div class="event-info">
+
+                            <h3>Web Development Workshop</h3>
+
+                            <p>📍 Mysuru</p>
+
+                            <p>⏰ 9:30 AM</p>
+
+                        </div>
+
+                    </div>
+
+                    <div class="event-footer">
+
+                        <strong>₹299</strong>
+
+                        <a href="event-details.html">
+                            View Details →
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="view-all">
+
+                <a href="events.html" class="primary-btn">
+                    View All Events →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= WHY EVENTHUB ================= -->
+
+    <section class="why-section">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span>WHY EVENTHUB?</span>
+
+                <h2>Everything You Need in One Place</h2>
+
+            </div>
+
+
+            <div class="why-grid">
+
+                <div class="why-card">
+
+                    <div>🔎</div>
+
+                    <h3>Discover Events</h3>
+
+                    <p>
+                        Easily find events based on your interests,
+                        location and preferences.
+                    </p>
+
+                </div>
+
+
+                <div class="why-card">
+
+                    <div>🎟️</div>
+
+                    <h3>Easy Registration</h3>
+
+                    <p>
+                        Register for events quickly and manage
+                        all your registrations in one place.
+                    </p>
+
+                </div>
+
+
+                <div class="why-card">
+
+                    <div>🔒</div>
+
+                    <h3>Secure Platform</h3>
+
+                    <p>
+                        Your account and event registration
+                        information are kept secure.
+                    </p>
+
+                </div>
+
+
+                <div class="why-card">
+
+                    <div>📱</div>
+
+                    <h3>Any Device</h3>
+
+                    <p>
+                        Access EventHub easily from desktop,
+                        tablet or mobile devices.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= CTA ================= -->
+
+    <section class="cta-section">
+
+        <div class="container">
+
+            <div class="cta-content">
+
+                <h2>Ready to Discover Your Next Event?</h2>
+
+                <p>
+                    Explore exciting events and be part of
+                    something amazing.
+                </p>
+
+                <a href="events.html" class="primary-btn">
+                    Explore Events →
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <div class="container footer-content">
+
+            <div class="footer-brand">
+
+                <h2>🎫 EventHub</h2>
+
+                <p>
+                    Discover, register and experience
+                    amazing events.
+                </p>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>Quick Links</h3>
+
+                <a href="index.html">Home</a>
+
+                <a href="events.html">Events</a>
+
+                <a href="login.html">Login</a>
+
+                <a href="register.html">Register</a>
+
+            </div>
+
+
+            <div class="footer-links">
+
+                <h3>Event Categories</h3>
+
+                <a href="events.html?category=Technology">
+                    Technology
+                </a>
+
+                <a href="events.html?category=Education">
+                    Education
+                </a>
+
+                <a href="events.html?category=Music">
+                    Music
+                </a>
+
+                <a href="events.html?category=Sports">
+                    Sports
+                </a>
+
+            </div>
+
+
+            <div class="footer-contact">
+
+    <h3>Contact Us</h3>
+
+    <p>📍 Chikkaballapur, Karnataka</p>
+
+    <p>📧 eventhub@gmail.com</p>
+
+    <p>📞+91 8088169018</p>
+
+</div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                © 2026 EventHub. All Rights Reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/main.js"></script>
+
+</body>
+</html>

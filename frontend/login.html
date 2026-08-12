@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Login</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        .login-section {
+            min-height: 80vh;
+            padding: 70px 20px;
+            background: #c9d0e7;
+        }
+
+        .login-container {
+            max-width: 450px;
+            margin: auto;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .login-card > p {
+            text-align: center;
+            color: #667085;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #635bff;
+        }
+
+        .login-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            background: #635bff;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-submit:hover {
+            background: #6b62df;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #667085;
+        }
+
+        .register-link a {
+            color: #635bff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .login-message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+
+            .login-card {
+                padding: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="logo">
+            <span>🎫</span> EventHub
+        </a>
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="login.html" class="active">
+                Login
+            </a>
+
+            <a href="register.html"
+               class="register-btn">
+                Register
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= LOGIN ================= -->
+
+<section class="login-section">
+
+    <div class="login-container">
+
+        <div class="login-card">
+
+            <h1>Welcome Back</h1>
+
+            <p>
+                Login to your EventHub account.
+            </p>
+
+
+            <form id="loginForm">
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        required
+                    >
+
+                </div>
+<div class="form-group">
+
+    <label for="role">
+        Login As
+    </label>
+
+    <select
+        id="role"
+        required
+        style="
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        "
+    >
+
+        <option value="">
+            Select Role
+        </option>
+
+        <option value="user">
+            User
+        </option>
+
+        <option value="organizer">
+            Organizer
+        </option>
+
+        <option value="admin">
+            Admin
+        </option>
+
+    </select>
+
+</div>
+
+                <button
+                    type="submit"
+                    class="login-submit"
+                >
+                    Login
+                </button>
+
+
+                <div
+                    id="loginMessage"
+                    class="login-message"
+                ></div>
+
+
+            </form>
+
+
+            <div class="register-link">
+
+                Don't have an account?
+
+                <a href="register.html">
+                    Create Account
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="container footer-content">
+
+        <div class="footer-brand">
+
+            <h2>
+                🎫 EventHub
+            </h2>
+
+            <p>
+                Discover, register and experience
+                amazing events.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html">
+                Register
+            </a>
+
+        </div>
+
+
+        <div class="footer-contact">
+
+            <h3>
+                Contact Us
+            </h3>
+
+            <p>
+                📍 Chikkaballapur, Karnataka
+            </p>
+
+            <p>
+                📧 eventhub@gmail.com
+            </p>
+
+            <p>
+                📞 +91 8088169018
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="js/main.js"></script>
+
+<script src="js/auth.js"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Manage Organizers</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        .admin-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .page-title {
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #667085;
+        }
+
+        .search-box {
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        .organizers-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 15px;
+            overflow-x: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .organizers-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        .organizers-table th {
+            background: #f8f9fc;
+            text-align: left;
+            padding: 16px;
+            color: #667085;
+            font-size: 13px;
+        }
+
+        .organizers-table td {
+            padding: 17px 16px;
+            border-top: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .organizer-name {
+            font-weight: 600;
+        }
+
+        .organizer-email {
+            color: #667085;
+        }
+
+        .status {
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .active {
+            background: #e5f7ed;
+            color: #16834b;
+        }
+
+        .pending {
+            background: #fff4db;
+            color: #a66b00;
+        }
+
+        .inactive {
+            background: #ffe8e8;
+            color: #dc2626;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .view-btn {
+            background: #e8e7ff;
+            color: #635bff;
+        }
+
+        .edit-btn {
+            background: #e8f1ff;
+            color: #2563eb;
+        }
+
+        .delete-btn {
+            background: #ffe8e8;
+            color: #dc2626;
+        }
+
+        @media (max-width: 600px) {
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="users.html">
+                Users
+            </a>
+
+            <a href="organizers.html" class="active">
+                Organizers
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="registrations.html">
+                Registrations
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= ORGANIZERS ================= -->
+
+<section class="admin-section">
+
+    <div class="admin-container">
+
+
+        <div class="page-title">
+
+            <h1>
+                Manage Organizers
+            </h1>
+
+            <p>
+                View and manage registered EventHub organizers.
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="organizerSearch"
+                placeholder="Search organizers by name or email..."
+            >
+
+        </div>
+
+
+        <!-- ORGANIZERS TABLE -->
+
+        <div class="organizers-card">
+
+            <table class="organizers-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Organizer
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Events
+                        </th>
+
+                        <th>
+                            Registered
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="organizersTable">
+
+
+                    <!-- ORGANIZER 1 -->
+
+                    <tr>
+
+                        <td class="organizer-name">
+                            Sneha Gowda
+                        </td>
+
+                        <td class="organizer-email">
+                            sneha.organizer@gmail.com
+                        </td>
+
+                        <td>
+                            +91 9012345678
+                        </td>
+
+                        <td>
+                            8
+                        </td>
+
+                        <td>
+                            04 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status active">
+                                Active
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="action-btn view-btn"
+                                onclick="viewOrganizer('Sneha Gowda')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn edit-btn"
+                                onclick="editOrganizer('Sneha Gowda')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="action-btn delete-btn"
+                                onclick="deleteOrganizer('Sneha Gowda')"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ORGANIZER 2 -->
+
+                    <tr>
+
+                        <td class="organizer-name">
+                            Manjunath K
+                        </td>
+
+                        <td class="organizer-email">
+                            manjunath.organizer@gmail.com
+                        </td>
+
+                        <td>
+                            +91 8899776655
+                        </td>
+
+                        <td>
+                            6
+                        </td>
+
+                        <td>
+                            05 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status active">
+                                Active
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="action-btn view-btn"
+                                onclick="viewOrganizer('Manjunath K')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn edit-btn"
+                                onclick="editOrganizer('Manjunath K')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="action-btn delete-btn"
+                                onclick="deleteOrganizer('Manjunath K')"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ORGANIZER 3 -->
+
+                    <tr>
+
+                        <td class="organizer-name">
+                            Ravi Kumar
+                        </td>
+
+                        <td class="organizer-email">
+                            ravi.organizer@gmail.com
+                        </td>
+
+                        <td>
+                            +91 8765432109
+                        </td>
+
+                        <td>
+                            4
+                        </td>
+
+                        <td>
+                            06 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status pending">
+                                Pending
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="action-btn view-btn"
+                                onclick="viewOrganizer('Ravi Kumar')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn edit-btn"
+                                onclick="editOrganizer('Ravi Kumar')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="action-btn delete-btn"
+                                onclick="deleteOrganizer('Ravi Kumar')"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- ORGANIZER 4 -->
+
+                    <tr>
+
+                        <td class="organizer-name">
+                            Kavya R
+                        </td>
+
+                        <td class="organizer-email">
+                            kavya.organizer@gmail.com
+                        </td>
+
+                        <td>
+                            +91 9988776655
+                        </td>
+
+                        <td>
+                            3
+                        </td>
+
+                        <td>
+                            07 August 2026
+                        </td>
+
+                        <td>
+
+                            <span class="status inactive">
+                                Inactive
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="action-btn view-btn"
+                                onclick="viewOrganizer('Kavya R')"
+                            >
+                                View
+                            </button>
+
+                            <button
+                                class="action-btn edit-btn"
+                                onclick="editOrganizer('Kavya R')"
+                            >
+                                Edit
+                            </button>
+
+                            <button
+                                class="action-btn delete-btn"
+                                onclick="deleteOrganizer('Kavya R')"
+                            >
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+
+<script>
+
+const searchInput =
+    document.getElementById("organizerSearch");
+
+
+searchInput.addEventListener(
+    "input",
+    function() {
+
+        const search =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+
+        const rows =
+            document.querySelectorAll(
+                "#organizersTable tr"
+            );
+
+
+        rows.forEach(function(row) {
+
+            const text =
+                row.textContent.toLowerCase();
+
+
+            if (text.includes(search)) {
+
+                row.style.display = "";
+
+            } else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+    }
+);
+
+
+function viewOrganizer(name) {
+
+    alert(
+        "Viewing organizer: " + name
+    );
+
+}
+
+
+function editOrganizer(name) {
+
+    alert(
+        "Editing organizer: " + name
+    );
+
+}
+
+
+function deleteOrganizer(name) {
+
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete " +
+            name +
+            "?"
+        );
+
+
+    if (confirmDelete) {
+
+        alert(
+            name + " has been deleted."
+        );
+
+    }
+
+}
+
+</script>
+
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+
+</html>

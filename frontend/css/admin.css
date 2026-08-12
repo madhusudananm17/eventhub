@@ -1,0 +1,5 @@
+.admin-links a.active-link {
+    background: #635bff;
+    color: white;
+    border-color: #635bff;
+}

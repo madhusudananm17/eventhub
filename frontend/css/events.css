@@ -1,0 +1,396 @@
+/* ================= EVENTS HEADER ================= */
+
+.events-header {
+    background: linear-gradient(135deg, #f4f3ff, #eef5ff);
+    text-align: center;
+    padding: 70px 0;
+}
+
+.events-header > div > span {
+    color: #635bff;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.events-header h1 {
+    font-size: 45px;
+    margin: 10px 0;
+}
+
+.events-header p {
+    color: #667085;
+    font-size: 17px;
+}
+
+
+/* ================= EVENTS SECTION ================= */
+
+.events-section {
+    padding: 60px 0 80px;
+}
+
+
+/* ================= SEARCH ================= */
+
+.event-search {
+    display: flex;
+    gap: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+}
+
+.search-field {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 15px;
+}
+
+.search-field span {
+    font-size: 20px;
+}
+
+.search-field input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.event-search button {
+    border: none;
+    background: #635bff;
+    color: white;
+    padding: 13px 30px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+/* ================= FILTERS ================= */
+
+.filters {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-bottom: 45px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-group select:focus {
+    border-color: #635bff;
+}
+
+
+/* ================= RESULT HEADER ================= */
+
+.event-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.event-result h2 {
+    font-size: 28px;
+}
+
+.event-result span {
+    color: #667085;
+    font-size: 14px;
+}
+
+
+/* ================= EVENT GRID ================= */
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+
+/* ================= EVENT CARD ================= */
+
+.events-grid .event-card {
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+    transition: 0.3s;
+}
+
+.events-grid .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+}
+
+.event-card-image {
+    height: 190px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.event-card-image.technology {
+    background: #e8e7ff;
+}
+
+.event-card-image.education {
+    background: #e5f7ed;
+}
+
+.event-card-image.music {
+    background: #ffe8f1;
+}
+
+.event-card-image.sports {
+    background: #fff1dc;
+}
+
+.event-card-image.business {
+    background: #e5f1ff;
+}
+
+.event-card-image.cultural {
+    background: #f3e8ff;
+}
+
+.card-icon {
+    font-size: 65px;
+}
+
+.card-category {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: white;
+    color: #635bff;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 20px;
+}
+
+.card-content h3 {
+    font-size: 19px;
+    margin-bottom: 12px;
+}
+
+.card-detail {
+    color: #667085;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #eeeeee;
+    padding-top: 15px;
+    margin-top: 15px;
+}
+
+.card-price {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.details-btn {
+    color: #635bff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+
+/* ================= NO RESULTS ================= */
+
+.no-results {
+    text-align: center;
+    padding: 70px 20px;
+    display: none;
+}
+
+.no-results div {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+.no-results h3 {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+.no-results p {
+    color: #667085;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1000px) {
+
+    .events-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .events-header h1 {
+        font-size: 36px;
+    }
+
+    .event-search {
+        flex-direction: column;
+    }
+
+    .event-search button {
+        width: 100%;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .filters {
+        grid-template-columns: 1fr;
+    }
+
+    .event-result {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+}
+
+/* ================= FIX EVENT CARDS ================= */
+
+#eventsGrid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#eventsGrid .event-card {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 350px;
+}
+
+#eventsGrid .event-card-image {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: 190px;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+#eventsGrid .card-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 20px;
+}
+
+#eventsGrid .card-icon {
+    display: block !important;
+    font-size: 60px;
+}
+
+#eventsGrid .card-category {
+    display: block !important;
+}
+
+#eventsGrid .card-detail {
+    display: block !important;
+    color: #667085;
+    margin: 8px 0;
+}
+
+#eventsGrid .card-bottom {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#eventsGrid .card-price {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#eventsGrid .details-btn {
+    color: #635bff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1000px) {
+
+    #eventsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #eventsGrid {
+        grid-template-columns: 1fr;
+    }
+
+}

@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Registrations</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+
+        /* ================= PAGE ================= */
+
+        .registrations-section {
+            background: #f8f9fc;
+            min-height: 80vh;
+            padding: 60px 20px;
+        }
+
+        .registrations-container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        /* ================= HEADER ================= */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .page-header p {
+            color: #667085;
+        }
+
+        .registration-count {
+            background: #e8e7ff;
+            color: #635bff;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* ================= STATISTICS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #eee;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card h2 {
+            font-size: 27px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            color: #667085;
+            font-size: 14px;
+        }
+
+        /* ================= FILTER BAR ================= */
+
+        .filter-bar {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+            display: grid;
+            grid-template-columns: 1fr 220px 220px;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .search-box input,
+        .filter-box select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            background: white;
+        }
+
+        .search-box input:focus,
+        .filter-box select:focus {
+            border-color: #635bff;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            overflow-x: auto;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1050px;
+        }
+
+        th {
+            background: #f8f9fc;
+            text-align: left;
+            padding: 16px;
+            font-size: 13px;
+            color: #667085;
+            border-bottom: 1px solid #eee;
+        }
+
+        td {
+            padding: 17px 16px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ================= USER ================= */
+
+        .user-name {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .user-email {
+            color: #667085;
+            font-size: 12px;
+        }
+
+        /* ================= PAYMENT ================= */
+
+        .paid {
+            color: #16834b;
+            font-weight: 700;
+        }
+
+        .free {
+            color: #635bff;
+            font-weight: 700;
+        }
+
+        .pending {
+            color: #9a6700;
+            font-weight: 700;
+        }
+
+        /* ================= REGISTRATION STATUS ================= */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .confirmed {
+            background: #e5f7ed;
+            color: #16834b;
+        }
+
+        .pending-status {
+            background: #fff4d6;
+            color: #9a6700;
+        }
+
+        .cancelled {
+            background: #ffe8e8;
+            color: #d93025;
+        }
+
+        /* ================= ACTIONS ================= */
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            background: #e5f1ff;
+            color: #1769aa;
+        }
+
+        .cancel-btn {
+            background: #ffe8e8;
+            color: #d93025;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* ================= NO RESULTS ================= */
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-results div {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .no-results h3 {
+            margin-bottom: 8px;
+        }
+
+        .no-results p {
+            color: #667085;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-bar {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="../index.html" class="logo">
+
+            <span>🎫</span>
+
+            EventHub
+
+        </a>
+
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="users.html">
+                Users
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="registrations.html"
+               class="active">
+                Registrations
+            </a>
+
+            <a href="../login.html">
+                Logout
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= REGISTRATIONS ================= -->
+
+<section class="registrations-section">
+
+    <div class="registrations-container">
+
+
+        <!-- HEADER -->
+
+        <div class="page-header">
+
+            <div>
+
+                <h1>
+                    Manage Registrations
+                </h1>
+
+                <p>
+                    View and manage user event registrations.
+                </p>
+
+            </div>
+
+            <span
+                class="registration-count"
+                id="registrationCount"
+            >
+                6 Registrations
+            </span>
+
+        </div>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="stats-grid">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🎟️
+                </div>
+
+                <h2>
+                    156
+                </h2>
+
+                <p>
+                    Total Registrations
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✅
+                </div>
+
+                <h2>
+                    128
+                </h2>
+
+                <p>
+                    Confirmed
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <h2>
+                    18
+                </h2>
+
+                <p>
+                    Pending
+                </p>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ❌
+                </div>
+
+                <h2>
+                    10
+                </h2>
+
+                <p>
+                    Cancelled
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= FILTERS ================= -->
+
+        <div class="filter-bar">
+
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search user or event..."
+                >
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <select id="eventFilter">
+
+                    <option value="all">
+                        All Events
+                    </option>
+
+                    <option value="Tech Conference 2026">
+                        Tech Conference 2026
+                    </option>
+
+                    <option value="Web Development Workshop">
+                        Web Development Workshop
+                    </option>
+
+                    <option value="Summer Music Festival">
+                        Summer Music Festival
+                    </option>
+
+                    <option value="Football Championship">
+                        Football Championship
+                    </option>
+
+                    <option value="Business Networking Meet">
+                        Business Networking Meet
+                    </option>
+
+                    <option value="Cultural Heritage Festival">
+                        Cultural Heritage Festival
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <select id="statusFilter">
+
+                    <option value="all">
+                        All Status
+                    </option>
+
+                    <option value="Confirmed">
+                        Confirmed
+                    </option>
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Cancelled">
+                        Cancelled
+                    </option>
+
+                </select>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- ================= TABLE ================= -->
+
+        <div class="table-card">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            User
+                        </th>
+
+                        <th>
+                            Event
+                        </th>
+
+                        <th>
+                            Date
+                        </th>
+
+                        <th>
+                            Location
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Payment
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="registrationTable">
+
+
+                    <!-- REGISTRATION 1 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Rahul Kumar
+                            </div>
+
+                            <div class="user-email">
+                                rahul@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Tech Conference 2026
+                        </td>
+
+                        <td>
+                            25 Aug 2026
+                        </td>
+
+                        <td>
+                            Bengaluru
+                        </td>
+
+                        <td>
+                            ₹499
+                        </td>
+
+                        <td class="paid">
+                            Paid
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Rahul Kumar')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- REGISTRATION 2 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Sneha Gowda
+                            </div>
+
+                            <div class="user-email">
+                                sneha@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Web Development Workshop
+                        </td>
+
+                        <td>
+                            05 Sep 2026
+                        </td>
+
+                        <td>
+                            Mysuru
+                        </td>
+
+                        <td>
+                            ₹299
+                        </td>
+
+                        <td class="paid">
+                            Paid
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Sneha Gowda')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- REGISTRATION 3 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Manjunath K
+                            </div>
+
+                            <div class="user-email">
+                                manjunath@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Summer Music Festival
+                        </td>
+
+                        <td>
+                            30 Aug 2026
+                        </td>
+
+                        <td>
+                            Mangaluru
+                        </td>
+
+                        <td>
+                            ₹799
+                        </td>
+
+                        <td class="paid">
+                            Paid
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Manjunath K')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- REGISTRATION 4 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Arjun R
+                            </div>
+
+                            <div class="user-email">
+                                arjun@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Football Championship
+                        </td>
+
+                        <td>
+                            12 Sep 2026
+                        </td>
+
+                        <td>
+                            Chikkaballapur
+                        </td>
+
+                        <td>
+                            ₹199
+                        </td>
+
+                        <td class="paid">
+                            Paid
+                        </td>
+
+                        <td>
+
+                            <span class="status pending-status">
+                                Pending
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Arjun R')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- REGISTRATION 5 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Priya Sharma
+                            </div>
+
+                            <div class="user-email">
+                                priya@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Business Networking Meet
+                        </td>
+
+                        <td>
+                            18 Sep 2026
+                        </td>
+
+                        <td>
+                            Hubballi
+                        </td>
+
+                        <td>
+                            ₹599
+                        </td>
+
+                        <td class="paid">
+                            Paid
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Priya Sharma')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                    <!-- REGISTRATION 6 -->
+
+                    <tr>
+
+                        <td>
+
+                            <div class="user-name">
+                                Kiran Kumar
+                            </div>
+
+                            <div class="user-email">
+                                kiran@gmail.com
+                            </div>
+
+                        </td>
+
+                        <td>
+                            Cultural Heritage Festival
+                        </td>
+
+                        <td>
+                            25 Sep 2026
+                        </td>
+
+                        <td>
+                            Chikkaballapur
+                        </td>
+
+                        <td>
+                            Free
+                        </td>
+
+                        <td class="free">
+                            Free
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmed
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <div class="actions">
+
+                                <button
+                                    class="action-btn view-btn"
+                                    onclick="viewRegistration('Kiran Kumar')"
+                                >
+                                    View
+                                </button>
+
+                                <button
+                                    class="action-btn cancel-btn"
+                                    onclick="cancelRegistration(this)"
+                                >
+                                    Cancel
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+
+                </tbody>
+
+            </table>
+
+
+            <!-- NO RESULTS -->
+
+            <div
+                class="no-results"
+                id="noResults"
+            >
+
+                <div>
+                    😔
+                </div>
+
+                <h3>
+                    No Registrations Found
+                </h3>
+
+                <p>
+                    Try changing your search or filters.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<script src="../js/main.js"></script>
+
+
+<script>
+
+    const searchInput =
+        document.getElementById("searchInput");
+
+    const eventFilter =
+        document.getElementById("eventFilter");
+
+    const statusFilter =
+        document.getElementById("statusFilter");
+
+    const registrationTable =
+        document.getElementById("registrationTable");
+
+    const noResults =
+        document.getElementById("noResults");
+
+    const registrationCount =
+        document.getElementById("registrationCount");
+
+
+    /* ================= FILTER ================= */
+
+    function filterRegistrations() {
+
+        const searchValue =
+            searchInput.value
+            .toLowerCase()
+            .trim();
+
+        const selectedEvent =
+            eventFilter.value;
+
+        const selectedStatus =
+            statusFilter.value;
+
+
+        const rows =
+            registrationTable.querySelectorAll("tr");
+
+        let visibleRows = 0;
+
+
+        rows.forEach(function(row) {
+
+            const rowText =
+                row.textContent.toLowerCase();
+
+
+            const eventName =
+                row.cells[1]
+                ? row.cells[1].textContent.trim()
+                : "";
+
+
+            const statusElement =
+                row.querySelector(".status");
+
+
+            const status =
+                statusElement
+                ? statusElement.textContent.trim()
+                : "";
+
+
+            const searchMatch =
+                rowText.includes(searchValue);
+
+
+            const eventMatch =
+                selectedEvent === "all" ||
+                eventName === selectedEvent;
+
+
+            const statusMatch =
+                selectedStatus === "all" ||
+                status === selectedStatus;
+
+
+            if (
+                searchMatch &&
+                eventMatch &&
+                statusMatch
+            ) {
+
+                row.style.display = "";
+
+                visibleRows++;
+
+            }
+
+            else {
+
+                row.style.display = "none";
+
+            }
+
+        });
+
+
+        registrationCount.textContent =
+            visibleRows + " Registrations";
+
+
+        if (visibleRows === 0) {
+
+            noResults.style.display =
+                "block";
+
+        }
+
+        else {
+
+            noResults.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    /* ================= VIEW ================= */
+
+    function viewRegistration(name) {
+
+        alert(
+            "Registration details for: " + name
+        );
+
+    }
+
+
+    /* ================= CANCEL ================= */
+
+    function cancelRegistration(button) {
+
+        const confirmation =
+            confirm(
+                "Are you sure you want to cancel this registration?"
+            );
+
+
+        if (!confirmation) {
+
+            return;
+
+        }
+
+
+        const row =
+            button.closest("tr");
+
+
+        const status =
+            row.querySelector(".status");
+
+
+        status.textContent =
+            "Cancelled";
+
+        status.className =
+            "status cancelled";
+
+
+        button.remove();
+
+    }
+
+
+    /* ================= EVENTS ================= */
+
+    searchInput.addEventListener(
+        "input",
+        filterRegistrations
+    );
+
+
+    eventFilter.addEventListener(
+        "change",
+        filterRegistrations
+    );
+
+
+    statusFilter.addEventListener(
+        "change",
+        filterRegistrations
+    );
+
+
+</script>
+
+
+<script src="../js/main.js"></script>
+<script src="../js/dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>EventHub | Event Details</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+    <link rel="stylesheet" href="css/events.css">
+
+    <style>
+
+        .details-section {
+            padding: 70px 0;
+            background: #f8f9fc;
+        }
+
+        .details-container {
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .event-details-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .details-banner {
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 100px;
+            background: #e8e7ff;
+        }
+
+        .details-content {
+            padding: 40px;
+        }
+
+        .details-category {
+            display: inline-block;
+            background: #635bff;
+            color: white;
+            padding: 7px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .details-content h1 {
+            font-size: 36px;
+            margin: 18px 0 25px;
+        }
+
+        .event-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            padding: 18px;
+            background: #f7f7fb;
+            border-radius: 10px;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .details-price {
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        .register-event-btn {
+            display: inline-block;
+            background: #635bff;
+            color: white;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #635bff;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+
+            .event-info {
+                grid-template-columns: 1fr;
+            }
+
+            .details-content {
+                padding: 25px;
+            }
+
+            .details-content h1 {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="navbar">
+
+    <div class="container nav-container">
+
+        <a href="index.html" class="logo">
+            <span>🎫</span> EventHub
+        </a>
+
+        <nav class="nav-menu" id="navMenu">
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html"
+               class="register-btn">
+                Register
+            </a>
+
+        </nav>
+
+        <button class="menu-btn" id="menuBtn">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- ================= EVENT DETAILS ================= -->
+
+<section class="details-section">
+
+    <div class="container details-container">
+
+        <a href="events.html"
+           class="back-btn">
+            ← Back to Events
+        </a>
+
+
+        <div class="event-details-card">
+
+            <div
+                class="details-banner"
+                id="detailsBanner"
+            >
+                🎫
+            </div>
+
+
+            <div class="details-content">
+
+                <span
+                    class="details-category"
+                    id="detailsCategory"
+                >
+                    Event
+                </span>
+
+
+                <h1 id="detailsTitle">
+                    Event Title
+                </h1>
+
+
+                <div class="event-info">
+
+                    <div class="info-box">
+
+                        <strong>
+                            📅 Date
+                        </strong>
+
+                        <span id="detailsDate">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <strong>
+                            ⏰ Time
+                        </strong>
+
+                        <span id="detailsTime">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <strong>
+                            📍 Location
+                        </strong>
+
+                        <span id="detailsLocation">
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="info-box">
+
+                        <strong>
+                            💰 Price
+                        </strong>
+
+                        <span id="detailsPrice">
+                            -
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="details-price"
+                    id="detailsPriceLarge"
+                >
+                    -
+                </div>
+
+
+                <a
+                    href="register.html"
+                    class="register-event-btn"
+                >
+                    Register for Event
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer class="footer">
+
+    <div class="container footer-content">
+
+        <div class="footer-brand">
+
+            <h2>
+                🎫 EventHub
+            </h2>
+
+            <p>
+                Discover, register and experience
+                amazing events.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="events.html">
+                Events
+            </a>
+
+            <a href="login.html">
+                Login
+            </a>
+
+            <a href="register.html">
+                Register
+            </a>
+
+        </div>
+
+
+        <div class="footer-contact">
+
+            <h3>
+                Contact Us
+            </h3>
+
+            <p>
+                📍 Chikkaballapur, Karnataka
+            </p>
+
+            <p>
+                📧 eventhub@gmail.com
+            </p>
+
+            <p>
+                📞 +91 8088169018
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer-bottom">
+
+        <p>
+            © 2026 EventHub. All Rights Reserved.
+        </p>
+
+    </div>
+
+</footer>
+
+
+<!-- INSTANT TICKET BOOKING & PAYMENT MODAL -->
+<div id="bookingModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center; overflow-y:auto; padding:20px 0;">
+    <div style="background:white; width:90%; max-width:480px; padding:30px; border-radius:18px; box-shadow:0 12px 35px rgba(0,0,0,0.25); position:relative; max-height:90vh; overflow-y:auto;">
+        <button id="closeBookingModal" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:#888;">&times;</button>
+        <h2 style="font-size:22px; margin-bottom:6px; color:#111; display:flex; align-items:center; gap:8px;">
+            🎫 Book Ticket & Pay
+        </h2>
+        <p style="color:#667085; font-size:13px; margin-bottom:18px;">Complete attendee info and payment to get your instant ticket.</p>
+        
+        <form id="instantBookingForm">
+            <!-- ATTENDEE INFO -->
+            <div style="background:#f8f9fc; padding:15px; border-radius:12px; margin-bottom:18px; border:1px solid #eef0f5;">
+                <h4 style="font-size:14px; margin-bottom:12px; color:#333;">👤 Attendee Details</h4>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Full Name *</label>
+                    <input type="text" id="guestName" placeholder="Enter full name" required style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                </div>
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Email Address *</label>
+                    <input type="email" id="guestEmail" placeholder="Enter email" required style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Phone Number *</label>
+                    <input type="tel" id="guestPhone" placeholder="Enter phone number" required style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                </div>
+            </div>
+
+            <!-- PAYMENT OPTIONS (FOR PAID EVENTS) -->
+            <div id="paymentSection" style="background:#fff; padding:15px; border-radius:12px; margin-bottom:18px; border:1px solid #eef0f5;">
+                <h4 style="font-size:14px; margin-bottom:10px; color:#333; display:flex; justify-content:space-between; align-items:center;">
+                    💳 Select Payment Method
+                    <span id="modalPriceBadge" style="background:#e8e7ff; color:#635bff; font-weight:700; padding:3px 10px; border-radius:20px; font-size:13px;">₹0</span>
+                </h4>
+
+                <!-- PAYMENT TABS -->
+                <div style="display:flex; gap:8px; margin-bottom:15px;">
+                    <button type="button" class="pay-tab active" data-method="UPI" style="flex:1; padding:8px 6px; border:1px solid #635bff; background:#e8e7ff; color:#635bff; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;">
+                        📱 UPI / QR
+                    </button>
+                    <button type="button" class="pay-tab" data-method="Card" style="flex:1; padding:8px 6px; border:1px solid #ccc; background:#fff; color:#555; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;">
+                        💳 Card
+                    </button>
+                    <button type="button" class="pay-tab" data-method="NetBanking" style="flex:1; padding:8px 6px; border:1px solid #ccc; background:#fff; color:#555; border-radius:8px; font-weight:600; font-size:12px; cursor:pointer;">
+                        🏦 Banking
+                    </button>
+                </div>
+
+                <!-- UPI / QR CODE CONTAINER -->
+                <div id="upiPayBox" class="pay-box" style="display:block; text-align:center;">
+                    <div style="background:#f4f3ff; border:1px dashed #635bff; padding:12px; border-radius:12px; margin-bottom:12px;">
+                        <p style="font-size:12px; font-weight:700; color:#333; margin-bottom:6px;">
+                            📲 Scan QR Code to Pay via PhonePe / GPay / Paytm
+                        </p>
+                        <img src="images/payment-qr.jpg" alt="Payment QR Code" style="width:190px; height:auto; border-radius:10px; border:2px solid #635bff; margin:8px auto; display:block; box-shadow:0 4px 12px rgba(99,91,255,0.15);">
+                        <p style="font-size:11px; color:#555; font-weight:600; margin-top:6px;">
+                            🏦 State Bank of India - 9550
+                        </p>
+                    </div>
+                    <div style="text-align:left;">
+                        <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">UPI ID or 12-Digit UTR / Transaction Ref No.</label>
+                        <input type="text" id="upiId" placeholder="e.g. 12-digit UTR No. or mobile@paytm" value="user@upi" style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px; margin-bottom:6px;">
+                        <p style="font-size:11px; color:#16834b; display:flex; align-items:center; gap:4px;">
+                            ✓ Instant payment verification & ticket generation
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CARD CONTAINER -->
+                <div id="cardPayBox" class="pay-box" style="display:none;">
+                    <div style="margin-bottom:10px;">
+                        <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Card Number</label>
+                        <input type="text" id="cardNumber" placeholder="4532 •••• •••• 8892" maxlength="19" value="4532 8819 0012 8892" style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <div style="flex:1;">
+                            <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Expiry</label>
+                            <input type="text" placeholder="MM/YY" value="08/28" maxlength="5" style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                        </div>
+                        <div style="flex:1;">
+                            <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">CVV</label>
+                            <input type="password" placeholder="CVV" value="123" maxlength="4" style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BANKING CONTAINER -->
+                <div id="bankingPayBox" class="pay-box" style="display:none;">
+                    <label style="display:block; font-size:12px; font-weight:600; margin-bottom:4px; color:#555;">Select Bank</label>
+                    <select id="bankName" style="width:100%; padding:9px 12px; border:1px solid #ccc; border-radius:8px; font-size:13px;">
+                        <option value="SBI">State Bank of India (SBI)</option>
+                        <option value="HDFC">HDFC Bank</option>
+                        <option value="ICICI">ICICI Bank</option>
+                        <option value="Axis">Axis Bank</option>
+                        <option value="Canara">Canara Bank</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- PRICE SUMMARY -->
+            <div style="background:#f4f3ff; padding:12px 15px; border-radius:10px; margin-bottom:18px; font-size:13px; color:#444;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span>Ticket Amount</span>
+                    <strong id="summaryPrice">₹0</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span>Processing Fee</span>
+                    <span style="color:#16834b; font-weight:600;">FREE</span>
+                </div>
+                <hr style="border:none; border-top:1px solid #ddd; margin:8px 0;">
+                <div style="display:flex; justify-content:space-between; font-size:15px; color:#111;">
+                    <strong>Total Payable</strong>
+                    <strong id="summaryTotal" style="color:#635bff;">₹0</strong>
+                </div>
+            </div>
+
+            <!-- SUBMIT BUTTON -->
+            <button type="submit" id="paySubmitBtn" style="width:100%; background:#635bff; color:white; border:none; padding:13px; border-radius:10px; font-weight:700; font-size:15px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                🔒 Complete Payment & Book Ticket →
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="js/main.js"></script>
+
+<script src="js/event-details.js"></script>
+
+
+</body>
+
+</html>
