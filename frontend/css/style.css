@@ -30,62 +30,116 @@ a {
 /* ================= NAVBAR ================= */
 
 .navbar {
-    background: #a4b6f2;
-    border-bottom: 1px solid #eeeeee;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .nav-container {
-    min-height: 75px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
 .logo {
-    font-size: 45px;
-    font-weight: 600;
+    font-size: 24px;
+    font-weight: 800;
+    color: #635bff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.logo:hover {
+    transform: scale(1.02);
 }
 
 .logo span {
-    margin-right: 6px;
+    margin-right: 4px;
 }
 
-.nav-menu {
+.nav-menu,
+.nav-links {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 12px;
+    list-style: none;
 }
 
-.nav-menu a {
-    font-size: 16px;
+.nav-menu a,
+.nav-links a {
+    font-size: 15px;
     font-weight: 600;
-    transition: 0.3s;
+    color: #475569;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
 }
 
 .nav-menu a:hover,
-.nav-menu .active {
+.nav-links a:hover,
+.nav-menu a.active,
+.nav-links a.active {
     color: #635bff;
+    background: #eef2ff;
 }
 
 .register-btn {
     background: #635bff;
     color: white !important;
-    padding: 10px 20px;
+    padding: 9px 20px !important;
     border-radius: 8px;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 12px rgba(99, 91, 255, 0.2);
 }
 
 .register-btn:hover {
-    background: #4f46e5;
+    background: #4f46e5 !important;
+    color: white !important;
+    box-shadow: 0 6px 16px rgba(99, 91, 255, 0.3);
+}
+
+#logoutBtn,
+.btn-secondary {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#logoutBtn:hover,
+.btn-secondary:hover {
+    background: #dc2626;
+    color: #ffffff;
+    border-color: #dc2626;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
 }
 
 .menu-btn {
     display: none;
     border: none;
     background: none;
-    font-size: 28px;
+    font-size: 26px;
+    color: #334155;
     cursor: pointer;
 }
 
