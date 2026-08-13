@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                                 <div style="display:flex; align-items:center; gap:15px;">
                                     ${statusBadge}
-                                    <a href="ticket.html?id=${reg._id}" style="background:#635bff; color:white; padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:600; font-size:13px;">View Ticket</a>
+                                    <a href="ticket.html?id=${reg.ticketId || reg._id}" style="background:#635bff; color:white; padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:600; font-size:13px;">View Ticket</a>
                                     ${actionBtn}
                                 </div>
                             </div>
