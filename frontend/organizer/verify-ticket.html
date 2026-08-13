@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Ticket Verification | EventHub</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="../index.html" class="logo">🎟️ EventHub Organizer</a>
+        <div class="nav-links">
+            <a href="dashboard.html">Dashboard</a>
+            <a href="manage-events.html">Manage Events</a>
+            <a href="verify-ticket.html" class="active">🔍 Verify Tickets</a>
+            <a href="attendees.html">Attendees</a>
+            <button id="logoutBtn" class="btn-secondary" style="margin-left:15px;">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<section class="dashboard-section" style="padding:40px 20px;">
+    <div class="container" style="max-width:650px; margin:0 auto;">
+        
+        <div style="background:white; padding:30px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,0.08); text-align:center;">
+            <div style="font-size:42px; margin-bottom:10px;">🔍</div>
+            <h1 style="font-size:24px; color:#111; margin-bottom:6px;">Ticket Entry Verification</h1>
+            <p style="color:#666; font-size:14px; margin-bottom:24px;">Scan or type the attendee Ticket ID or QR Code payload ("TICKET_ID + BOOKING_ID") to verify authenticity and admit attendees.</p>
+
+            <!-- SCAN / INPUT FORM -->
+            <form id="ticketVerifyForm" style="display:flex; gap:10px; margin-bottom:25px;">
+                <input type="text" id="verifyInput" placeholder="Scan QR code or type TKT-2026-XXXXXX" required style="flex:1; padding:12px 16px; border:2px solid #635bff; border-radius:10px; font-size:15px; font-weight:600;">
+                <button type="submit" id="verifySubmitBtn" style="background:#635bff; color:white; border:none; padding:12px 24px; border-radius:10px; font-weight:700; font-size:15px; cursor:pointer;">
+                    Verify Pass →
+                </button>
+            </form>
+
+            <!-- VERIFICATION RESULT BOX -->
+            <div id="verifyResultBox" style="display:none; text-align:left; border-radius:14px; padding:20px; border:2px solid #ccc; margin-top:20px;">
+                <div id="resultStatusHeader" style="font-size:18px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px;"></div>
+                
+                <div id="resultDetailsGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px; margin-bottom:20px;">
+                    <div>• <strong>Ticket ID:</strong> <span id="resTicketId">-</span></div>
+                    <div>• <strong>Booking ID:</strong> <span id="resBookingId">-</span></div>
+                    <div>• <strong>Event:</strong> <span id="resEventTitle">-</span></div>
+                    <div>• <strong>Customer:</strong> <span id="resCustomerName">-</span></div>
+                    <div>• <strong>Email / Phone:</strong> <span id="resCustomerContact">-</span></div>
+                    <div>• <strong>Quantity:</strong> <span id="resQuantity">1 Ticket</span></div>
+                    <div>• <strong>Payment Status:</strong> <span id="resPaymentStatus" style="color:#16834b; font-weight:700;">PAID</span></div>
+                    <div>• <strong>Ticket Status:</strong> <span id="resTicketStatus" style="font-weight:700;">CONFIRMED</span></div>
+                </div>
+
+                <!-- ADMIT / MARK USED BUTTON -->
+                <button id="markUsedBtn" style="width:100%; background:#16834b; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:none;">
+                    ✅ Mark as Used & Admit Attendee →
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="../js/main.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const token = localStorage.getItem("token");
+    const userRaw = localStorage.getItem("user");
+    if (!token || !userRaw) {
+        window.location.href = "../login.html";
+        return;
+    }
+    const user = JSON.parse(userRaw);
+    if (user.role !== 'organizer' && user.role !== 'admin') {
+        alert("Access restricted to Organizers and Admins.");
+        window.location.href = "../index.html";
+        return;
+    }
+
+    let activeTicketId = null;
+
+    const verifyForm = document.getElementById("ticketVerifyForm");
+    const verifyInput = document.getElementById("verifyInput");
+    const resultBox = document.getElementById("verifyResultBox");
+    const headerEl = document.getElementById("resultStatusHeader");
+    const markUsedBtn = document.getElementById("markUsedBtn");
+
+    verifyForm.addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const inputVal = verifyInput.value.trim();
+        if (!inputVal) return;
+
+        resultBox.style.display = "none";
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/tickets/verify`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ ticketId: inputVal })
+            });
+
+            const data = await res.json();
+            resultBox.style.display = "block";
+
+            if (data.isValid && data.ticket) {
+                const t = data.ticket;
+                activeTicketId = t.ticketId || t._id;
+                const ev = t.event || {};
+                const u = t.user || {};
+
+                if (data.isUsed) {
+                    resultBox.style.borderColor = "#9a6700";
+                    resultBox.style.background = "#fff9e6";
+                    headerEl.innerHTML = `⚠️ ${data.message}`;
+                    markUsedBtn.style.display = "none";
+                } else {
+                    resultBox.style.borderColor = "#16834b";
+                    resultBox.style.background = "#f0fdf4";
+                    headerEl.innerHTML = `✅ Ticket Valid - Ready for Entry`;
+                    markUsedBtn.style.display = "block";
+                    markUsedBtn.disabled = false;
+                    markUsedBtn.innerHTML = `✅ Mark as Used & Admit Attendee →`;
+                }
+
+                document.getElementById("resTicketId").textContent = t.ticketId || '-';
+                document.getElementById("resBookingId").textContent = t.bookingId || '-';
+                document.getElementById("resEventTitle").textContent = ev.title || '-';
+                document.getElementById("resCustomerName").textContent = u.name || '-';
+                document.getElementById("resCustomerContact").textContent = `${u.email || ''} (${u.phone || ''})`;
+                document.getElementById("resQuantity").textContent = `${t.quantity || 1} Ticket(s)`;
+                document.getElementById("resPaymentStatus").textContent = data.payment ? data.payment.paymentStatus : 'PAID';
+                document.getElementById("resTicketStatus").textContent = t.ticketStatus || 'CONFIRMED';
+
+            } else {
+                resultBox.style.borderColor = "#d93025";
+                resultBox.style.background = "#fff5f5";
+                headerEl.innerHTML = `❌ Invalid Ticket: Ticket does not exist or payment has not been verified.`;
+                markUsedBtn.style.display = "none";
+
+                document.getElementById("resTicketId").textContent = '-';
+                document.getElementById("resBookingId").textContent = '-';
+                document.getElementById("resEventTitle").textContent = '-';
+                document.getElementById("resCustomerName").textContent = '-';
+                document.getElementById("resCustomerContact").textContent = '-';
+                document.getElementById("resQuantity").textContent = '-';
+                document.getElementById("resPaymentStatus").textContent = 'UNPAID / INVALID';
+                document.getElementById("resTicketStatus").textContent = 'INVALID';
+            }
+        } catch(err) {
+            console.error("Verification Error:", err);
+            alert("Error verifying ticket.");
+        }
+    });
+
+    markUsedBtn.addEventListener("click", async function() {
+        if (!activeTicketId) return;
+
+        try {
+            markUsedBtn.disabled = true;
+            markUsedBtn.textContent = "⏳ Admitting Attendee...";
+
+            const res = await fetch(`${API_BASE_URL}/tickets/mark-used`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ ticketId: activeTicketId })
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                alert("✅ " + data.message);
+                verifyForm.dispatchEvent(new Event("submit"));
+            } else {
+                alert("⚠️ " + (data.message || "Failed to mark ticket as used."));
+            }
+        } catch(err) {
+            console.error("Mark Used Error:", err);
+        } finally {
+            markUsedBtn.disabled = false;
+        }
+    });
+});
+</script>
+
+</body>
+</html>

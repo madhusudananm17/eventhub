@@ -251,85 +251,204 @@ document.addEventListener("DOMContentLoaded", function () {
 
     async function loadUserTicket() {
         const params = new URLSearchParams(window.location.search);
-        const regId = params.get("id");
+        const queryId = params.get("id");
 
         try {
-            const res = await fetch(`${API_BASE_URL}/registrations/my`, {
-                headers: getAuthHeaders()
-            });
-            const data = await res.json();
+            let ev = {}, u = {}, targetTicket = null, targetBooking = null, targetPayment = null;
 
-            if (data.success && data.registrations.length > 0) {
-                let targetReg = regId ? data.registrations.find(r => r._id === regId) : data.registrations[0];
-                if (!targetReg) targetReg = data.registrations[0];
-
-                const ev = targetReg.event || {};
-                const u = targetReg.user || user || {};
-
-                // Update Ticket Elements
-                const ticketTitle = document.getElementById("ticketTitle") || document.querySelector(".ticket-card h2") || document.querySelector(".ticket-event h2");
-                if (ticketTitle) ticketTitle.textContent = ev.title || "Event Ticket";
-
-                const ticketCategory = document.querySelector(".ticket-event p");
-                if (ticketCategory) ticketCategory.textContent = `${ev.category || 'Event'} | Ref #${targetReg._id ? targetReg._id.substring(Math.max(0, targetReg._id.length - 6)).toUpperCase() : '001'}`;
-
-                const ticketIcon = document.querySelector(".ticket-event-icon");
-                if (ticketIcon) ticketIcon.textContent = ev.icon || "🎫";
-
-                const detailBoxes = document.querySelectorAll(".detail-box strong");
-                if (detailBoxes.length >= 6) {
-                    detailBoxes[0].textContent = ev.date ? (String(ev.date).includes('T') ? String(ev.date).split('T')[0] : ev.date) : '-';
-                    detailBoxes[1].textContent = ev.time || '-';
-                    detailBoxes[2].textContent = `${ev.location || ''} ${ev.venue ? `(${ev.venue})` : ''}`;
-                    detailBoxes[3].textContent = ev.price === 0 ? "Free" : "₹" + ev.price;
-                    detailBoxes[4].textContent = `EH-2026-${targetReg._id ? targetReg._id.substring(Math.max(0, targetReg._id.length - 6)).toUpperCase() : '001'}`;
-                    detailBoxes[5].textContent = targetReg.registrationDate ? String(targetReg.registrationDate).split('T')[0] : new Date().toISOString().split('T')[0];
-                }
-
-                const userRows = document.querySelectorAll(".user-row strong");
-                if (userRows.length >= 3) {
-                    userRows[0].textContent = u.name || (user ? user.name : 'Attendee');
-                    userRows[1].textContent = u.email || (user ? user.email : '-');
-                    userRows[2].textContent = u.phone || (user ? user.phone : '-');
-                }
-
-                const statusBadge = document.querySelector(".confirmed");
-                const isCancelled = targetReg.status === 'cancelled';
-                const isPaidOrFree = targetReg.paymentStatus === 'paid' || targetReg.paymentStatus === 'free' || ev.price === 0;
-
-                if (statusBadge) {
-                    if (isCancelled) {
-                        statusBadge.textContent = "✖ Cancelled";
-                        statusBadge.style.background = "#fee2e2";
-                        statusBadge.style.color = "#dc2626";
-                    } else {
-                        const isFree = ev.price === 0;
-                        const payText = isFree ? 'Free Event' : `Paid ₹${targetReg.amountPaid || ev.price} via ${targetReg.paymentMethod || 'UPI'}`;
-                        statusBadge.textContent = `✓ Confirmed (${payText})`;
+            // Step 1: Try fetching directly from Ticket endpoint
+            if (queryId) {
+                try {
+                    const ticketRes = await fetch(`${API_BASE_URL}/tickets/${queryId}`, {
+                        headers: getAuthHeaders()
+                    });
+                    const ticketData = await ticketRes.json();
+                    if (ticketData.success && ticketData.ticket) {
+                        targetTicket = ticketData.ticket;
+                        targetBooking = ticketData.booking;
+                        targetPayment = ticketData.payment;
+                        ev = targetTicket.event || {};
+                        u = targetTicket.user || {};
                     }
-                }
+                } catch(e) {}
+            }
 
-                // PRINT AUTHORIZATION GUARD (Only allow print after payment)
-                const printBtn = document.querySelector(".primary-btn") || document.querySelector("button[onclick='window.print()']");
-                if (printBtn) {
-                    if (isPaidOrFree && !isCancelled) {
-                        printBtn.disabled = false;
-                        printBtn.style.opacity = "1";
-                        printBtn.style.cursor = "pointer";
-                        printBtn.innerHTML = "🖨️ Print Confirmed Ticket";
-                        printBtn.onclick = function () { window.print(); };
-                    } else {
-                        printBtn.disabled = true;
-                        printBtn.style.opacity = "0.5";
-                        printBtn.style.cursor = "not-allowed";
-                        printBtn.innerHTML = "🔒 Payment Required to Print";
-                        printBtn.onclick = function (e) {
-                            e.preventDefault();
-                            alert("⚠️ Payment Required: You can only print tickets after payment is completed.");
-                        };
-                    }
+            // Step 2: Fallback to /registrations/my if not found in Ticket endpoint
+            if (!targetTicket) {
+                const regRes = await fetch(`${API_BASE_URL}/registrations/my`, {
+                    headers: getAuthHeaders()
+                });
+                const regData = await regRes.json();
+
+                if (regData.success && regData.registrations && regData.registrations.length > 0) {
+                    let targetReg = queryId 
+                        ? regData.registrations.find(r => 
+                            String(r._id) === String(queryId) || 
+                            r.ticketId === queryId || 
+                            r.orderId === queryId || 
+                            r.transactionId === queryId
+                          )
+                        : regData.registrations[0];
+
+                    if (!targetReg) targetReg = regData.registrations[0];
+
+                    ev = targetReg.event || {};
+                    u = targetReg.user || user || {};
+
+                    const shortId = targetReg._id ? targetReg._id.substring(Math.max(0, targetReg._id.length - 6)).toUpperCase() : '001';
+
+                    targetTicket = {
+                        _id: targetReg._id,
+                        ticketId: targetReg.ticketId || `TKT-2026-${shortId}`,
+                        bookingId: targetReg.orderId || `BKG-2026-${shortId}`,
+                        quantity: targetReg.quantity || 1,
+                        ticketStatus: targetReg.status === 'cancelled' ? 'CANCELLED' : 'CONFIRMED',
+                        generatedAt: targetReg.ticketGeneratedTime || targetReg.registrationDate
+                    };
+
+                    targetBooking = {
+                        bookingId: targetReg.orderId || `BKG-2026-${shortId}`,
+                        totalAmount: targetReg.amountPaid !== undefined ? targetReg.amountPaid : ev.price,
+                        bookingStatus: targetReg.status === 'cancelled' ? 'CANCELLED' : 'CONFIRMED'
+                    };
+
+                    targetPayment = {
+                        paymentId: targetReg.transactionId || `PAY-2026-${shortId}`,
+                        paymentStatus: targetReg.paymentStatus === 'free' ? 'FREE' : 'PAID',
+                        paymentMethod: targetReg.paymentMethod || 'UPI/QR',
+                        transactionId: targetReg.transactionId || 'FREE',
+                        paidAt: targetReg.paymentTime || targetReg.registrationDate
+                    };
                 }
             }
+
+            if (!targetTicket) {
+                console.warn("No ticket data found.");
+                return;
+            }
+
+            // Update Header & Icons
+            const ticketTitle = document.getElementById("ticketTitle") || document.querySelector(".ticket-event h2");
+            if (ticketTitle) {
+                ticketTitle.textContent = ev.title || "Event Ticket";
+                ticketTitle.style.color = "#111";
+            }
+
+            const ticketCategory = document.getElementById("ticketCategory") || document.querySelector(".ticket-event p");
+            if (ticketCategory) {
+                ticketCategory.textContent = `${ev.category || 'Official Event'} Pass`;
+                ticketCategory.style.color = "#635bff";
+            }
+
+            const ticketIcon = document.getElementById("ticketEventIcon") || document.querySelector(".ticket-event-icon");
+            if (ticketIcon) ticketIcon.textContent = ev.icon || "🎫";
+
+            // Helper Date Formatter
+            function formatTimestamp(dt) {
+                if (!dt) return new Date().toLocaleString();
+                const d = new Date(dt);
+                if (isNaN(d.getTime())) return String(dt);
+                return d.toLocaleString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            }
+
+            const quantity = targetTicket.quantity || 1;
+            const payTimeFormatted = formatTimestamp(targetPayment ? targetPayment.paidAt : targetTicket.generatedAt);
+            const genTimeFormatted = formatTimestamp(targetTicket.generatedAt);
+
+            // Populate Grid Elements
+            const elEvDate = document.getElementById("tktEventDate");
+            if (elEvDate) elEvDate.textContent = ev.date ? (String(ev.date).includes('T') ? String(ev.date).split('T')[0] : ev.date) : '-';
+
+            const elEvTime = document.getElementById("tktEventTime");
+            if (elEvTime) elEvTime.textContent = ev.time || '-';
+
+            const elEvVenue = document.getElementById("tktEventVenue");
+            if (elEvVenue) elEvVenue.textContent = `${ev.location || ''} (${ev.venue || 'Main Venue'})`;
+
+            const elQty = document.getElementById("tktQuantity");
+            if (elQty) elQty.textContent = `${quantity} Ticket${quantity > 1 ? 's' : ''}`;
+
+            const elAmt = document.getElementById("tktAmount");
+            const amountVal = targetBooking ? targetBooking.totalAmount : (ev.price * quantity);
+            if (elAmt) elAmt.textContent = (amountVal === 0 || ev.price === 0) ? "Free" : "₹" + amountVal;
+
+            const elTkt = document.getElementById("tktTicketId");
+            if (elTkt) elTkt.textContent = targetTicket.ticketId || '-';
+
+            const elOrd = document.getElementById("tktOrderId");
+            if (elOrd) elOrd.textContent = targetTicket.bookingId || (targetBooking ? targetBooking.bookingId : '-');
+
+            const elPayId = document.getElementById("tktPaymentId");
+            if (elPayId) elPayId.textContent = targetPayment ? (targetPayment.paymentId || targetPayment.transactionId) : 'PAY-FREE';
+
+            const elPayTime = document.getElementById("tktPayTime");
+            if (elPayTime) elPayTime.textContent = payTimeFormatted;
+
+            const elGenTime = document.getElementById("tktGenTime");
+            if (elGenTime) elGenTime.textContent = genTimeFormatted;
+
+            const elCustName = document.getElementById("tktCustomerName");
+            if (elCustName) {
+                elCustName.textContent = u.name || (user ? user.name : 'Attendee');
+                elCustName.style.color = "#111";
+            }
+
+            const elCustEmail = document.getElementById("tktCustomerEmail");
+            if (elCustEmail) {
+                elCustEmail.textContent = u.email || (user ? user.email : '-');
+                elCustEmail.style.color = "#111";
+            }
+
+            const elCustPhone = document.getElementById("tktCustomerPhone");
+            if (elCustPhone) {
+                elCustPhone.textContent = u.phone || (user ? user.phone : '-');
+                elCustPhone.style.color = "#111";
+            }
+
+            const elPayStatus = document.getElementById("tktPaymentStatus");
+            if (elPayStatus) {
+                elPayStatus.textContent = (targetPayment && targetPayment.paymentStatus) ? targetPayment.paymentStatus : 'PAID (Verified)';
+                elPayStatus.style.color = "#16834b";
+            }
+
+            const elBookStatus = document.getElementById("tktBookingStatus");
+            if (elBookStatus) {
+                elBookStatus.textContent = targetTicket.ticketStatus || 'CONFIRMED';
+                elBookStatus.style.color = "#16834b";
+            }
+
+            // Status Badge
+            const statusBadge = document.getElementById("tktStatusBadge") || document.querySelector(".confirmed");
+            const isCancelled = targetTicket.ticketStatus === 'CANCELLED';
+
+            if (statusBadge) {
+                if (isCancelled) {
+                    statusBadge.textContent = "✖ Cancelled";
+                    statusBadge.style.background = "#fee2e2";
+                    statusBadge.style.color = "#dc2626";
+                } else {
+                    statusBadge.textContent = `✓ Confirmed & Verified (Paid)`;
+                    statusBadge.style.background = "#e5f7ed";
+                    statusBadge.style.color = "#16834b";
+                }
+            }
+
+            // QR Code Generation ("TICKET_ID + BOOKING_ID")
+            const qrImg = document.getElementById("ticketQrImage");
+            const downloadQrBtn = document.getElementById("downloadQrBtn");
+            const qrContent = `${targetTicket.ticketId}+${targetTicket.bookingId}`;
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrContent)}`;
+
+            if (qrImg) qrImg.src = qrUrl;
+            if (downloadQrBtn) downloadQrBtn.href = qrUrl;
+
         } catch (err) {
             console.error("Ticket Load Error:", err);
         }

@@ -22,7 +22,7 @@ const registrationSchema = new mongoose.Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ['paid', 'free', 'pending'],
+        enum: ['paid', 'free', 'pending', 'failed'],
         default: 'paid'
     },
     paymentMethod: {
@@ -36,6 +36,22 @@ const registrationSchema = new mongoose.Schema({
     transactionId: {
         type: String,
         default: ''
+    },
+    orderId: {
+        type: String,
+        required: true
+    },
+    ticketId: {
+        type: String,
+        required: true
+    },
+    paymentTime: {
+        type: Date,
+        default: Date.now
+    },
+    ticketGeneratedTime: {
+        type: Date,
+        default: Date.now
     }
 });
 

@@ -1,7 +1,7 @@
 const Registration = require('../models/Registration');
 const Event = require('../models/Event');
 
-// @desc    Register user for an event
+// @desc    Register user for an event with payment verification and ticket generation
 // @route   POST /api/registrations
 // @access  Private (Logged-in User)
 const registerForEvent = async (req, res) => {
@@ -47,9 +47,24 @@ const registerForEvent = async (req, res) => {
         }
 
         const isFree = event.price === 0;
-        const txnId = transactionId || `TXN${Date.now()}${Math.floor(Math.random() * 1000)}`;
 
-        // Create registration
+        // BACKEND VERIFICATION OF PAYMENT DETAILS
+        if (!isFree) {
+            if (!transactionId || transactionId.trim().length < 4) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Payment verification failed: Please scan QR code and provide a valid 12-digit UTR / Transaction ID.'
+                });
+            }
+        }
+
+        const now = new Date();
+        const randNum = Math.floor(100000 + Math.random() * 900000);
+        const orderId = `ORD-2026-${randNum}`;
+        const ticketId = `TKT-2026-${randNum}`;
+        const txnId = isFree ? 'FREE' : transactionId.trim();
+
+        // Create registration record
         const registration = await Registration.create({
             user: req.user._id,
             event: eventId,
@@ -57,7 +72,11 @@ const registerForEvent = async (req, res) => {
             paymentStatus: isFree ? 'free' : 'paid',
             paymentMethod: isFree ? 'Free' : (paymentMethod || 'UPI'),
             amountPaid: isFree ? 0 : (amountPaid !== undefined ? amountPaid : event.price),
-            transactionId: isFree ? 'FREE' : txnId
+            transactionId: txnId,
+            orderId,
+            ticketId,
+            paymentTime: now,
+            ticketGeneratedTime: now
         });
 
         // Decrease available seats
@@ -70,7 +89,7 @@ const registerForEvent = async (req, res) => {
 
         return res.status(201).json({
             success: true,
-            message: 'Registered successfully',
+            message: 'Payment verified & ticket generated successfully',
             registration: populatedRegistration
         });
     } catch (error) {

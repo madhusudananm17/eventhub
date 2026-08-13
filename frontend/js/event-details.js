@@ -27,8 +27,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             const titleEl = document.getElementById("detailsTitle");
             if (titleEl) titleEl.textContent = currentEvent.title || "";
 
+            const dateText = currentEvent.date ? (String(currentEvent.date).includes('T') ? String(currentEvent.date).split('T')[0] : currentEvent.date) : "";
             const dateEl = document.getElementById("detailsDate");
-            if (dateEl) dateEl.textContent = currentEvent.date ? (String(currentEvent.date).includes('T') ? String(currentEvent.date).split('T')[0] : currentEvent.date) : "";
+            if (dateEl) dateEl.textContent = dateText;
 
             const timeEl = document.getElementById("detailsTime");
             if (timeEl) timeEl.textContent = currentEvent.time || "";
@@ -47,27 +48,45 @@ document.addEventListener("DOMContentLoaded", async function () {
             const descEl = document.getElementById("detailsDescription");
             if (descEl) descEl.textContent = currentEvent.description || "";
 
-            // Populate Modal Prices
-            const modalPriceBadge = document.getElementById("modalPriceBadge");
-            const summaryPrice = document.getElementById("summaryPrice");
-            const summaryTotal = document.getElementById("summaryTotal");
-            const paySubmitBtn = document.getElementById("paySubmitBtn");
+            // Populate Booking Summary Information
+            const summaryTitle = document.getElementById("summaryEventTitle");
+            if (summaryTitle) summaryTitle.textContent = currentEvent.title;
 
-            if (modalPriceBadge) modalPriceBadge.textContent = priceText;
-            if (summaryPrice) summaryPrice.textContent = priceText;
-            if (summaryTotal) summaryTotal.textContent = priceText;
-            if (paySubmitBtn) {
-                paySubmitBtn.innerHTML = currentEvent.price === 0
-                    ? `✓ Register Free Ticket →`
-                    : `🔒 Pay ₹${currentEvent.price} & Book Ticket →`;
+            const summaryDateTime = document.getElementById("summaryEventDateTime");
+            if (summaryDateTime) summaryDateTime.textContent = `${dateText} at ${currentEvent.time || ''}`;
+
+            const summaryVenue = document.getElementById("summaryEventVenue");
+            if (summaryVenue) summaryVenue.textContent = `${currentEvent.location} (${currentEvent.venue || 'Main Hall'})`;
+
+            const summaryPricePer = document.getElementById("summaryPricePerTicket");
+            if (summaryPricePer) summaryPricePer.textContent = priceText;
+
+            // Recalculate Subtotal and Total based on Quantity Select
+            const qtySelect = document.getElementById("ticketQuantitySelect");
+            function updateTotals() {
+                const qty = qtySelect ? parseInt(qtySelect.value, 10) : 1;
+                const total = currentEvent.price * qty;
+                const fmtTotal = total === 0 ? "Free" : "₹" + total;
+
+                const modalPriceBadge = document.getElementById("modalPriceBadge");
+                const summarySubtotal = document.getElementById("summarySubtotal");
+                const summaryTotal = document.getElementById("summaryTotal");
+                const paySubmitBtn = document.getElementById("paySubmitBtn");
+
+                if (modalPriceBadge) modalPriceBadge.textContent = fmtTotal;
+                if (summarySubtotal) summarySubtotal.textContent = fmtTotal;
+                if (summaryTotal) summaryTotal.textContent = fmtTotal;
+                if (paySubmitBtn) {
+                    paySubmitBtn.innerHTML = currentEvent.price === 0
+                        ? `✓ Register Free Ticket (${qty} Ticket${qty > 1 ? 's' : ''}) →`
+                        : `🔒 Proceed to Pay ${fmtTotal} & Verify Ticket →`;
+                }
             }
 
-            // Clear default values on upiId for explicit payment reference input
-            const upiIdInput = document.getElementById("upiId");
-            if (upiIdInput && currentEvent.price > 0) {
-                upiIdInput.value = "";
-                upiIdInput.placeholder = "Enter 12-digit UTR / URN / Txn Ref No. after scanning QR";
+            if (qtySelect) {
+                qtySelect.addEventListener("change", updateTotals);
             }
+            updateTotals();
 
             // Populate user info if logged in
             const storedUserRaw = localStorage.getItem("user");
@@ -110,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const registerBtn = document.querySelector(".register-event-btn") || document.querySelector(".register-now-btn") || document.querySelector(".btn-primary");
 
             if (registerBtn) {
-                registerBtn.textContent = currentEvent.price === 0 ? "🎟️ Register Free Ticket" : `💳 Pay ₹${currentEvent.price} & Book Ticket`;
+                registerBtn.textContent = currentEvent.price === 0 ? "🎟️ Register Free Ticket" : `💳 Pay & Book Ticket`;
                 registerBtn.href = "#";
 
                 registerBtn.addEventListener("click", function (e) {
@@ -129,159 +148,199 @@ document.addEventListener("DOMContentLoaded", async function () {
                 });
             }
 
-            // Submit Booking Form with Strict Payment Enforcement
-            const bookingForm = document.getElementById("instantBookingForm");
-            if (bookingForm) {
-                bookingForm.addEventListener("submit", async function (e) {
-                    e.preventDefault();
+            // Centralized Complete Payment & Automatic Ticket Generation Handler
+            async function executeCompleteBookingAndPaymentFlow() {
+                const nameInput = document.getElementById("guestName");
+                const emailInput = document.getElementById("guestEmail");
+                const phoneInput = document.getElementById("guestPhone");
 
-                    const name = document.getElementById("guestName").value.trim();
-                    const email = document.getElementById("guestEmail").value.trim().toLowerCase();
-                    const phone = document.getElementById("guestPhone").value.trim();
+                const name = nameInput ? nameInput.value.trim() : "";
+                const email = emailInput ? emailInput.value.trim().toLowerCase() : "";
+                const phone = phoneInput ? phoneInput.value.trim() : "";
 
-                    if (!name || !email || !phone) {
-                        alert("Please fill in all attendee details (Name, Email, Phone).");
-                        return;
-                    }
+                if (!name || !email || !phone) {
+                    alert("Please fill in customer details (Name, Email, Phone).");
+                    return;
+                }
 
-                    // STRICT PAYMENT VALIDATION FOR PAID EVENTS
-                    let transactionId = 'FREE';
+                const quantity = qtySelect ? parseInt(qtySelect.value, 10) : 1;
+                const isFree = currentEvent.price === 0;
 
-                    if (currentEvent.price > 0) {
-                        if (selectedPaymentMethod === 'UPI') {
-                            const upiVal = document.getElementById("upiId").value.trim();
-                            if (!upiVal || upiVal.length < 6) {
-                                alert("⚠️ Payment Required!\n\nPlease scan the State Bank of India QR Code using PhonePe/GPay/Paytm and enter your 12-digit UTR / Transaction Reference Number to confirm payment before booking.");
-                                return;
-                            }
-                            transactionId = `UPI_UTR_${upiVal}`;
-                        } else if (selectedPaymentMethod === 'Card') {
-                            const cardVal = document.getElementById("cardNumber").value.trim();
-                            if (!cardVal || cardVal.length < 12) {
-                                alert("⚠️ Payment Required!\n\nPlease enter a valid Card Number to complete your ticket purchase.");
-                                return;
-                            }
-                            transactionId = `CARD_TXN_${Date.now()}`;
-                        } else if (selectedPaymentMethod === 'NetBanking') {
-                            const bankVal = document.getElementById("bankName").value;
-                            if (!bankVal) {
-                                alert("⚠️ Payment Required!\n\nPlease select your Bank for NetBanking payment.");
-                                return;
-                            }
-                            transactionId = `NET_BANK_${bankVal}_${Date.now()}`;
+                // STRICT PAYMENT VALIDATION FOR PAID EVENTS
+                let transactionId = 'FREE';
+                if (!isFree) {
+                    if (selectedPaymentMethod === 'UPI') {
+                        const upiVal = document.getElementById("upiId") ? document.getElementById("upiId").value.trim() : "";
+                        if (!upiVal || upiVal.length < 6) {
+                            alert("⚠️ Payment Required!\n\nPlease scan the State Bank of India QR Code using PhonePe/GPay/Paytm and enter your 12-digit UTR / Transaction Reference Number to confirm payment before generating the ticket.");
+                            if (document.getElementById("upiId")) document.getElementById("upiId").focus();
+                            return;
                         }
+                        transactionId = `UTR_SBI9550_${upiVal}`;
+                    } else if (selectedPaymentMethod === 'Card') {
+                        const cardVal = document.getElementById("cardNumber") ? document.getElementById("cardNumber").value.trim() : "";
+                        if (!cardVal || cardVal.length < 12) {
+                            alert("⚠️ Payment Required!\n\nPlease enter valid Card details.");
+                            return;
+                        }
+                        transactionId = `CARD_TXN_${Date.now()}`;
+                    } else if (selectedPaymentMethod === 'NetBanking') {
+                        const bankVal = document.getElementById("bankName") ? document.getElementById("bankName").value : "";
+                        if (!bankVal) {
+                            alert("⚠️ Payment Required!\n\nPlease select your Bank for NetBanking.");
+                            return;
+                        }
+                        transactionId = `NET_BANK_${bankVal}_${Date.now()}`;
                     }
+                }
 
-                    if (paySubmitBtn) {
-                        paySubmitBtn.disabled = true;
-                        paySubmitBtn.innerHTML = `⏳ Verifying Payment & Booking...`;
-                    }
+                const paySubmitBtn = document.getElementById("paySubmitBtn");
+                const modalStatusBadge = document.getElementById("modalStatusBadge");
 
-                    try {
-                        let token = localStorage.getItem("token");
-                        let userObj = null;
+                if (paySubmitBtn) {
+                    paySubmitBtn.disabled = true;
+                    paySubmitBtn.innerHTML = `⏳ Verifying Payment & Creating Order...`;
+                }
 
-                        if (!token) {
-                            // Register or login guest user
-                            const authRes = await fetch(`${API_BASE_URL}/auth/register`, {
+                if (modalStatusBadge) {
+                    modalStatusBadge.textContent = `🟡 Payment Verification Pending`;
+                    modalStatusBadge.style.background = `#fff4d6`;
+                    modalStatusBadge.style.color = `#9a6700`;
+                }
+
+                try {
+                    let token = localStorage.getItem("token");
+                    let userObj = null;
+
+                    if (!token) {
+                        // Register or login guest user
+                        const authRes = await fetch(`${API_BASE_URL}/auth/register`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                name,
+                                email,
+                                phone,
+                                password: 'GuestUser@123',
+                                role: 'user'
+                            })
+                        });
+                        const authData = await authRes.json();
+
+                        if (authData.success && authData.token) {
+                            token = authData.token;
+                            userObj = authData.user;
+                        } else {
+                            const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
                                 method: "POST",
                                 headers: { "Content-Type": "application/json" },
                                 body: JSON.stringify({
-                                    name,
                                     email,
-                                    phone,
                                     password: 'GuestUser@123',
                                     role: 'user'
                                 })
                             });
-                            const authData = await authRes.json();
-
-                            if (authData.success && authData.token) {
-                                token = authData.token;
-                                userObj = authData.user;
-                            } else {
-                                const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({
-                                        email,
-                                        password: 'GuestUser@123',
-                                        role: 'user'
-                                    })
-                                });
-                                const loginData = await loginRes.json();
-                                if (loginData.success && loginData.token) {
-                                    token = loginData.token;
-                                    userObj = loginData.user;
-                                }
-                            }
-
-                            if (token) {
-                                localStorage.setItem("token", token);
-                                if (userObj) localStorage.setItem("user", JSON.stringify(userObj));
+                            const loginData = await loginRes.json();
+                            if (loginData.success && loginData.token) {
+                                token = loginData.token;
+                                userObj = loginData.user;
                             }
                         }
 
-                        if (!token) {
-                            alert("Payment process error. Please try again.");
-                            if (paySubmitBtn) {
-                                paySubmitBtn.disabled = false;
-                                paySubmitBtn.innerHTML = currentEvent.price === 0
-                                    ? `✓ Register Free Ticket →`
-                                    : `🔒 Pay ₹${currentEvent.price} & Book Ticket →`;
-                            }
-                            return;
-                        }
-
-                        // Process Registration with Payment Details
-                        const regResponse = await fetch(`${API_BASE_URL}/registrations`, {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "Authorization": `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                eventId: currentEvent._id,
-                                paymentMethod: currentEvent.price > 0 ? selectedPaymentMethod : 'Free',
-                                transactionId,
-                                amountPaid: currentEvent.price
-                            })
-                        });
-
-                        const regData = await regResponse.json();
-
-                        if (regData.success && regData.registration) {
-                            window.location.href = `user/ticket.html?id=${regData.registration._id}`;
-                        } else if (regData.message && regData.message.toLowerCase().includes('already registered')) {
-                            const myRegsRes = await fetch(`${API_BASE_URL}/registrations/my`, {
-                                headers: { "Authorization": `Bearer ${token}` }
-                            });
-                            const myRegsData = await myRegsRes.json();
-                            if (myRegsData.success && myRegsData.registrations) {
-                                const existingReg = myRegsData.registrations.find(r => {
-                                    const evId = r.event._id || r.event;
-                                    return String(evId) === String(currentEvent._id);
-                                });
-                                if (existingReg) {
-                                    window.location.href = `user/ticket.html?id=${existingReg._id}`;
-                                    return;
-                                }
-                            }
-                            alert("⚠️ " + regData.message);
-                        } else {
-                            alert("⚠️ " + (regData.message || "Payment verification failed. Ticket not booked."));
-                        }
-                    } catch (err) {
-                        console.error("Payment Submission Error:", err);
-                        alert("Payment verification error. Please try again.");
-                    } finally {
-                        if (paySubmitBtn) {
-                            paySubmitBtn.disabled = false;
-                            paySubmitBtn.innerHTML = currentEvent.price === 0
-                                ? `✓ Register Free Ticket →`
-                                : `🔒 Pay ₹${currentEvent.price} & Book Ticket →`;
+                        if (token) {
+                            localStorage.setItem("token", token);
+                            if (userObj) localStorage.setItem("user", JSON.stringify(userObj));
                         }
                     }
+
+                    if (!token) {
+                        alert("Authentication error. Please try again.");
+                        return;
+                    }
+
+                    // Step 1: Create Booking Order
+                    const bookingRes = await fetch(`${API_BASE_URL}/bookings/create`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            eventId: currentEvent._id,
+                            quantity
+                        })
+                    });
+
+                    const bookingData = await bookingRes.json();
+
+                    if (!bookingData.success || !bookingData.booking) {
+                        alert("⚠️ " + (bookingData.message || "Booking creation failed."));
+                        return;
+                    }
+
+                    const bookingId = bookingData.booking.bookingId || bookingData.booking._id;
+
+                    // Step 2: Verify Payment & Automatically Generate Ticket (Zero-Trust)
+                    const verifyRes = await fetch(`${API_BASE_URL}/payments/verify`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            bookingId,
+                            paymentMethod: selectedPaymentMethod,
+                            transactionId
+                        })
+                    });
+
+                    const verifyData = await verifyRes.json();
+
+                    if (verifyData.success && verifyData.ticket) {
+                        // Update Status Badges for User Feedback
+                        if (modalStatusBadge) {
+                            modalStatusBadge.textContent = `🟢 Payment Successful & Verified`;
+                            modalStatusBadge.style.background = `#e5f7ed`;
+                            modalStatusBadge.style.color = `#16834b`;
+                        }
+
+                        // Show Short Loading Animation State
+                        const form = document.getElementById("instantBookingForm");
+                        const overlay = document.getElementById("ticketGenOverlay");
+                        if (form) form.style.display = "none";
+                        if (overlay) overlay.style.display = "block";
+
+                        // Automatic redirect after short transition
+                        setTimeout(() => {
+                            window.location.href = `user/ticket.html?id=${verifyData.ticket.ticketId || verifyData.ticket._id}`;
+                        }, 1200);
+
+                    } else {
+                        if (modalStatusBadge) {
+                            modalStatusBadge.textContent = `🔴 Payment Verification Failed`;
+                            modalStatusBadge.style.background = `#ffe8e8`;
+                            modalStatusBadge.style.color = `#d93025`;
+                        }
+                        alert("⚠️ " + (verifyData.message || "Payment verification failed. No ticket was generated."));
+                    }
+
+                } catch (err) {
+                    console.error("Complete Booking Flow Error:", err);
+                    alert("Payment verification error. Please try again.");
+                } finally {
+                    if (paySubmitBtn) {
+                        paySubmitBtn.disabled = false;
+                        paySubmitBtn.innerHTML = `🔒 Proceed to Payment & Verify Ticket →`;
+                    }
+                }
+            }
+
+            // Booking Form Submit Handler
+            const bookingForm = document.getElementById("instantBookingForm");
+            if (bookingForm) {
+                bookingForm.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    executeCompleteBookingAndPaymentFlow();
                 });
             }
 
