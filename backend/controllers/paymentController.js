@@ -4,6 +4,8 @@ const Booking = require('../models/Booking');
 const Ticket = require('../models/Ticket');
 const Event = require('../models/Event');
 const Registration = require('../models/Registration');
+const { sendBookingConfirmationEmail } = require('../services/emailService');
+const { sendBookingConfirmationWhatsApp } = require('../services/whatsappService');
 
 // @desc    Verify Payment Transaction & Automatically Generate Ticket (Zero-Trust + Idempotent)
 // @route   POST /api/payments/verify
@@ -96,7 +98,7 @@ const verifyPayment = async (req, res) => {
 
         // 4. Generate Unique Ticket ID & Secure QR Code Payload ("TICKET_ID + BOOKING_ID")
         const ticketRand = Math.floor(100000 + Math.random() * 900000);
-        const ticketId = `TKT-2026-${ticketRand}`;
+        const ticketId = `EH-2026-${ticketRand}`;
         const qrCodeData = `${ticketId}+${booking.bookingId}`;
 
         // 5. Create & Save Ticket Record in DB
@@ -118,6 +120,7 @@ const verifyPayment = async (req, res) => {
                 user: booking.user._id || booking.user,
                 event: booking.event._id || booking.event,
                 status: 'registered',
+                ticketStatus: 'confirmed',
                 paymentStatus: isFree ? 'free' : 'paid',
                 paymentMethod,
                 amountPaid: booking.totalAmount,
@@ -133,12 +136,37 @@ const verifyPayment = async (req, res) => {
             .populate('event')
             .populate('user', 'name email phone');
 
+        const populatedUser = populatedTicket.user || booking.user;
+        const populatedEvent = populatedTicket.event || booking.event;
+
+        // 7. SEND EMAIL & WHATSAPP NOTIFICATIONS
+        let emailSent = false;
+        let whatsappSent = false;
+
+        try {
+            emailSent = await sendBookingConfirmationEmail(populatedUser, populatedEvent, {
+                ticketId,
+                registrationDate: now,
+                ticketStatus: 'Confirmed'
+            });
+        } catch (emailErr) {
+            console.error('VerifyPayment Email Notification Error:', emailErr.message);
+        }
+
+        try {
+            whatsappSent = await sendBookingConfirmationWhatsApp(populatedUser, populatedEvent, { ticketId });
+        } catch (waErr) {
+            console.error('VerifyPayment WhatsApp Notification Error:', waErr.message);
+        }
+
         return res.status(200).json({
             success: true,
             message: 'Payment verified and ticket generated automatically!',
             booking,
             payment,
-            ticket: populatedTicket
+            ticket: populatedTicket,
+            emailSent,
+            whatsappSent
         });
     } catch (error) {
         console.error('VerifyPayment Error:', error.message);
