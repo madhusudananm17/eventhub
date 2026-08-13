@@ -27,6 +27,9 @@ const createTransporter = () => {
         auth: {
             user,
             pass
+        },
+        tls: {
+            rejectUnauthorized: false // Handles local network / self-signed certificate environments cleanly
         }
     });
 };
