@@ -20,6 +20,11 @@ const registrationSchema = new mongoose.Schema({
         enum: ['registered', 'cancelled'],
         default: 'registered'
     },
+    ticketStatus: {
+        type: String,
+        enum: ['confirmed', 'cancelled'],
+        default: 'confirmed'
+    },
     paymentStatus: {
         type: String,
         enum: ['paid', 'free', 'pending', 'failed'],
@@ -39,11 +44,12 @@ const registrationSchema = new mongoose.Schema({
     },
     orderId: {
         type: String,
-        required: true
+        default: ''
     },
     ticketId: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     paymentTime: {
         type: Date,

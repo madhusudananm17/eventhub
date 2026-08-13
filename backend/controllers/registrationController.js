@@ -3,8 +3,10 @@ const Event = require('../models/Event');
 const Ticket = require('../models/Ticket');
 const Booking = require('../models/Booking');
 const Payment = require('../models/Payment');
+const { sendBookingConfirmationEmail } = require('../services/emailService');
+const { sendBookingConfirmationWhatsApp } = require('../services/whatsappService');
 
-// @desc    Register user for an event with payment verification and automatic ticket generation
+// @desc    Register user for an event with payment verification, atomic seat reservation & Email + WhatsApp notifications
 // @route   POST /api/registrations
 // @access  Private (Logged-in User)
 const registerForEvent = async (req, res) => {
@@ -18,124 +20,146 @@ const registerForEvent = async (req, res) => {
             });
         }
 
-        // Find event
-        const event = await Event.findById(eventId);
-        if (!event) {
+        // 1. Verify Event existence
+        const eventExists = await Event.findById(eventId);
+        if (!eventExists) {
             return res.status(404).json({
                 success: false,
                 message: 'Event not found'
             });
         }
 
-        // Check if capacity is full
-        if (event.availableSeats <= 0) {
+        // 2. Check for Duplicate Active Registration
+        const existingRegistration = await Registration.findOne({
+            user: req.user._id,
+            event: eventId,
+            status: 'registered'
+        });
+
+        if (existingRegistration) {
             return res.status(400).json({
                 success: false,
-                message: 'Event capacity is full'
+                message: 'You are already registered for this event'
+            });
+        }
+
+        // 3. STEP 5: PREVENT SEAT RACE CONDITIONS (Atomic Seats Decrement)
+        const event = await Event.findOneAndUpdate(
+            { _id: eventId, availableSeats: { $gte: 1 } },
+            { $inc: { availableSeats: -1 } },
+            { new: true }
+        );
+
+        if (!event) {
+            return res.status(400).json({
+                success: false,
+                message: 'Event capacity is full or no available seats remaining'
             });
         }
 
         const isFree = event.price === 0;
 
-        // Auto-generate transaction ID if missing or short
-        let txnId = isFree ? 'FREE' : (transactionId && transactionId.trim().length > 0 ? transactionId.trim() : `UTR_SBI9550_${Date.now()}`);
+        // Auto-generate transaction reference if missing
+        const txnId = isFree ? 'FREE' : (transactionId && transactionId.trim().length > 0 ? transactionId.trim() : `UTR_SBI9550_${Date.now()}`);
 
         const now = new Date();
         const randNum = Math.floor(100000 + Math.random() * 900000);
         const orderId = `BKG-2026-${randNum}`;
-        const ticketId = `TKT-2026-${randNum}`;
+        const ticketId = `EH-2026-${randNum}`; // Format: EH-2026-XXXXXX
         const totalAmt = isFree ? 0 : (amountPaid !== undefined ? amountPaid : event.price);
 
-        // 1. Create or update registration record
-        let registration = await Registration.findOne({
+        // 4. Create Registration Record
+        const registration = await Registration.create({
             user: req.user._id,
-            event: eventId
+            event: eventId,
+            status: 'registered',
+            ticketStatus: 'confirmed',
+            paymentStatus: isFree ? 'free' : 'paid',
+            paymentMethod: isFree ? 'Free' : paymentMethod,
+            amountPaid: totalAmt,
+            transactionId: txnId,
+            orderId,
+            ticketId,
+            paymentTime: now,
+            ticketGeneratedTime: now
         });
 
-        if (!registration) {
-            registration = await Registration.create({
-                user: req.user._id,
-                event: eventId,
-                status: 'registered',
-                paymentStatus: isFree ? 'free' : 'paid',
-                paymentMethod: isFree ? 'Free' : paymentMethod,
-                amountPaid: totalAmt,
-                transactionId: txnId,
-                orderId,
-                ticketId,
-                paymentTime: now,
-                ticketGeneratedTime: now
-            });
+        // 5. Create Booking, Payment, and Ticket Records for 100% Data Sync
+        const booking = await Booking.create({
+            bookingId: orderId,
+            user: req.user._id,
+            event: eventId,
+            quantity: 1,
+            pricePerTicket: event.price,
+            totalAmount: totalAmt,
+            bookingStatus: 'CONFIRMED'
+        });
 
-            // Decrease available seats
-            event.availableSeats = Math.max(0, event.availableSeats - 1);
-            await event.save();
-        }
+        const payment = await Payment.create({
+            paymentId: `PAY-2026-${randNum}`,
+            booking: booking._id,
+            bookingId: orderId,
+            amount: totalAmt,
+            paymentMethod,
+            paymentStatus: isFree ? 'FREE' : 'PAID',
+            transactionId: txnId,
+            paidAt: now
+        });
 
-        // 2. Create Booking, Payment, and Ticket records for full 100% sync
-        let booking = await Booking.findOne({ bookingId: orderId });
-        if (!booking) {
-            booking = await Booking.create({
-                bookingId: orderId,
-                user: req.user._id,
-                event: eventId,
-                quantity: 1,
-                pricePerTicket: event.price,
-                totalAmount: totalAmt,
-                bookingStatus: 'CONFIRMED'
-            });
-        }
-
-        let payment = await Payment.findOne({ bookingId: orderId });
-        if (!payment) {
-            payment = await Payment.create({
-                paymentId: `PAY-2026-${randNum}`,
-                booking: booking._id,
-                bookingId: orderId,
-                amount: totalAmt,
-                paymentMethod,
-                paymentStatus: isFree ? 'FREE' : 'PAID',
-                transactionId: txnId,
-                paidAt: now
-            });
-        }
-
-        let ticket = await Ticket.findOne({ ticketId });
-        if (!ticket) {
-            ticket = await Ticket.create({
-                ticketId,
-                booking: booking._id,
-                bookingId: orderId,
-                user: req.user._id,
-                event: eventId,
-                quantity: 1,
-                ticketStatus: 'CONFIRMED',
-                qrCodeData: `${ticketId}+${orderId}`,
-                generatedAt: now
-            });
-        }
+        const ticket = await Ticket.create({
+            ticketId,
+            booking: booking._id,
+            bookingId: orderId,
+            user: req.user._id,
+            event: eventId,
+            quantity: 1,
+            ticketStatus: 'CONFIRMED',
+            qrCodeData: `${ticketId}+${orderId}`,
+            generatedAt: now
+        });
 
         const populatedRegistration = await Registration.findById(registration._id)
             .populate('event')
             .populate('user', 'name email phone');
 
-        const populatedTicket = await Ticket.findById(ticket._id)
-            .populate('event')
-            .populate('user', 'name email phone');
+        const populatedUser = populatedRegistration.user || req.user;
+        const populatedEvent = populatedRegistration.event || event;
+
+        // 6. SEND EMAIL & WHATSAPP NOTIFICATIONS (Safe error handling - failure NEVER cancels booking!)
+        let emailSent = false;
+        let whatsappSent = false;
+
+        try {
+            emailSent = await sendBookingConfirmationEmail(populatedUser, populatedEvent, registration);
+        } catch (emailErr) {
+            console.error('Email notification failed:', emailErr.message);
+        }
+
+        try {
+            whatsappSent = await sendBookingConfirmationWhatsApp(populatedUser, populatedEvent, registration);
+        } catch (waErr) {
+            console.error('WhatsApp notification failed:', waErr.message);
+        }
+
+        const notificationMsg = (emailSent || whatsappSent)
+            ? 'Registration successful! Your ticket has been sent to your email and WhatsApp.'
+            : 'Registration successful! Your ticket has been booked. Notification delivery is temporarily unavailable.';
 
         return res.status(201).json({
             success: true,
-            message: 'Payment verified & ticket generated automatically!',
+            message: notificationMsg,
             registration: populatedRegistration,
-            ticket: populatedTicket,
+            ticket,
             booking,
-            payment
+            payment,
+            emailSent,
+            whatsappSent
         });
     } catch (error) {
         console.error('RegisterForEvent Error:', error.message);
         return res.status(500).json({
             success: false,
-            message: 'Server error during ticket generation: ' + error.message
+            message: 'Server error during registration: ' + error.message
         });
     }
 };
@@ -182,6 +206,7 @@ const getMyRegistrations = async (req, res) => {
                     user: t.user,
                     event: t.event,
                     status: t.ticketStatus === 'CANCELLED' ? 'cancelled' : 'registered',
+                    ticketStatus: t.ticketStatus === 'CANCELLED' ? 'cancelled' : 'confirmed',
                     paymentStatus: payment ? payment.paymentStatus : 'paid',
                     paymentMethod: payment ? payment.paymentMethod : 'UPI/QR',
                     amountPaid: booking ? booking.totalAmount : (t.event.price * (t.quantity || 1)),
@@ -251,7 +276,7 @@ const getEventRegistrations = async (req, res) => {
     }
 };
 
-// @desc    Cancel registration
+// @desc    Cancel registration and atomically increment availableSeats by 1
 // @route   DELETE /api/registrations/:id
 // @access  Private (User owner / Admin)
 const cancelRegistration = async (req, res) => {
@@ -265,11 +290,8 @@ const cancelRegistration = async (req, res) => {
                 ticket.ticketStatus = 'CANCELLED';
                 await ticket.save();
 
-                const event = await Event.findById(ticket.event);
-                if (event) {
-                    event.availableSeats = Math.min(event.capacity, event.availableSeats + (ticket.quantity || 1));
-                    await event.save();
-                }
+                // Atomically increase available seats
+                await Event.findByIdAndUpdate(ticket.event, { $inc: { availableSeats: ticket.quantity || 1 } });
 
                 return res.json({
                     success: true,
@@ -292,7 +314,7 @@ const cancelRegistration = async (req, res) => {
             });
         }
 
-        if (registration.status === 'cancelled') {
+        if (registration.status === 'cancelled' || registration.ticketStatus === 'cancelled') {
             return res.status(400).json({
                 success: false,
                 message: 'Registration is already cancelled'
@@ -301,14 +323,11 @@ const cancelRegistration = async (req, res) => {
 
         // Mark status as cancelled
         registration.status = 'cancelled';
+        registration.ticketStatus = 'cancelled';
         await registration.save();
 
-        // Increase available seats in event
-        const event = await Event.findById(registration.event);
-        if (event) {
-            event.availableSeats = Math.min(event.capacity, event.availableSeats + 1);
-            await event.save();
-        }
+        // Atomically increase available seats in event
+        await Event.findByIdAndUpdate(registration.event, { $inc: { availableSeats: 1 } });
 
         return res.json({
             success: true,
