@@ -11,13 +11,15 @@
     <title>EventHub | Organizer Dashboard</title>
 
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
 
         .organizer-section {
-            background: #0b0f19;
+            background: #06131d;
             min-height: 80vh;
             padding: 60px 20px;
+            color: #ffffff;
         }
 
         .organizer-container {
@@ -28,24 +30,23 @@
         /* ================= WELCOME ================= */
 
         .welcome-box {
-            background: linear-gradient(
-                135deg,
-                #635bff,
-                #827cff
-            );
+            background: linear-gradient(135deg, #064e3b 0%, #0d1d2a 100%);
             color: white;
             padding: 35px;
             border-radius: 16px;
             margin-bottom: 30px;
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
         }
 
         .welcome-box h1 {
             font-size: 32px;
             margin-bottom: 8px;
+            color: #34d399;
         }
 
         .welcome-box p {
-            opacity: 0.9;
+            color: #cbd5e1;
         }
 
         /* ================= STATS ================= */
@@ -58,11 +59,12 @@
         }
 
         .stat-card {
-            background: white;
+            background: #0d1d2a;
             padding: 25px;
             border-radius: 14px;
-            border: 1px solid #eee;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .stat-icon {
@@ -73,10 +75,11 @@
         .stat-card h2 {
             font-size: 28px;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .stat-card p {
-            color: #667085;
+            color: #94a3b8;
             font-size: 14px;
         }
 
@@ -91,12 +94,18 @@
 
         .section-heading h2 {
             font-size: 25px;
+            color: #ffffff;
         }
 
         .view-link {
-            color: #635bff;
-            font-weight: 600;
+            color: #34d399;
+            font-weight: 700;
             font-size: 14px;
+            text-decoration: none;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
         }
 
         /* ================= QUICK ACTIONS ================= */
@@ -109,17 +118,21 @@
         }
 
         .action-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 14px;
             padding: 25px;
             text-align: center;
             transition: 0.3s;
+            text-decoration: none;
+            color: #ffffff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .action-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            border-color: #10b981;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
         .action-icon {
@@ -130,10 +143,11 @@
         .action-card h3 {
             font-size: 18px;
             margin-bottom: 6px;
+            color: #ffffff;
         }
 
         .action-card p {
-            color: #667085;
+            color: #cbd5e1;
             font-size: 13px;
         }
 
@@ -147,10 +161,12 @@
         }
 
         .event-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 14px;
             padding: 22px;
+            color: #ffffff;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
         .event-card-header {
@@ -162,19 +178,21 @@
 
         .event-card-header h3 {
             font-size: 18px;
+            color: #ffffff;
         }
 
         .event-status {
-            background: #e5f7ed;
-            color: #16834b;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 11px;
             font-weight: 700;
+            border: 1px solid rgba(52, 211, 153, 0.3);
         }
 
         .event-info {
-            color: #667085;
+            color: #cbd5e1;
             font-size: 14px;
             margin-bottom: 7px;
         }
@@ -183,7 +201,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 15px;
             margin-top: 15px;
         }
@@ -191,12 +209,18 @@
         .registration-count {
             font-weight: 700;
             font-size: 14px;
+            color: #34d399;
         }
 
         .manage-btn {
-            color: #635bff;
-            font-weight: 600;
+            color: #34d399;
+            font-weight: 700;
             font-size: 13px;
+            text-decoration: none;
+        }
+
+        .manage-btn:hover {
+            text-decoration: underline;
         }
 
         /* ================= RESPONSIVE ================= */
