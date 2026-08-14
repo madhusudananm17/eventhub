@@ -10,9 +10,9 @@ const seedData = async () => {
     try {
         await connectDB();
 
-        console.log('Enforcing strictly 3 Admins & 2 Organizers (Total 5 Accounts)...');
+        console.log('Enforcing strictly 3 Admins & 3 Organizers (Total 6 Accounts)...');
 
-        const exact5Accounts = [
+        const exactAccounts = [
             // 3 ADMINS
             {
                 name: 'Madhu (Admin)',
@@ -35,7 +35,7 @@ const seedData = async () => {
                 password: 'Admin@123',
                 role: 'admin'
             },
-            // 2 ORGANIZERS
+            // 3 ORGANIZERS
             {
                 name: 'MadhuNM',
                 email: '2303031240602@gmail.com',
@@ -49,10 +49,17 @@ const seedData = async () => {
                 phone: '+91 9900000002',
                 password: 'Organizer@123',
                 role: 'organizer'
+            },
+            {
+                name: 'Cultural & Sports Forum',
+                email: 'organizer2@eventhub.com',
+                phone: '+91 9900000003',
+                password: 'Organizer@123',
+                role: 'organizer'
             }
         ];
 
-        const allowedEmails = exact5Accounts.map(a => a.email.toLowerCase());
+        const allowedEmails = exactAccounts.map(a => a.email.toLowerCase());
 
         // Remove any extra admin/organizer accounts
         await User.deleteMany({
@@ -60,7 +67,7 @@ const seedData = async () => {
             email: { $nin: allowedEmails }
         });
 
-        for (const acc of exact5Accounts) {
+        for (const acc of exactAccounts) {
             let u = await User.findOne({ email: acc.email });
             if (u) {
                 u.name = acc.name;
@@ -74,7 +81,7 @@ const seedData = async () => {
         }
 
         const finalAccounts = await User.find({ role: { $in: ['admin', 'organizer'] } });
-        console.log(`✅ Seed Complete: Total Accounts = ${finalAccounts.length} (3 Admins + 2 Organizers)`);
+        console.log(`✅ Seed Complete: Total Accounts = ${finalAccounts.length} (3 Admins + 3 Organizers)`);
         process.exit();
     } catch (err) {
         console.error('Seed Error:', err);
