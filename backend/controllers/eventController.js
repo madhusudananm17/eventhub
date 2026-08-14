@@ -10,6 +10,7 @@ const getCategoryIcon = (category) => {
         case 'sports': return '⚽';
         case 'business': return '💼';
         case 'cultural': return '🎨';
+        case 'entertainment': return '🎬';
         default: return '🎫';
     }
 };
