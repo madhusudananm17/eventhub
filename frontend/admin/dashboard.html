@@ -10,12 +10,16 @@
 
     <title>EventHub | Admin Dashboard</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
 
         .admin-section {
-            background: #0b0f19;
+            background: #06131d;
             min-height: 80vh;
             padding: 60px 20px;
         }
@@ -34,10 +38,11 @@
         .admin-header h1 {
             font-size: 34px;
             margin-bottom: 8px;
+            color: #ffffff;
         }
 
         .admin-header p {
-            color: #667085;
+            color: #94a3b8;
         }
 
         /* ================= STATISTICS ================= */
@@ -50,11 +55,12 @@
         }
 
         .stat-card {
-            background: white;
+            background: #0d1d2a;
             padding: 24px;
             border-radius: 14px;
-            border: 1px solid #eee;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .stat-icon {
@@ -65,10 +71,11 @@
         .stat-card h2 {
             font-size: 28px;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .stat-card p {
-            color: #667085;
+            color: #94a3b8;
             font-size: 14px;
         }
 
@@ -81,16 +88,18 @@
         }
 
         .dashboard-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 14px;
             padding: 25px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .dashboard-card h2 {
             font-size: 20px;
             margin-bottom: 20px;
+            color: #ffffff;
         }
 
         /* ================= RECENT ITEM ================= */
@@ -100,7 +109,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .recent-item:last-child {
@@ -110,10 +119,11 @@
         .item-name {
             font-weight: 700;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .item-info {
-            color: #667085;
+            color: #cbd5e1;
             font-size: 12px;
         }
 
@@ -125,13 +135,15 @@
         }
 
         .active {
-            background: #e5f7ed;
-            color: #16834b;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
         }
 
         .pending {
-            background: #fff1dc;
-            color: #a15c00;
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.3);
         }
 
         /* ================= QUICK ACTIONS ================= */
@@ -143,20 +155,23 @@
         }
 
         .action-btn {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             text-decoration: none;
             padding: 15px;
-            background: #f8f9fc;
-            border: 1px solid #eee;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 9px;
-            color: #222;
+            color: #ffffff;
             font-weight: 600;
             transition: 0.2s;
         }
 
         .action-btn:hover {
-            background: #635bff;
-            color: white;
+            background: rgba(16, 185, 129, 0.15);
+            border-color: #10b981;
+            color: #ffffff;
             transform: translateY(-2px);
         }
 
@@ -180,14 +195,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .quick-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .admin-header h1 {
-                font-size: 28px;
-            }
-
         }
 
     </style>
@@ -205,32 +212,22 @@
     <div class="container nav-container">
 
         <a href="../index.html" class="logo">
-
-            <span>🎫</span>
-
-            EventHub
-
+            <span class="logo-icon">🎫</span> EventHub Admin
         </a>
-
 
         <nav class="nav-menu" id="navMenu">
 
-            <a href="../index.html">
-                Home
+            <a href="dashboard.html" class="active">
+                Dashboard
             </a>
 
-            <a href="../events.html">
-                Events
-            </a>
-
-            <a href="dashboard.html"
-               class="active">
-                Admin Dashboard
+            <a href="users.html">
+                Users
             </a>
 
             <a href="organizers.html">
-    👤 Manage Organizers
-</a>
+                Organizers
+            </a>
 
             <a href="events.html">
                 Events
@@ -240,9 +237,9 @@
                 Registrations
             </a>
 
-            <a href="../login.html">
+            <button id="logoutBtn">
                 Logout
-            </a>
+            </button>
 
         </nav>
 
@@ -266,86 +263,58 @@
 
         <div class="admin-header">
 
-            <h1>
-                Admin Dashboard
-            </h1>
+            <h1>Admin Dashboard</h1>
 
-            <p>
-                Manage users, organizers, events and registrations.
-            </p>
+            <p>Manage users, organizers, events and registrations.</p>
 
         </div>
 
 
-        <!-- ================= STATISTICS ================= -->
+        <!-- STATS -->
 
         <div class="stats-grid">
 
 
             <div class="stat-card">
 
-                <div class="stat-icon">
-                    👥
-                </div>
+                <div class="stat-icon">👥</div>
 
-                <h2>
-                    250
-                </h2>
+                <h2>27</h2>
 
-                <p>
-                    Total Users
-                </p>
+                <p>Total Users</p>
 
             </div>
 
 
             <div class="stat-card">
 
-                <div class="stat-icon">
-                    🧑‍💼
-                </div>
+                <div class="stat-icon">👨‍💼</div>
 
-                <h2>
-                    35
-                </h2>
+                <h2>6</h2>
 
-                <p>
-                    Organizers
-                </p>
+                <p>Organizers</p>
 
             </div>
 
 
             <div class="stat-card">
 
-                <div class="stat-icon">
-                    📅
-                </div>
+                <div class="stat-icon">📅</div>
 
-                <h2>
-                    48
-                </h2>
+                <h2>11</h2>
 
-                <p>
-                    Total Events
-                </p>
+                <p>Total Events</p>
 
             </div>
 
 
             <div class="stat-card">
 
-                <div class="stat-icon">
-                    🎟️
-                </div>
+                <div class="stat-icon">🎟️</div>
 
-                <h2>
-                    1,250
-                </h2>
+                <h2>33</h2>
 
-                <p>
-                    Registrations
-                </p>
+                <p>Registrations</p>
 
             </div>
 
@@ -353,7 +322,7 @@
         </div>
 
 
-        <!-- ================= DASHBOARD CONTENT ================= -->
+        <!-- GRID -->
 
         <div class="dashboard-grid">
 
@@ -362,9 +331,7 @@
 
             <div class="dashboard-card">
 
-                <h2>
-                    Recent Events
-                </h2>
+                <h2>Recent Events</h2>
 
 
                 <div class="recent-item">
@@ -376,7 +343,7 @@
                         </div>
 
                         <div class="item-info">
-                            Bengaluru · 25 Aug 2026
+                            Bengaluru • 25 Aug 2026
                         </div>
 
                     </div>
@@ -397,7 +364,7 @@
                         </div>
 
                         <div class="item-info">
-                            Mysuru · 05 Sep 2026
+                            Mysuru • 05 Sep 2026
                         </div>
 
                     </div>
@@ -418,7 +385,7 @@
                         </div>
 
                         <div class="item-info">
-                            Chikkaballapur · 12 Sep 2026
+                            Chikkaballapur • 12 Sep 2026
                         </div>
 
                     </div>
@@ -437,9 +404,7 @@
 
             <div class="dashboard-card">
 
-                <h2>
-                    Recent Users
-                </h2>
+                <h2>Recent Users</h2>
 
 
                 <div class="recent-item">
@@ -508,55 +473,26 @@
             </div>
 
 
-            <!-- QUICK ACTIONS -->
-
-            
-
-                <div class="management-grid">
-
-    <!-- USER MANAGEMENT -->
-
-    <div class="management-card">
-
-        <h2>User Management</h2>
-
-        <div class="management-links">
-
-            <a href="users.html">
-                👥 Manage Users
-            </a>
-
-            <a href="organizers.html">
-                🧑‍💼 Manage Organizers
-            </a>
-
         </div>
+
+
+        <br><br>
+
+        <h2 style="color:#ffffff; margin-bottom: 12px;">User Management</h2>
+        <div class="quick-actions" style="margin-bottom: 25px;">
+            <a href="users.html" class="action-btn">👥 Manage Users</a>
+            <a href="organizers.html" class="action-btn">👨‍💼 Manage Organizers</a>
+        </div>
+
+        <h2 style="color:#ffffff; margin-bottom: 12px;">Event Management</h2>
+        <div class="quick-actions">
+            <a href="events.html" class="action-btn">📅 Manage Events</a>
+            <a href="registrations.html" class="action-btn">🎟️ View Registrations</a>
+        </div>
+
 
     </div>
 
-
-    <!-- EVENT MANAGEMENT -->
-
-    <div class="management-card">
-
-        <h2>Event Management</h2>
-
-        <div class="management-links">
-
-            <a href="events.html">
-                📅 Manage Events
-            </a>
-
-            <a href="registrations.html">
-                🎟️ View Registrations
-            </a>
-
-        </div>
-
-    </div>
-
-</div>
-            
 </section>
 
 
@@ -566,9 +502,7 @@
 
     <div class="footer-bottom">
 
-        <p>
-            © 2026 EventHub. All Rights Reserved.
-        </p>
+        <p>© 2026 EventHub Admin Portal. All Rights Reserved.</p>
 
     </div>
 
@@ -577,7 +511,6 @@
 
 <script src="../js/main.js"></script>
 <script src="../js/dashboard.js"></script>
-
 
 </body>
 
