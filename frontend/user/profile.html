@@ -10,12 +10,16 @@
 
     <title>EventHub | My Profile</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
 
         .profile-section {
-            background: #f8f9fc;
+            background: #06131d;
             min-height: 80vh;
             padding: 60px 20px;
         }
@@ -32,10 +36,11 @@
         .page-title h1 {
             font-size: 34px;
             margin-bottom: 8px;
+            color: #ffffff;
         }
 
         .page-title p {
-            color: #667085;
+            color: #94a3b8;
         }
 
         .profile-grid {
@@ -47,12 +52,13 @@
         /* PROFILE CARD */
 
         .profile-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 15px;
             padding: 30px;
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .profile-avatar {
@@ -60,7 +66,8 @@
             height: 100px;
             margin: auto;
             border-radius: 50%;
-            background: #e8e7ff;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -71,16 +78,17 @@
         .profile-card h2 {
             font-size: 21px;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .profile-card p {
-            color: #667085;
+            color: #cbd5e1;
             font-size: 14px;
             margin-bottom: 20px;
         }
 
         .profile-stat {
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 15px;
             margin-top: 15px;
         }
@@ -89,26 +97,29 @@
             display: block;
             font-size: 22px;
             margin-bottom: 3px;
+            color: #34d399;
         }
 
         .profile-stat span {
-            color: #667085;
+            color: #94a3b8;
             font-size: 13px;
         }
 
         /* PROFILE FORM */
 
         .profile-form-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 15px;
             padding: 30px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .profile-form-card h2 {
             font-size: 22px;
             margin-bottom: 25px;
+            color: #ffffff;
         }
 
         .form-grid {
@@ -128,49 +139,57 @@
 
         .form-group label {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 8px;
+            color: #34d399;
         }
 
         .form-group input {
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(16, 185, 129, 0.25);
             border-radius: 8px;
             outline: none;
             font-size: 14px;
+            background: #06131d;
+            color: #ffffff;
         }
 
         .form-group input:focus {
-            border-color: #635bff;
+            border-color: #10b981;
         }
 
         .form-group input:disabled {
-            background: #f5f5f5;
+            background: rgba(255, 255, 255, 0.05);
+            color: #94a3b8;
             cursor: not-allowed;
         }
 
         .save-btn {
             margin-top: 25px;
-            background: #635bff;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             border: none;
             padding: 12px 25px;
             border-radius: 8px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s ease;
         }
 
         .save-btn:hover {
-            opacity: 0.85;
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
         }
 
         .success-message {
             display: none;
             margin-top: 15px;
             padding: 12px;
-            background: #e5f7ed;
-            color: #16834b;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
             border-radius: 8px;
             font-size: 14px;
         }
@@ -183,20 +202,8 @@
                 grid-template-columns: 1fr;
             }
 
-        }
-
-        @media (max-width: 600px) {
-
             .form-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .form-group.full {
-                grid-column: auto;
-            }
-
-            .page-title h1 {
-                font-size: 28px;
             }
 
         }
@@ -216,13 +223,8 @@
     <div class="container nav-container">
 
         <a href="../index.html" class="logo">
-
-            <span>🎫</span>
-
-            EventHub
-
+            <span class="logo-icon">🎫</span> EventHub
         </a>
-
 
         <nav class="nav-menu" id="navMenu">
 
@@ -242,14 +244,13 @@
                 My Events
             </a>
 
-            <a href="profile.html"
-               class="active">
+            <a href="profile.html" class="active">
                 Profile
             </a>
 
-            <a href="../login.html">
+            <button id="logoutBtn">
                 Logout
-            </a>
+            </button>
 
         </nav>
 
@@ -262,30 +263,30 @@
 </header>
 
 
-<!-- ================= PROFILE ================= -->
+<!-- ================= PROFILE SECTION ================= -->
 
 <section class="profile-section">
 
     <div class="profile-container">
 
 
+        <!-- TITLE -->
+
         <div class="page-title">
 
-            <h1>
-                My Profile
-            </h1>
+            <h1>My Profile</h1>
 
-            <p>
-                Manage your EventHub account information.
-            </p>
+            <p>View and manage your account details</p>
 
         </div>
 
 
+        <!-- GRID -->
+
         <div class="profile-grid">
 
 
-            <!-- ================= PROFILE SUMMARY ================= -->
+            <!-- PROFILE CARD -->
 
             <div class="profile-card">
 
@@ -293,55 +294,34 @@
                     👤
                 </div>
 
-                <h2>
-                    User
+                <h2 id="cardName">
+                    User Name
                 </h2>
 
-                <p>
-                    EventHub Member
+                <p id="cardRole">
+                    Registered Attendee
                 </p>
 
 
                 <div class="profile-stat">
 
-                    <strong>
-                        4
-                    </strong>
+                    <strong id="cardTotalEvents">0</strong>
 
-                    <span>
-                        Registered Events
-                    </span>
+                    <span>Events Registered</span>
 
                 </div>
-
-
-                <div class="profile-stat">
-
-                    <strong>
-                        3
-                    </strong>
-
-                    <span>
-                        Active Tickets
-                    </span>
-
-                </div>
-
 
             </div>
 
 
-            <!-- ================= PROFILE FORM ================= -->
+            <!-- FORM CARD -->
 
             <div class="profile-form-card">
 
-                <h2>
-                    Personal Information
-                </h2>
+                <h2>Personal Information</h2>
 
 
                 <form id="profileForm">
-
 
                     <div class="form-grid">
 
@@ -355,7 +335,6 @@
                             <input
                                 type="text"
                                 id="name"
-                                value="User"
                                 required
                             >
 
@@ -371,8 +350,7 @@
                             <input
                                 type="email"
                                 id="email"
-                                value="user@gmail.com"
-                                required
+                                disabled
                             >
 
                         </div>
@@ -387,7 +365,7 @@
                             <input
                                 type="tel"
                                 id="phone"
-                                value="+91 8088169018"
+                                placeholder="Add phone number"
                             >
 
                         </div>
@@ -395,29 +373,14 @@
 
                         <div class="form-group">
 
-                            <label for="city">
-                                City
+                            <label for="role">
+                                Account Type
                             </label>
 
                             <input
                                 type="text"
-                                id="city"
-                                value="Chikkaballapur"
-                            >
-
-                        </div>
-
-
-                        <div class="form-group full">
-
-                            <label for="state">
-                                State
-                            </label>
-
-                            <input
-                                type="text"
-                                id="state"
-                                value="Karnataka"
+                                id="role"
+                                disabled
                             >
 
                         </div>
@@ -435,10 +398,10 @@
 
 
                     <div
+                        id="successMsg"
                         class="success-message"
-                        id="successMessage"
                     >
-                        ✓ Profile updated successfully.
+                        Profile updated successfully!
                     </div>
 
 
@@ -449,6 +412,7 @@
 
         </div>
 
+
     </div>
 
 </section>
@@ -457,6 +421,70 @@
 <!-- ================= FOOTER ================= -->
 
 <footer class="footer">
+
+    <div class="container footer-content">
+
+        <div class="footer-brand">
+
+            <h2>
+                🎫 EventHub
+            </h2>
+
+            <p>
+                Discover, register and experience
+                amazing events.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>
+                Quick Links
+            </h3>
+
+            <a href="../index.html">
+                Home
+            </a>
+
+            <a href="../events.html">
+                Events
+            </a>
+
+            <a href="dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="my-events.html">
+                My Events
+            </a>
+
+        </div>
+
+
+        <div class="footer-contact">
+
+            <h3>
+                Contact Us
+            </h3>
+
+            <p>
+                📍 Chikkaballapur, Karnataka
+            </p>
+
+            <p>
+                📧 eventhub@gmail.com
+            </p>
+
+            <p>
+                📞 +91 8088169018
+            </p>
+
+        </div>
+
+    </div>
+
 
     <div class="footer-bottom">
 
@@ -471,40 +499,55 @@
 
 <script src="../js/main.js"></script>
 
-
 <script>
 
-    const profileForm =
-        document.getElementById("profileForm");
+    document.addEventListener("DOMContentLoaded", () => {
 
-    const successMessage =
-        document.getElementById("successMessage");
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-
-    profileForm.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-            successMessage.style.display =
-                "block";
-
-            setTimeout(function() {
-
-                successMessage.style.display =
-                    "none";
-
-            }, 3000);
-
+        if (!user || !user.email) {
+            window.location.href = "../login.html";
+            return;
         }
-    );
+
+        document.getElementById("name").value = user.name || "";
+        document.getElementById("email").value = user.email || "";
+        document.getElementById("phone").value = user.phone || "";
+        document.getElementById("role").value = (user.role || "user").toUpperCase();
+
+        document.getElementById("cardName").textContent = user.name || "User";
+        document.getElementById("cardRole").textContent = (user.role || "User").toUpperCase() + " ATTENDEE";
+
+        fetch("http://localhost:5000/api/registrations/my", {
+            headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.registrations) {
+                document.getElementById("cardTotalEvents").textContent = data.registrations.length;
+            }
+        })
+        .catch(() => {});
+
+        document.getElementById("profileForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            user.name = document.getElementById("name").value;
+            user.phone = document.getElementById("phone").value;
+
+            localStorage.setItem("user", JSON.stringify(user));
+
+            document.getElementById("cardName").textContent = user.name;
+
+            const msg = document.getElementById("successMsg");
+            msg.style.display = "block";
+            setTimeout(() => msg.style.display = "none", 3000);
+        });
+
+    });
 
 </script>
 
-
-<script src="../js/main.js"></script>
-<script src="../js/dashboard.js"></script>
 </body>
 
 </html>

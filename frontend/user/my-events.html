@@ -117,20 +117,8 @@
             font-size: 60px;
         }
 
-        .technology {
-            background: #e8e7ff;
-        }
-
-        .sports {
-            background: #fff1dc;
-        }
-
-        .music {
-            background: #ffe8f1;
-        }
-
-        .cultural {
-            background: #f3e8ff;
+        .technology, .sports, .music, .cultural, .education, .business {
+            background: linear-gradient(135deg, #132636 0%, #0d1d2a 100%);
         }
 
         .card-content {
@@ -140,10 +128,11 @@
         .card-content h3 {
             font-size: 19px;
             margin-bottom: 12px;
+            color: #ffffff;
         }
 
         .event-detail {
-            color: #667085;
+            color: #cbd5e1;
             font-size: 14px;
             margin-bottom: 7px;
         }
@@ -160,18 +149,21 @@
         }
 
         .confirmed {
-            background: #e5f7ed;
-            color: #16834b;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.3);
         }
 
         .completed {
-            background: #e5f1ff;
-            color: #1769aa;
+            background: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(96, 165, 250, 0.3);
         }
 
         .cancelled {
-            background: #ffe8e8;
-            color: #d93025;
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(252, 165, 165, 0.3);
         }
 
         /* BOTTOM */
@@ -180,23 +172,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             margin-top: 15px;
             padding-top: 15px;
         }
 
         .ticket-btn {
-            background: #635bff;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             padding: 9px 13px;
             border-radius: 7px;
             text-decoration: none;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
         }
 
         .ticket-btn:hover {
-            opacity: 0.85;
+            transform: translateY(-1px);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
         }
 
         /* NO EVENTS */
