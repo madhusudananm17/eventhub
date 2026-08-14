@@ -15,6 +15,15 @@ const getCategoryIcon = (category) => {
     }
 };
 
+// Category default image helper
+const getDefaultImageForCategory = (category) => {
+    switch (category ? category.toLowerCase() : '') {
+        case 'sports': return 'images/sports-event.jpg';
+        case 'music': return 'images/music-event.jpg';
+        default: return '';
+    }
+};
+
 // @desc    Get all events (public, with filter support)
 // @route   GET /api/events
 // @access  Public
@@ -148,7 +157,7 @@ const createEvent = async (req, res) => {
             venue,
             price: eventPrice,
             icon: icon || getCategoryIcon(category),
-            image: image || '',
+            image: image || getDefaultImageForCategory(category),
             capacity: eventCapacity,
             availableSeats: eventCapacity,
             organizer: req.user._id
