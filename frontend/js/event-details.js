@@ -19,7 +19,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             currentEvent = data.event;
 
             const bannerEl = document.getElementById("detailsBanner");
-            if (bannerEl) bannerEl.textContent = currentEvent.icon || "🎫";
+            if (bannerEl) {
+                if (currentEvent.image) {
+                    bannerEl.innerHTML = `<img src="${currentEvent.image}" alt="${currentEvent.title}" style="width:100%; height:100%; object-fit:cover;">`;
+                } else {
+                    bannerEl.textContent = currentEvent.icon || "🎫";
+                }
+            }
 
             const categoryEl = document.getElementById("detailsCategory");
             if (categoryEl) categoryEl.textContent = currentEvent.category || "";

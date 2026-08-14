@@ -65,14 +65,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const card = document.createElement("div");
             card.className = "event-card";
 
+            const imageMedia = event.image
+                ? `<img src="${event.image}" alt="${event.title}" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">`
+                : `<span class="card-icon" style="position:relative; z-index:1;">${event.icon || '🎫'}</span>`;
+
             card.innerHTML = `
-                <div class="event-card-image ${categoryClass}">
-                    <span class="card-category">
+                <div class="event-card-image ${categoryClass}" style="position:relative; overflow:hidden;">
+                    <span class="card-category" style="position:absolute; top:14px; left:14px; z-index:2;">
                         ${event.category || 'General'}
                     </span>
-                    <span class="card-icon">
-                        ${event.icon || '🎫'}
-                    </span>
+                    ${imageMedia}
                 </div>
 
                 <div class="card-content">
