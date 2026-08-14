@@ -1,12 +1,12 @@
 /* ==========================================================================
-   EVENT HUB - DEEP OBSIDIAN DARK THEME (AFTER LOGIN DASHBOARDS & PANELS)
+   EVENT HUB - DEEP CHARCOAL & AMBER GOLD LUXURY THEME (DASHBOARDS)
    ========================================================================== */
 
 .dashboard-section,
 .my-events-section,
 .organizer-section,
 .admin-section {
-    background: #0b0f19 !important;
+    background: #09090b !important;
     padding: 50px 0 80px;
     min-height: 85vh;
 }
@@ -24,7 +24,7 @@
 .page-header,
 .admin-header {
     margin-bottom: 35px;
-    background: #161f33;
+    background: #18181b;
     padding: 28px 32px;
     border-radius: var(--radius-lg, 16px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -46,28 +46,28 @@
 .my-events-header p,
 .page-header p,
 .admin-header p {
-    color: #94a3b8 !important;
+    color: #a1a1aa !important;
     font-size: 15px;
 }
 
 .welcome-box {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important;
+    background: linear-gradient(135deg, #27272a 0%, #18181b 100%) !important;
     color: #ffffff !important;
     padding: 35px;
     border-radius: 16px;
     margin-bottom: 30px;
-    border: 1px solid rgba(165, 180, 252, 0.2);
-    box-shadow: 0 0 25px rgba(99, 91, 255, 0.3);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.25);
 }
 
 .welcome-box h1 {
-    color: #ffffff !important;
+    color: #fbbf24 !important;
     font-size: 32px;
     margin-bottom: 8px;
 }
 
 .welcome-box p {
-    color: #cbd5e1 !important;
+    color: #e4e4e7 !important;
 }
 
 /* STATS GRID & CARDS */
@@ -79,7 +79,7 @@
 }
 
 .stat-card {
-    background: #161f33 !important;
+    background: #18181b !important;
     border-radius: var(--radius-lg, 16px);
     padding: 24px;
     display: flex;
@@ -93,23 +93,23 @@
 .stat-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    border-color: #818cf8 !important;
+    border-color: #fbbf24 !important;
 }
 
 .stat-icon {
     font-size: 36px;
-    background: rgba(99, 91, 255, 0.15) !important;
+    background: rgba(245, 158, 11, 0.15) !important;
     width: 60px;
     height: 60px;
     border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(165, 180, 252, 0.2);
+    border: 1px solid rgba(251, 191, 36, 0.3);
 }
 
 .stat-card span {
-    color: #a5b4fc !important;
+    color: #fbbf24 !important;
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
@@ -124,7 +124,7 @@
 }
 
 .stat-card p {
-    color: #94a3b8 !important;
+    color: #a1a1aa !important;
     font-size: 13px;
 }
 
@@ -138,7 +138,7 @@
 }
 
 .action-card {
-    background: #161f33 !important;
+    background: #18181b !important;
     border-radius: var(--radius-lg, 16px);
     padding: 25px;
     text-decoration: none;
@@ -151,7 +151,7 @@
 .action-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.5);
-    border-color: #635bff !important;
+    border-color: #f59e0b !important;
 }
 
 .action-card div {
@@ -167,7 +167,7 @@
 }
 
 .action-card p {
-    color: #94a3b8 !important;
+    color: #a1a1aa !important;
     font-size: 14px;
 }
 
@@ -176,7 +176,7 @@
 .panel,
 .registered-events-box,
 .create-event-box {
-    background: #161f33 !important;
+    background: #18181b !important;
     border-radius: var(--radius-lg, 16px);
     padding: 28px;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -200,7 +200,7 @@
 }
 
 .panel-header a {
-    color: #a5b4fc !important;
+    color: #fbbf24 !important;
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
@@ -244,13 +244,13 @@
 }
 
 .upcoming-item p {
-    color: #cbd5e1 !important;
+    color: #e4e4e7 !important;
     font-size: 14px;
 }
 
 /* FILTERS IN AFTER LOGIN */
 .filters {
-    background: #161f33 !important;
+    background: #18181b !important;
     padding: 18px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -269,19 +269,19 @@
     border-radius: 8px;
     outline: none;
     font-size: 14px;
-    background: #0f172a !important;
+    background: #09090b !important;
     color: #ffffff !important;
 }
 
 .filters select option {
-    background: #0f172a;
+    background: #09090b;
     color: #ffffff;
 }
 
 /* TABLES & CARDS FOR REGISTERED EVENTS */
 .event-item-card,
 .registered-card {
-    background: #161f33 !important;
+    background: #18181b !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
     border-radius: 14px;
     padding: 20px;
@@ -296,7 +296,7 @@
 
 .event-item-card p,
 .registered-card p {
-    color: #cbd5e1 !important;
+    color: #e4e4e7 !important;
 }
 
 .data-table,
@@ -310,7 +310,7 @@ table {
 .data-table th,
 table th {
     background: rgba(255, 255, 255, 0.05) !important;
-    color: #a5b4fc !important;
+    color: #fbbf24 !important;
     font-weight: 700;
     text-transform: uppercase;
     font-size: 12px;
@@ -324,7 +324,7 @@ table th {
 table td {
     padding: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
-    color: #cbd5e1 !important;
+    color: #e4e4e7 !important;
     font-size: 14px;
 }
 
