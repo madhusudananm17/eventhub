@@ -137,9 +137,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         activeRegs.forEach(reg => {
                             const ev = reg.event;
                             if (ev) {
+                                const imgContent = ev.image ? `<img src="../${ev.image}" alt="${ev.title}">` : (ev.icon || '🎫');
                                 html += `
                                     <div class="event-item">
-                                        <div class="event-icon">${ev.icon || '🎫'}</div>
+                                        <div class="event-icon">${imgContent}</div>
                                         <div class="event-info">
                                             <h3>${ev.title}</h3>
                                             <p>📅 ${ev.date}</p>
