@@ -108,14 +108,14 @@ document.addEventListener("DOMContentLoaded", async function () {
                 tab.addEventListener("click", () => {
                     payTabs.forEach(t => {
                         t.classList.remove("active");
-                        t.style.background = "#fff";
-                        t.style.color = "#555";
-                        t.style.borderColor = "#ccc";
+                        t.style.background = "#0d1d2a";
+                        t.style.color = "#cbd5e1";
+                        t.style.borderColor = "rgba(255,255,255,0.1)";
                     });
                     tab.classList.add("active");
-                    tab.style.background = "#e8e7ff";
-                    tab.style.color = "#635bff";
-                    tab.style.borderColor = "#635bff";
+                    tab.style.background = "rgba(16,185,129,0.2)";
+                    tab.style.color = "#34d399";
+                    tab.style.borderColor = "#10b981";
 
                     selectedPaymentMethod = tab.dataset.method;
 
