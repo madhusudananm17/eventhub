@@ -17,6 +17,7 @@
     "dotenv": "^16.6.1",
     "express": "^4.22.2",
     "jsonwebtoken": "^9.0.3",
+    "localtunnel": "^2.0.2",
     "mongoose": "^8.24.3",
     "nodemailer": "^6.10.1"
   },

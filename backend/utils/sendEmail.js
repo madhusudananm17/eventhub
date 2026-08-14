@@ -46,13 +46,8 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
                     </div>
                     
                     <p style="font-size: 13px; color: #94a3b8; word-break: break-all;">
-                        <strong>Computer Link:</strong><br>
+                        Or copy and paste this link into your mobile or computer browser:<br>
                         <a href="${resetUrl}" style="color: #34d399;">${resetUrl}</a>
-                    </p>
-
-                    <p style="font-size: 13px; color: #94a3b8; word-break: break-all; margin-top: 15px;">
-                        <strong>📱 Mobile / Wi-Fi Network Link (if opening on phone):</strong><br>
-                        <a href="${resetUrl.replace('localhost:3000', '10.78.25.248:3000')}" style="color: #fbbf24;">${resetUrl.replace('localhost:3000', '10.78.25.248:3000')}</a>
                     </p>
                     
                     <div class="warning">
