@@ -57,10 +57,10 @@
         /* FILTERS */
 
         .filters {
-            background: white;
+            background: #0d1d2a;
             padding: 18px;
             border-radius: 12px;
-            border: 1px solid #eee;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             display: grid;
             grid-template-columns: 1fr 220px;
             gap: 15px;
@@ -72,15 +72,17 @@
             width: 100%;
             box-sizing: border-box;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(16, 185, 129, 0.25);
             border-radius: 8px;
             outline: none;
             font-size: 14px;
+            background: #06131d;
+            color: #ffffff;
         }
 
         .filters input:focus,
         .filters select:focus {
-            border-color: #635bff;
+            border-color: #10b981;
         }
 
         /* EVENTS GRID */
@@ -92,17 +94,19 @@
         }
 
         .event-card {
-            background: white;
+            background: #0d1d2a;
             border-radius: 14px;
             overflow: hidden;
-            border: 1px solid #eee;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
             transition: 0.3s;
+            color: #ffffff;
         }
 
         .event-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            border-color: #34d399;
         }
 
         .event-image {
