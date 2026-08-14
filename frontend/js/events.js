@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
             card.className = "event-card";
 
             const imageMedia = event.image
-                ? `<img src="${event.image}" alt="${event.title}" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:0;">`
+                ? `<img src="${event.image}" alt="${event.title}" style="width:100%; height:100%; object-fit:contain; background:#06131d; position:absolute; top:0; left:0; z-index:0;">`
                 : `<span class="card-icon" style="position:relative; z-index:1;">${event.icon || '🎫'}</span>`;
 
             card.innerHTML = `

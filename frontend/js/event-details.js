@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const bannerEl = document.getElementById("detailsBanner");
             if (bannerEl) {
                 if (currentEvent.image) {
-                    bannerEl.innerHTML = `<img src="${currentEvent.image}" alt="${currentEvent.title}" style="width:100%; height:100%; object-fit:cover;">`;
+                    bannerEl.innerHTML = `<img src="${currentEvent.image}" alt="${currentEvent.title}" style="width:100%; height:100%; object-fit:contain; background:#06131d;">`;
                 } else {
                     bannerEl.textContent = currentEvent.icon || "🎫";
                 }
