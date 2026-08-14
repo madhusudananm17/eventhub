@@ -1,13 +1,17 @@
 const nodemailer = require('nodemailer');
 
+// Disable TLS unauthorized certificate rejection for local development email dispatch
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 /**
- * Sends a password reset email via Nodemailer.
- * Falls back to logging the reset URL in console if credentials are not configured.
+ * Sends a password reset email via Nodemailer using configured SMTP credentials.
  */
 const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins = 15 }) => {
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASSWORD;
-    const emailService = process.env.EMAIL_SERVICE || 'gmail';
+    const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
+    const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
+    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser}>`;
 
     const htmlContent = `
         <!DOCTYPE html>
@@ -56,7 +60,7 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
     `;
 
     console.log(`\n======================================================`);
-    console.log(`✉️  [EVENTHUB PASSWORD RESET EMAIL]`);
+    console.log(`✉️  [EVENTHUB PASSWORD RESET EMAIL DISPATCH]`);
     console.log(`To: ${toEmail}`);
     console.log(`Reset URL: ${resetUrl}`);
     console.log(`======================================================\n`);
@@ -64,28 +68,33 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
     if (emailUser && emailPass) {
         try {
             const transporter = nodemailer.createTransport({
-                service: emailService,
+                host: emailHost,
+                port: emailPort,
+                secure: false, // 587 uses STARTTLS
                 auth: {
                     user: emailUser,
                     pass: emailPass
+                },
+                tls: {
+                    rejectUnauthorized: false
                 }
             });
 
-            await transporter.sendMail({
-                from: `"EventHub Security" <${emailUser}>`,
+            const info = await transporter.sendMail({
+                from: emailFrom,
                 to: toEmail,
                 subject: '🔑 EventHub Password Reset Request',
                 html: htmlContent
             });
-            console.log(`✅ Reset email successfully sent to ${toEmail} via Nodemailer.`);
+
+            console.log(`✅ Reset email successfully delivered to ${toEmail}! MessageId: ${info.messageId}`);
             return true;
         } catch (error) {
-            console.error(`⚠️ Nodemailer error sending to ${toEmail}:`, error.message);
-            // Non-blocking fallback since we already logged URL for dev testing
+            console.error(`❌ Nodemailer error sending to ${toEmail}:`, error.message);
             return false;
         }
     } else {
-        console.log(`ℹ️ EMAIL_USER / EMAIL_PASSWORD not set in environment. Dev Mode: Reset URL logged above.`);
+        console.log(`ℹ️ EMAIL_USER / EMAIL_PASSWORD not set in environment.`);
         return true;
     }
 };
