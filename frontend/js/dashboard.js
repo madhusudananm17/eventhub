@@ -171,37 +171,37 @@ document.addEventListener("DOMContentLoaded", function () {
             if (data.success && containerCard) {
                 const regs = data.registrations || [];
 
-                let html = `<h2 style="margin-bottom: 20px;">My Registered Events</h2>`;
+                let html = `<h2 style="margin-bottom: 20px; color: #ffffff;">My Registered Events</h2>`;
 
                 if (regs.length === 0) {
-                    html += `<p style="color: #667085;">You haven't registered for any events yet. <a href="../events.html" style="color:#635bff;">Explore events</a></p>`;
+                    html += `<p style="color: #cbd5e1;">You haven't registered for any events yet. <a href="../events.html" style="color:#34d399; font-weight: 700;">Explore events →</a></p>`;
                 } else {
                     regs.forEach(reg => {
                         const ev = reg.event || {};
                         const isCancelled = reg.status === 'cancelled';
                         const statusBadge = isCancelled
-                            ? `<span style="background:#fee2e2; color:#dc2626; padding:4px 10px; border-radius:20px; font-weight:700; font-size:12px;">Cancelled</span>`
-                            : `<span style="background:#e5f7ed; color:#16834b; padding:4px 10px; border-radius:20px; font-weight:700; font-size:12px;">Confirmed</span>`;
+                            ? `<span style="background:rgba(239,68,68,0.2); color:#fca5a5; padding:6px 12px; border-radius:20px; font-weight:700; font-size:12px; border:1px solid rgba(252,165,165,0.3);">Cancelled</span>`
+                            : `<span style="background:rgba(16,185,129,0.2); color:#34d399; padding:6px 12px; border-radius:20px; font-weight:700; font-size:12px; border:1px solid rgba(52,211,153,0.3);">Confirmed</span>`;
 
                         const actionBtn = isCancelled ? '' : `
-                            <button onclick="cancelRegistration('${reg._id}')" style="background:#fee2e2; color:#dc2626; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:600;">
+                            <button onclick="cancelRegistration('${reg._id}')" style="background:rgba(239,68,68,0.2); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); padding:8px 16px; border-radius:6px; cursor:pointer; font-weight:700; font-size:13px; transition:0.2s;">
                                 Cancel Registration
                             </button>
                         `;
 
                         html += `
-                            <div style="display:flex; align-items:center; justify-content:space-between; padding:18px; border:1px solid #eee; border-radius:12px; margin-bottom:15px; background:white;">
-                                <div style="display:flex; align-items:center; gap:15px;">
-                                    <div style="font-size:32px;">${ev.icon || '🎫'}</div>
+                            <div style="display:flex; align-items:center; justify-content:space-between; padding:20px; border:1px solid rgba(16,185,129,0.2); border-radius:14px; margin-bottom:18px; background:#0d1d2a; color:#ffffff; box-shadow:0 4px 15px rgba(0,0,0,0.4);">
+                                <div style="display:flex; align-items:center; gap:16px;">
+                                    <div style="font-size:36px; background:rgba(16,185,129,0.15); width:54px; height:54px; border-radius:12px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(52,211,153,0.2);">${ev.icon || '🎫'}</div>
                                     <div>
-                                        <h3 style="font-size:18px; margin-bottom:5px;">${ev.title || 'Event'}</h3>
-                                        <p style="color:#667085; font-size:13px;">📅 ${ev.date || ''} | ⏰ ${ev.time || ''} | 📍 ${ev.location || ''}</p>
-                                        <p style="color:#667085; font-size:13px; margin-top:3px;">Organizer: ${ev.organizer?.name || 'EventHub'}</p>
+                                        <h3 style="font-size:18px; margin-bottom:5px; color:#ffffff; font-weight:800;">${ev.title || 'Event'}</h3>
+                                        <p style="color:#cbd5e1; font-size:13px;">📅 ${ev.date || ''} | ⏰ ${ev.time || ''} | 📍 ${ev.location || ''}</p>
+                                        <p style="color:#94a3b8; font-size:13px; margin-top:3px;">Organizer: ${ev.organizer?.name || 'EventHub'}</p>
                                     </div>
                                 </div>
-                                <div style="display:flex; align-items:center; gap:15px;">
+                                <div style="display:flex; align-items:center; gap:12px;">
                                     ${statusBadge}
-                                    <a href="ticket.html?id=${reg.ticketId || reg._id}" style="background:#635bff; color:white; padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:600; font-size:13px;">View Ticket</a>
+                                    <a href="ticket.html?id=${reg.ticketId || reg._id}" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:white; padding:8px 16px; border-radius:6px; text-decoration:none; font-weight:700; font-size:13px; box-shadow:0 0 12px rgba(16,185,129,0.3);">View Ticket</a>
                                     ${actionBtn}
                                 </div>
                             </div>
