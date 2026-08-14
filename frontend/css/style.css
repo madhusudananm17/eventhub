@@ -597,6 +597,7 @@ a {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
     border-top: 1px solid var(--border-color);
     padding: 18px 24px;
     background: var(--bg-card);
@@ -608,6 +609,7 @@ a {
     font-size: 18px;
     font-weight: 800;
     color: var(--accent-gold);
+    white-space: nowrap;
 }
 
 .event-footer a,

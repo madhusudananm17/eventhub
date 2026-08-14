@@ -259,6 +259,7 @@
     display: flex !important;
     justify-content: space-between;
     align-items: center;
+    gap: 16px !important;
     border-top: 1px solid rgba(16, 185, 129, 0.2);
     padding-top: 18px;
     margin-top: auto;
@@ -268,6 +269,7 @@
     font-size: 18px;
     font-weight: 800;
     color: #fbbf24;
+    white-space: nowrap;
 }
 
 #eventsGrid .details-btn {
