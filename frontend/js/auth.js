@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // ---------------------------------------------------
+    // 1. LOGIN FORM HANDLER
+    // ---------------------------------------------------
     const loginForm = document.getElementById("loginForm");
     const loginMessage = document.getElementById("loginMessage");
 
@@ -23,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 if (loginMessage) {
                     loginMessage.textContent = "Logging in...";
-                    loginMessage.style.color = "#635bff";
+                    loginMessage.style.color = "#34d399";
                 }
 
                 const response = await fetch(`${API_BASE_URL}/auth/login`, {
@@ -37,7 +40,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
 
                 if (data.success) {
-                    // Store Token and User Data
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("user", JSON.stringify(data.user));
                     localStorage.setItem("loggedIn", "true");
@@ -46,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (loginMessage) {
                         loginMessage.textContent = "Login successful! Redirecting...";
-                        loginMessage.style.color = "green";
+                        loginMessage.style.color = "#34d399";
                     }
 
                     setTimeout(() => {
@@ -64,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     if (loginMessage) {
                         loginMessage.textContent = data.message || "Invalid email or password.";
-                        loginMessage.style.color = "red";
+                        loginMessage.style.color = "#fca5a5";
                     } else {
                         alert(data.message || "Invalid email or password.");
                     }
@@ -73,9 +75,235 @@ document.addEventListener("DOMContentLoaded", function () {
                 console.error("Login error:", error);
                 if (loginMessage) {
                     loginMessage.textContent = "Connection error. Is the backend server running?";
-                    loginMessage.style.color = "red";
+                    loginMessage.style.color = "#fca5a5";
                 }
             }
         });
+    }
+
+    // ---------------------------------------------------
+    // 2. FORGOT PASSWORD FORM HANDLER
+    // ---------------------------------------------------
+    const forgotPasswordForm = document.getElementById("forgotPasswordForm");
+    const forgotMessage = document.getElementById("forgotMessage");
+    const sendResetBtn = document.getElementById("sendResetBtn");
+
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+
+            if (!email) {
+                showMessage(forgotMessage, "Please enter a valid email address.", "error");
+                return;
+            }
+
+            try {
+                sendResetBtn.disabled = true;
+                sendResetBtn.textContent = "Sending Request...";
+                showMessage(forgotMessage, "Sending password reset request...", "success");
+
+                const res = await fetch(`${API_BASE_URL}/auth/forgot-password`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await res.json();
+                sendResetBtn.disabled = false;
+                sendResetBtn.textContent = "Send Password Reset Link →";
+
+                if (data.success) {
+                    showMessage(forgotMessage, data.message || "Password reset link sent to your registered email.", "success");
+                    forgotPasswordForm.reset();
+                } else {
+                    showMessage(forgotMessage, data.message || "No account found with this email address.", "error");
+                }
+            } catch (err) {
+                console.error("Forgot Password Error:", err);
+                sendResetBtn.disabled = false;
+                sendResetBtn.textContent = "Send Password Reset Link →";
+                showMessage(forgotMessage, "Error connecting to backend server.", "error");
+            }
+        });
+    }
+
+    // ---------------------------------------------------
+    // 3. RESET PASSWORD FORM HANDLER
+    // ---------------------------------------------------
+    const resetPasswordForm = document.getElementById("resetPasswordForm");
+    const resetMessage = document.getElementById("resetMessage");
+    const resetSubmitBtn = document.getElementById("resetSubmitBtn");
+
+    if (resetPasswordForm) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get("token");
+
+        if (!tokenFromUrl) {
+            showMessage(resetMessage, "Reset link is missing token or has expired. Please request a new one.", "error");
+            if (resetSubmitBtn) resetSubmitBtn.disabled = true;
+        } else {
+            const hiddenTokenInput = document.getElementById("resetToken");
+            if (hiddenTokenInput) hiddenTokenInput.value = tokenFromUrl;
+        }
+
+        resetPasswordForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const token = document.getElementById("resetToken").value;
+            const newPassword = document.getElementById("newPassword").value.trim();
+            const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+            if (!token) {
+                showMessage(resetMessage, "Reset link has expired. Please request a new one.", "error");
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                showMessage(resetMessage, "Password must contain at least 8 characters.", "error");
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showMessage(resetMessage, "Passwords do not match.", "error");
+                return;
+            }
+
+            try {
+                resetSubmitBtn.disabled = true;
+                resetSubmitBtn.textContent = "Updating Password...";
+
+                const res = await fetch(`${API_BASE_URL}/auth/reset-password`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ token, newPassword, confirmPassword })
+                });
+
+                const data = await res.json();
+                resetSubmitBtn.disabled = false;
+                resetSubmitBtn.textContent = "Update Password →";
+
+                if (data.success) {
+                    showMessage(resetMessage, "Password changed successfully! Redirecting to login...", "success");
+                    resetPasswordForm.reset();
+                    setTimeout(() => {
+                        window.location.href = "login.html";
+                    }, 1800);
+                } else {
+                    showMessage(resetMessage, data.message || "Reset link has expired. Please request a new one.", "error");
+                }
+            } catch (err) {
+                console.error("Reset Password Error:", err);
+                resetSubmitBtn.disabled = false;
+                resetSubmitBtn.textContent = "Update Password →";
+                showMessage(resetMessage, "Error connecting to backend server.", "error");
+            }
+        });
+    }
+
+    // ---------------------------------------------------
+    // 4. FORGOT EMAIL ID & OTP VERIFICATION HANDLER
+    // ---------------------------------------------------
+    const requestOtpForm = document.getElementById("requestOtpForm");
+    const verifyOtpForm = document.getElementById("verifyOtpForm");
+    const phoneMessage = document.getElementById("phoneMessage");
+    const otpMessage = document.getElementById("otpMessage");
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+
+    let activePhone = "";
+
+    if (requestOtpForm) {
+        requestOtpForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const phone = document.getElementById("phone").value.trim();
+
+            if (!phone) {
+                showMessage(phoneMessage, "Please enter your registered mobile number.", "error");
+                return;
+            }
+
+            try {
+                sendOtpBtn.disabled = true;
+                sendOtpBtn.textContent = "Sending OTP...";
+                showMessage(phoneMessage, "Sending OTP...", "success");
+
+                const res = await fetch(`${API_BASE_URL}/auth/forgot-email`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone })
+                });
+
+                const data = await res.json();
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.textContent = "Send Verification OTP →";
+
+                if (data.success) {
+                    activePhone = phone;
+                    document.getElementById("step1Phone").style.display = "none";
+                    document.getElementById("step2Otp").style.display = "block";
+                    const displayPhoneEl = document.getElementById("displayPhone");
+                    if (displayPhoneEl) displayPhoneEl.textContent = activePhone;
+                    showMessage(otpMessage, data.message || "OTP sent to your registered mobile number.", "success");
+                } else {
+                    showMessage(phoneMessage, data.message || "No account found with this registered mobile number.", "error");
+                }
+            } catch (err) {
+                console.error("Request OTP Error:", err);
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.textContent = "Send Verification OTP →";
+                showMessage(phoneMessage, "Error connecting to backend server.", "error");
+            }
+        });
+    }
+
+    if (verifyOtpForm) {
+        verifyOtpForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const otp = document.getElementById("otp").value.trim();
+
+            if (!otp || otp.length !== 6) {
+                showMessage(otpMessage, "Please enter a valid 6-digit OTP.", "error");
+                return;
+            }
+
+            try {
+                verifyOtpBtn.disabled = true;
+                verifyOtpBtn.textContent = "Verifying OTP...";
+
+                const res = await fetch(`${API_BASE_URL}/auth/verify-recovery-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ phone: activePhone, otp })
+                });
+
+                const data = await res.json();
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.textContent = "Verify OTP & Show Email →";
+
+                if (data.success && data.maskedEmail) {
+                    document.getElementById("step2Otp").style.display = "none";
+                    document.getElementById("step3Result").style.display = "block";
+                    document.getElementById("maskedEmailResult").textContent = data.maskedEmail;
+                } else {
+                    showMessage(otpMessage, data.message || "Invalid or expired OTP.", "error");
+                }
+            } catch (err) {
+                console.error("Verify OTP Error:", err);
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.textContent = "Verify OTP & Show Email →";
+                showMessage(otpMessage, "Error connecting to backend server.", "error");
+            }
+        });
+    }
+
+    // Helper to display clean messages
+    function showMessage(element, text, type) {
+        if (!element) return;
+        element.textContent = text;
+        element.className = `message-box ${type}`;
     }
 });

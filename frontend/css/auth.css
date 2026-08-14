@@ -1,5 +1,5 @@
 /* ==========================================================================
-   EVENT HUB - EMERALD MINT & DARK FOREST THEME (AUTH PAGES)
+   EVENT HUB - EMERALD MINT & DARK FOREST THEME (AUTH & RECOVERY PAGES)
    ========================================================================== */
 
 .auth-page {
@@ -96,6 +96,77 @@
 .auth-form .submit-btn:hover {
     transform: translateY(-1px);
     box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+}
+
+/* Recovery Links & Extra Auth Controls */
+.recovery-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+}
+
+.recovery-links a {
+    color: #34d399;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.recovery-links a:hover {
+    color: #6ee7b7;
+    text-decoration: underline;
+}
+
+.otp-input {
+    letter-spacing: 6px;
+    font-size: 22px !important;
+    text-align: center;
+    font-weight: 800;
+}
+
+.masked-email-card {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px dashed #10b981;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.masked-email-card .email-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: #fbbf24;
+    letter-spacing: 1px;
+    margin-top: 8px;
+    word-break: break-all;
+}
+
+.message-box {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    display: none;
+}
+
+.message-box.success {
+    display: block;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+.message-box.error {
+    display: block;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
 }
 
 .auth-footer {

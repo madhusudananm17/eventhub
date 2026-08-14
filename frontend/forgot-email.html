@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub | Recover Email ID</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg" alt="EventHub Logo" class="logo-img">
+            </a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html">Home</a>
+                <a href="events.html">Events</a>
+                <a href="login.html">Login</a>
+                <a href="register.html" class="register-btn">Register</a>
+            </nav>
+            <button class="menu-btn" id="menuBtn">☰</button>
+        </div>
+    </header>
+
+    <!-- ================= FORGOT EMAIL ID PAGE ================= -->
+    <section class="auth-page">
+        <div class="auth-container">
+
+            <!-- STEP 1: ENTER MOBILE NUMBER -->
+            <div id="step1Phone">
+                <div class="auth-header">
+                    <h1>Forgot Email ID? 📱</h1>
+                    <p>Enter your registered mobile number to receive a 6-digit verification OTP.</p>
+                </div>
+
+                <form id="requestOtpForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="phone">Registered Mobile Number</label>
+                        <input type="tel" id="phone" placeholder="e.g. 8088169018" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="sendOtpBtn">Send Verification OTP →</button>
+
+                    <div id="phoneMessage" class="message-box"></div>
+                </form>
+            </div>
+
+            <!-- STEP 2: VERIFY OTP -->
+            <div id="step2Otp" style="display: none;">
+                <div class="auth-header">
+                    <h1>Verify OTP 🔒</h1>
+                    <p>Enter the 6-digit OTP sent to <strong id="displayPhone" style="color:#34d399;">-</strong></p>
+                </div>
+
+                <form id="verifyOtpForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="otp">6-Digit Verification OTP</label>
+                        <input type="text" id="otp" class="otp-input" placeholder="••••••" maxlength="6" required pattern="[0-9]{6}">
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="verifyOtpBtn">Verify OTP & Show Email →</button>
+
+                    <div id="otpMessage" class="message-box"></div>
+                </form>
+            </div>
+
+            <!-- STEP 3: DISPLAY MASKED EMAIL -->
+            <div id="step3Result" style="display: none; text-align: center;">
+                <div class="auth-header">
+                    <h1>Email Recovered! 🎉</h1>
+                    <p>Here is your registered EventHub account email ID:</p>
+                </div>
+
+                <div class="masked-email-card">
+                    <div style="font-size: 13px; color: #94a3b8; font-weight: 700; text-transform: uppercase;">Registered Email Address</div>
+                    <div class="email-value" id="maskedEmailResult">ma****@gmail.com</div>
+                </div>
+
+                <a href="login.html" class="submit-btn" style="display: block; text-decoration: none; text-align: center; margin-top: 20px;">Proceed to Login →</a>
+            </div>
+
+            <div class="auth-footer">
+                Remember your credentials? <a href="login.html">Back to Login</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <h2>🎫 EventHub</h2>
+                <p>Discover, register and experience amazing events around Karnataka.</p>
+            </div>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="register.html">Register</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Contact Us</h4>
+                <p>📍 Chikkaballapur, Karnataka</p>
+                <p>📧 eventhub@gmail.com</p>
+                <p>📞 +91 8088169018</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 EventHub. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

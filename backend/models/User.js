@@ -29,6 +29,26 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'organizer', 'admin'],
         default: 'user'
     },
+    resetPasswordTokenHash: {
+        type: String,
+        default: null
+    },
+    resetPasswordExpires: {
+        type: Date,
+        default: null
+    },
+    recoveryOtpHash: {
+        type: String,
+        default: null
+    },
+    recoveryOtpExpires: {
+        type: Date,
+        default: null
+    },
+    recoveryOtpAttempts: {
+        type: Number,
+        default: 0
+    },
     createdAt: {
         type: Date,
         default: Date.now
