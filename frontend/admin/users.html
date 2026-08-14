@@ -11,15 +11,17 @@
     <title>EventHub | Manage Users</title>
 
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
 
     <style>
 
         /* ================= PAGE ================= */
 
         .users-section {
-            background: #f8f9fc;
+            background: #06131d;
             min-height: 80vh;
             padding: 60px 20px;
+            color: #ffffff;
         }
 
         .users-container {
@@ -34,24 +36,31 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            background: #0d1d2a;
+            padding: 28px 32px;
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
         .page-header h1 {
             font-size: 34px;
             margin-bottom: 8px;
+            color: #ffffff;
         }
 
         .page-header p {
-            color: #667085;
+            color: #94a3b8;
         }
 
         .user-count {
-            background: #e8e7ff;
-            color: #635bff;
-            padding: 10px 16px;
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 10px 18px;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 700;
+            border: 1px solid rgba(52, 211, 153, 0.3);
         }
 
         /* ================= STATISTICS ================= */
@@ -64,11 +73,12 @@
         }
 
         .stat-card {
-            background: white;
+            background: #0d1d2a;
             padding: 22px;
             border-radius: 14px;
-            border: 1px solid #eee;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            color: #ffffff;
         }
 
         .stat-icon {
@@ -79,20 +89,21 @@
         .stat-card h2 {
             font-size: 27px;
             margin-bottom: 5px;
+            color: #ffffff;
         }
 
         .stat-card p {
-            color: #667085;
+            color: #94a3b8;
             font-size: 14px;
         }
 
         /* ================= FILTER BAR ================= */
 
         .filter-bar {
-            background: white;
+            background: #0d1d2a;
             padding: 18px;
             border-radius: 12px;
-            border: 1px solid #eee;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             display: flex;
             gap: 15px;
             margin-bottom: 25px;
@@ -107,15 +118,22 @@
             width: 100%;
             box-sizing: border-box;
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid rgba(16, 185, 129, 0.25);
             border-radius: 8px;
             outline: none;
             font-size: 14px;
+            background: #06131d;
+            color: #ffffff;
         }
 
         .search-box input:focus,
         .filter-box select:focus {
-            border-color: #635bff;
+            border-color: #10b981;
+        }
+
+        .filter-box select option {
+            background: #06131d;
+            color: #ffffff;
         }
 
         .filter-box {
@@ -125,32 +143,37 @@
         /* ================= TABLE ================= */
 
         .table-card {
-            background: white;
-            border: 1px solid #eee;
+            background: #0d1d2a;
+            border: 1px solid rgba(16, 185, 129, 0.2);
             border-radius: 14px;
             overflow-x: auto;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             min-width: 1050px;
+            color: #ffffff;
         }
 
         th {
-            background: #f8f9fc;
+            background: rgba(255, 255, 255, 0.05);
             text-align: left;
             padding: 16px;
             font-size: 13px;
-            color: #667085;
-            border-bottom: 1px solid #eee;
+            color: #34d399;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
             padding: 17px 16px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             font-size: 14px;
+            color: #cbd5e1;
         }
 
         tr:last-child td {
@@ -162,10 +185,11 @@
         .user-name {
             font-weight: 700;
             margin-bottom: 4px;
+            color: #ffffff;
         }
 
         .user-email {
-            color: #667085;
+            color: #94a3b8;
             font-size: 12px;
         }
 
