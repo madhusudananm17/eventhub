@@ -1,5 +1,5 @@
 /* ==========================================================================
-   EVENT HUB - CLEAN, MODERN & READABLE AUTHENTICATION PAGES
+   EVENT HUB - DEEP OBSIDIAN DARK THEME (AUTH PAGES)
    ========================================================================== */
 
 .auth-page {
@@ -7,18 +7,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f8fafc;
+    background: #0b0f19;
     padding: 60px 20px;
 }
 
 .auth-container {
     width: 100%;
     max-width: 450px;
-    background: #ffffff;
+    background: #161f33;
     border-radius: 20px;
     padding: 40px 36px;
-    box-shadow: 0 10px 35px -5px rgba(15, 23, 42, 0.08);
-    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .auth-header {
@@ -29,13 +29,13 @@
 .auth-header h1 {
     font-size: 28px;
     font-weight: 800;
-    color: #0f172a;
+    color: #ffffff;
     letter-spacing: -0.5px;
     margin-bottom: 8px;
 }
 
 .auth-header p {
-    color: #64748b;
+    color: #94a3b8;
     font-size: 14px;
 }
 
@@ -47,7 +47,7 @@
     display: block;
     font-size: 12px;
     font-weight: 800;
-    color: #334155;
+    color: #a5b4fc;
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -57,26 +57,30 @@
 .auth-form select {
     width: 100%;
     padding: 12px 16px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 10px;
     font-size: 15px;
     font-family: inherit;
-    color: #0f172a;
-    background: #f8fafc;
+    color: #ffffff;
+    background: #0f172a;
     outline: none;
     transition: all 0.2s ease;
 }
 
+.auth-form select option {
+    background: #0f172a;
+    color: #ffffff;
+}
+
 .auth-form input:focus,
 .auth-form select:focus {
-    border-color: #4f46e5;
-    background: #ffffff;
-    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    border-color: #635bff;
+    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.25);
 }
 
 .auth-form .submit-btn {
     width: 100%;
-    background: #4f46e5;
+    background: linear-gradient(135deg, #635bff 0%, #4f46e5 100%);
     color: white;
     padding: 14px;
     border: none;
@@ -84,28 +88,27 @@
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+    box-shadow: 0 0 15px rgba(99, 91, 255, 0.4);
     transition: all 0.2s ease;
     margin-top: 10px;
 }
 
 .auth-form .submit-btn:hover {
-    background: #4338ca;
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+    box-shadow: 0 0 25px rgba(99, 91, 255, 0.6);
 }
 
 .auth-footer {
     text-align: center;
     margin-top: 24px;
     padding-top: 20px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 14px;
-    color: #64748b;
+    color: #94a3b8;
 }
 
 .auth-footer a {
-    color: #4f46e5;
+    color: #a5b4fc;
     font-weight: 700;
     text-decoration: none;
 }
