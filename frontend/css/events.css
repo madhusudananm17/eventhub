@@ -1,18 +1,18 @@
 /* ==========================================================================
-   EVENT HUB - DEEP CHARCOAL & AMBER GOLD LUXURY THEME (EVENTS PAGE)
+   EVENT HUB - EMERALD MINT & DARK FOREST THEME (EVENTS PAGE)
    ========================================================================== */
 
 /* ================= EVENTS HEADER ================= */
 
 .events-header {
-    background: #18181b;
+    background: #0b1a26;
     text-align: center;
     padding: 65px 0 75px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .events-header > div > span {
-    color: #fbbf24;
+    color: #34d399;
     font-size: 13px;
     font-weight: 800;
     letter-spacing: 1.5px;
@@ -28,7 +28,7 @@
 }
 
 .events-header p {
-    color: #a1a1aa;
+    color: #94a3b8;
     font-size: 17px;
     max-width: 600px;
     margin: 0 auto;
@@ -45,12 +45,12 @@
 .event-search {
     display: flex;
     gap: 12px;
-    background: #18181b;
+    background: #0d1d2a;
     padding: 10px;
     border-radius: var(--radius-lg, 16px);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
     margin-bottom: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .search-field {
@@ -63,7 +63,7 @@
 
 .search-field span {
     font-size: 20px;
-    color: #fbbf24;
+    color: #34d399;
 }
 
 .search-field input {
@@ -77,25 +77,25 @@
 }
 
 .search-field input::placeholder {
-    color: #a1a1aa;
+    color: #94a3b8;
 }
 
 .event-search button {
     border: none;
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: #000000;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
     padding: 14px 32px;
     border-radius: var(--radius-md, 12px);
     font-size: 15px;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
     transition: all 0.2s ease;
 }
 
 .event-search button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
 }
 
 /* ================= FILTERS GRID ================= */
@@ -105,10 +105,10 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 40px;
-    background: #18181b;
+    background: #0d1d2a;
     padding: 20px;
     border-radius: var(--radius-lg, 16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
@@ -116,7 +116,7 @@
     display: block;
     font-size: 12px;
     font-weight: 800;
-    color: #fbbf24;
+    color: #34d399;
     margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -125,9 +125,9 @@
 .filter-group select {
     width: 100%;
     padding: 11px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.25);
     border-radius: var(--radius-md, 10px);
-    background: #09090b;
+    background: #06131d;
     color: #ffffff;
     font-size: 14px;
     font-family: inherit;
@@ -138,13 +138,13 @@
 }
 
 .filter-group select option {
-    background: #09090b;
+    background: #06131d;
     color: #ffffff;
 }
 
 .filter-group select:focus {
-    border-color: #f59e0b;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
 }
 
 /* ================= RESULT HEADER ================= */
@@ -155,7 +155,7 @@
     align-items: center;
     margin-bottom: 25px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .event-result h2 {
@@ -166,7 +166,7 @@
 }
 
 .event-result span {
-    color: #a1a1aa;
+    color: #94a3b8;
     font-size: 14px;
     font-weight: 600;
 }
@@ -186,8 +186,8 @@
     flex-direction: column !important;
     visibility: visible !important;
     opacity: 1 !important;
-    background: #18181b;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #0d1d2a;
+    border: 1px solid rgba(16, 185, 129, 0.2);
     border-radius: var(--radius-lg, 16px);
     overflow: hidden;
     min-height: 380px;
@@ -198,7 +198,7 @@
 #eventsGrid .event-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 16px 30px -10px rgba(0, 0, 0, 0.6);
-    border-color: #fbbf24;
+    border-color: #34d399;
 }
 
 #eventsGrid .event-card-image {
@@ -209,7 +209,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    background: linear-gradient(135deg, #27272a 0%, #18181b 100%);
+    background: linear-gradient(135deg, #132636 0%, #0d1d2a 100%);
 }
 
 #eventsGrid .card-icon {
@@ -222,13 +222,13 @@
     position: absolute;
     top: 14px;
     left: 14px;
-    background: rgba(245, 158, 11, 0.2);
-    color: #fde68a;
+    background: rgba(16, 185, 129, 0.2);
+    color: #a7f3d0;
     padding: 4px 14px;
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 800;
-    border: 1px solid rgba(251, 191, 36, 0.3);
+    border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 #eventsGrid .card-content {
@@ -250,7 +250,7 @@
 
 #eventsGrid .card-detail {
     display: block !important;
-    color: #e4e4e7;
+    color: #cbd5e1;
     font-size: 14px;
     margin: 6px 0;
 }
@@ -259,7 +259,7 @@
     display: flex !important;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(16, 185, 129, 0.2);
     padding-top: 18px;
     margin-top: auto;
 }
@@ -271,20 +271,20 @@
 }
 
 #eventsGrid .details-btn {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-    color: #000000;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
     padding: 9px 20px;
     border-radius: 9999px;
     font-weight: 800;
     font-size: 13px;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
 }
 
 #eventsGrid .details-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
 }
 
 /* ================= NO RESULTS ================= */
@@ -307,7 +307,7 @@
 }
 
 .no-results p {
-    color: #a1a1aa;
+    color: #94a3b8;
 }
 
 /* ================= RESPONSIVE ================= */
