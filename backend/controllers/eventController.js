@@ -18,9 +18,14 @@ const getCategoryIcon = (category) => {
 // Category default image helper
 const getDefaultImageForCategory = (category) => {
     switch (category ? category.toLowerCase() : '') {
+        case 'technology': return 'images/tech-event.jpg';
         case 'sports': return 'images/sports-event.jpg';
         case 'music': return 'images/music-event.jpg';
-        default: return '';
+        case 'business': return 'images/business-event.jpg';
+        case 'cultural': return 'images/cultural-event.jpg';
+        case 'education': return 'images/education-event.jpg';
+        case 'entertainment': return 'images/entertainment-event.jpg';
+        default: return 'images/tech-event.jpg';
     }
 };
 
