@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const User = require('./models/User');
 const Event = require('./models/Event');
-const Registration = require('./models/Registration');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -11,9 +10,10 @@ const seedData = async () => {
     try {
         await connectDB();
 
-        console.log('Enforcing strictly 5 Admin & Organizer accounts...');
+        console.log('Enforcing strictly 3 Admins & 2 Organizers (Total 5 Accounts)...');
 
         const exact5Accounts = [
+            // 3 ADMINS
             {
                 name: 'Madhu (Admin)',
                 email: 'madhu@gmail.com',
@@ -29,6 +29,14 @@ const seedData = async () => {
                 role: 'admin'
             },
             {
+                name: 'Executive Admin',
+                email: 'admin3@eventhub.com',
+                phone: '+91 9900000003',
+                password: 'Admin@123',
+                role: 'admin'
+            },
+            // 2 ORGANIZERS
+            {
                 name: 'MadhuNM',
                 email: '2303031240602@gmail.com',
                 phone: '+91 8088169018',
@@ -39,13 +47,6 @@ const seedData = async () => {
                 name: 'Tech Events Forum',
                 email: 'organizer1@eventhub.com',
                 phone: '+91 9900000002',
-                password: 'Organizer@123',
-                role: 'organizer'
-            },
-            {
-                name: 'Cultural & Sports Forum',
-                email: 'organizer2@eventhub.com',
-                phone: '+91 9900000003',
                 password: 'Organizer@123',
                 role: 'organizer'
             }
@@ -73,7 +74,7 @@ const seedData = async () => {
         }
 
         const finalAccounts = await User.find({ role: { $in: ['admin', 'organizer'] } });
-        console.log(`✅ Seed Complete: Total Admin & Organizer Accounts = ${finalAccounts.length}`);
+        console.log(`✅ Seed Complete: Total Accounts = ${finalAccounts.length} (3 Admins + 2 Organizers)`);
         process.exit();
     } catch (err) {
         console.error('Seed Error:', err);
