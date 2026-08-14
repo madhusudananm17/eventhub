@@ -410,54 +410,6 @@ a {
     font-size: 16px;
 }
 
-/* ================= FEATURES ================= */
-
-.features {
-    padding: 80px 0;
-    background: #ffffff;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-}
-
-.feature-card {
-    background: var(--bg-body);
-    padding: 30px 22px;
-    border-radius: var(--radius-lg);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    transition: all 0.25s ease;
-}
-
-.feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
-    background: #ffffff;
-    border-color: var(--primary);
-}
-
-.feature-icon {
-    font-size: 38px;
-    margin-bottom: 16px;
-}
-
-.feature-card h3 {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
-
-.feature-card p {
-    color: var(--text-muted);
-    font-size: 14px;
-    line-height: 1.6;
-}
-
 /* ================= CATEGORIES GRID ================= */
 
 .categories {
@@ -466,9 +418,9 @@ a {
 
 .categories-grid,
 .category-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 20px !important;
     width: 100%;
 }
 
@@ -512,14 +464,17 @@ a {
 
 /* ================= FEATURED EVENTS SECTION ================= */
 
+.featured-events,
 .events-section {
     padding: 70px 0 90px;
 }
 
+.event-grid,
 .events-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 30px;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 30px !important;
+    width: 100%;
 }
 
 .event-card {
@@ -539,19 +494,26 @@ a {
     border-color: var(--border-dark);
 }
 
+.event-image,
 .event-card-image {
     height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    background: #f1f5f9;
+    background: #eef2ff;
 }
 
+.event-image.technology { background: #e0e7ff; }
+.event-image.music { background: #ffe4e6; }
+.event-image.education { background: #dcfce7; }
+
+.event-icon,
 .card-icon {
     font-size: 64px;
 }
 
+.event-category,
 .card-category {
     position: absolute;
     top: 14px;
@@ -566,54 +528,153 @@ a {
     border: 1px solid var(--border-color);
 }
 
+.event-content,
 .card-content {
     padding: 24px;
     display: flex;
-    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
     flex-grow: 1;
 }
 
+.event-date {
+    background: #eef2ff;
+    color: var(--primary);
+    padding: 10px 14px;
+    border-radius: 12px;
+    text-align: center;
+    min-width: 58px;
+}
+
+.event-date strong {
+    display: block;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.event-date span {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.event-info {
+    flex: 1;
+}
+
+.event-info h3,
 .card-content h3 {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 800;
     color: var(--text-primary);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     line-height: 1.35;
 }
 
+.event-info p,
 .card-detail {
     color: var(--text-muted);
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
+.event-footer,
 .card-bottom {
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-top: 1px solid var(--border-color);
-    padding-top: 18px;
+    padding: 18px 24px;
+    background: #ffffff;
     margin-top: auto;
 }
 
+.event-footer strong,
 .card-price {
     font-size: 18px;
     font-weight: 800;
     color: var(--text-primary);
 }
 
+.event-footer a,
 .details-btn {
     background: var(--primary);
     color: #ffffff;
-    padding: 9px 20px;
+    padding: 8px 20px;
     border-radius: var(--radius-full);
     font-weight: 700;
     font-size: 13px;
     transition: all 0.2s ease;
+    text-decoration: none;
 }
 
+.event-footer a:hover,
 .details-btn:hover {
     background: var(--primary-hover);
+}
+
+.view-all {
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* ================= WHY EVENTHUB (FEATURES) ================= */
+
+.why-section,
+.features {
+    padding: 80px 0;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.why-grid,
+.features-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 24px !important;
+    width: 100%;
+}
+
+.why-card,
+.feature-card {
+    background: var(--bg-body);
+    padding: 30px 22px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+.why-card:hover,
+.feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    background: #ffffff;
+    border-color: var(--primary);
+}
+
+.why-card div,
+.feature-icon {
+    font-size: 38px;
+    margin-bottom: 16px;
+}
+
+.why-card h3,
+.feature-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+
+.why-card p,
+.feature-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
 }
 
 /* ================= FOOTER ================= */
@@ -705,10 +766,12 @@ a {
         justify-content: center;
     }
     .features-grid,
+    .why-grid,
     .categories-grid,
     .category-grid,
-    .events-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .events-grid,
+    .event-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
     }
     .footer-container,
     .footer-content {
@@ -727,10 +790,12 @@ a {
         font-size: 38px;
     }
     .events-grid,
+    .event-grid,
     .features-grid,
+    .why-grid,
     .categories-grid,
     .category-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
     }
     .footer-container,
     .footer-content {
