@@ -1,18 +1,18 @@
 /* ==========================================================================
-   EVENT HUB - MODERN PREMIUM DARK THEME (EVENTS & SEARCH PAGE)
+   EVENT HUB - CLEAN, MODERN & READABLE EVENTS & SEARCH PAGE
    ========================================================================== */
 
 /* ================= EVENTS HEADER ================= */
 
 .events-header {
-    background: var(--bg-surface, #0f172a);
+    background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
     text-align: center;
-    padding: 70px 0 80px;
-    border-bottom: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+    padding: 65px 0 75px;
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .events-header > div > span {
-    color: #a5b4fc;
+    color: #4f46e5;
     font-size: 13px;
     font-weight: 800;
     letter-spacing: 1.5px;
@@ -20,15 +20,15 @@
 }
 
 .events-header h1 {
-    font-size: 46px;
+    font-size: 42px;
     font-weight: 800;
-    color: #ffffff;
-    margin: 10px 0;
+    color: #0f172a;
+    margin: 8px 0;
     letter-spacing: -1px;
 }
 
 .events-header p {
-    color: #94a3b8;
+    color: #64748b;
     font-size: 17px;
     max-width: 600px;
     margin: 0 auto;
@@ -37,21 +37,20 @@
 /* ================= EVENTS SECTION ================= */
 
 .events-section {
-    padding: 60px 0 90px;
+    padding: 50px 0 80px;
 }
 
-/* ================= DARK GLASS SEARCH BAR ================= */
+/* ================= UNIFIED SEARCH BAR ================= */
 
 .event-search {
     display: flex;
     gap: 12px;
-    background: var(--bg-card, rgba(15, 23, 42, 0.75));
-    backdrop-filter: blur(16px);
-    padding: 12px;
-    border-radius: var(--radius-lg, 20px);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+    background: #ffffff;
+    padding: 10px;
+    border-radius: var(--radius-lg, 16px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
     margin-bottom: 30px;
-    border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
+    border: 1px solid #cbd5e1;
 }
 
 .search-field {
@@ -64,39 +63,39 @@
 
 .search-field span {
     font-size: 20px;
-    color: #a5b4fc;
+    color: #64748b;
 }
 
 .search-field input {
     width: 100%;
     border: none;
     outline: none;
-    font-size: 15px;
+    font-size: 16px;
     font-family: inherit;
-    color: #ffffff;
+    color: #0f172a;
     background: transparent;
 }
 
 .search-field input::placeholder {
-    color: #64748b;
+    color: #94a3b8;
 }
 
 .event-search button {
     border: none;
-    background: var(--primary-gradient, linear-gradient(135deg, #635bff 0%, #4f46e5 100%));
+    background: #4f46e5;
     color: white;
-    padding: 14px 34px;
+    padding: 14px 32px;
     border-radius: var(--radius-md, 12px);
     font-size: 15px;
     font-weight: 700;
     cursor: pointer;
-    box-shadow: var(--shadow-glow, 0 0 25px rgba(99, 91, 255, 0.35));
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
     transition: all 0.2s ease;
 }
 
 .event-search button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 35px rgba(99, 91, 255, 0.6);
+    background: #4338ca;
+    transform: translateY(-1px);
 }
 
 /* ================= FILTERS GRID ================= */
@@ -106,31 +105,30 @@
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 40px;
-    background: var(--bg-card, rgba(15, 23, 42, 0.75));
-    backdrop-filter: blur(16px);
-    padding: 24px;
-    border-radius: var(--radius-lg, 20px);
-    border: 1px solid var(--border-glass, rgba(255, 255, 255, 0.1));
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+    background: #ffffff;
+    padding: 20px;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
 }
 
 .filter-group label {
     display: block;
     font-size: 12px;
     font-weight: 800;
-    color: #a5b4fc;
-    margin-bottom: 8px;
+    color: #334155;
+    margin-bottom: 6px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
 .filter-group select {
     width: 100%;
-    padding: 12px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: var(--radius-md, 12px);
-    background: rgba(15, 23, 42, 0.9);
-    color: #ffffff;
+    padding: 11px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-md, 10px);
+    background: #f8fafc;
+    color: #0f172a;
     font-size: 14px;
     font-family: inherit;
     font-weight: 600;
@@ -139,14 +137,10 @@
     transition: all 0.2s ease;
 }
 
-.filter-group select option {
-    background: #0f172a;
-    color: #ffffff;
-}
-
 .filter-group select:focus {
-    border-color: #635bff;
-    box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.25);
+    border-color: #4f46e5;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
 }
 
 /* ================= RESULT HEADER ================= */
@@ -157,18 +151,18 @@
     align-items: center;
     margin-bottom: 25px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #e2e8f0;
 }
 
 .event-result h2 {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     letter-spacing: -0.5px;
 }
 
 .event-result span {
-    color: #94a3b8;
+    color: #64748b;
     font-size: 14px;
     font-weight: 600;
 }
@@ -188,31 +182,30 @@
     flex-direction: column !important;
     visibility: visible !important;
     opacity: 1 !important;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-lg, 20px);
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-lg, 16px);
     overflow: hidden;
     min-height: 380px;
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    transition: all 0.25s ease;
 }
 
 #eventsGrid .event-card:hover {
-    transform: translateY(-6px);
-    border-color: #818cf8;
-    box-shadow: 0 0 30px rgba(99, 91, 255, 0.35);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 30px -10px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
 }
 
 #eventsGrid .event-card-image {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
-    height: 185px;
+    height: 180px;
     align-items: center;
     justify-content: center;
     position: relative;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    background: #f1f5f9;
 }
 
 #eventsGrid .card-icon {
@@ -225,14 +218,14 @@
     position: absolute;
     top: 14px;
     left: 14px;
-    background: rgba(99, 91, 255, 0.25);
-    backdrop-filter: blur(8px);
-    color: #a5b4fc;
+    background: #ffffff;
+    color: #4f46e5;
     padding: 4px 14px;
     border-radius: 9999px;
     font-size: 12px;
     font-weight: 800;
-    border: 1px solid rgba(165, 180, 252, 0.3);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
 }
 
 #eventsGrid .card-content {
@@ -247,14 +240,14 @@
 #eventsGrid .card-content h3 {
     font-size: 19px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     margin-bottom: 10px;
     line-height: 1.35;
 }
 
 #eventsGrid .card-detail {
     display: block !important;
-    color: #cbd5e1;
+    color: #64748b;
     font-size: 14px;
     margin: 6px 0;
 }
@@ -263,7 +256,7 @@
     display: flex !important;
     justify-content: space-between;
     align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #f1f5f9;
     padding-top: 18px;
     margin-top: auto;
 }
@@ -271,11 +264,11 @@
 #eventsGrid .card-price {
     font-size: 18px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 #eventsGrid .details-btn {
-    background: linear-gradient(135deg, #635bff 0%, #4f46e5 100%);
+    background: #4f46e5;
     color: #ffffff;
     padding: 9px 20px;
     border-radius: 9999px;
@@ -283,12 +276,11 @@
     font-size: 13px;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 0 15px rgba(99, 91, 255, 0.3);
 }
 
 #eventsGrid .details-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px rgba(99, 91, 255, 0.5);
+    background: #4338ca;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
 }
 
 /* ================= NO RESULTS ================= */
@@ -307,11 +299,11 @@
 .no-results h3 {
     font-size: 25px;
     margin-bottom: 8px;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 .no-results p {
-    color: #94a3b8;
+    color: #64748b;
 }
 
 /* ================= RESPONSIVE ================= */

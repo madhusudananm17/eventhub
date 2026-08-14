@@ -1,32 +1,32 @@
 /* ==========================================================================
-   EVENT HUB - MODERN PREMIUM DARK THEME (DASHBOARD)
+   EVENT HUB - CLEAN, MODERN & READABLE DASHBOARD
    ========================================================================== */
 
 .dashboard-section {
-    padding: 50px 0 90px;
+    background: #f8fafc;
+    padding: 50px 0 80px;
     min-height: 85vh;
 }
 
 .dashboard-header {
     margin-bottom: 35px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    padding: 30px 35px;
-    border-radius: var(--radius-lg, 20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.03);
 }
 
 .dashboard-header h1 {
-    font-size: 34px;
+    font-size: 32px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     letter-spacing: -0.5px;
     margin-bottom: 6px;
 }
 
 .dashboard-header p {
-    color: #94a3b8;
+    color: #64748b;
     font-size: 15px;
 }
 
@@ -38,38 +38,35 @@
 }
 
 .stat-card {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg, 20px);
+    background: #ffffff;
+    border-radius: var(--radius-lg, 16px);
     padding: 24px;
     display: flex;
     align-items: center;
     gap: 18px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
-    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    transition: all 0.25s ease;
 }
 
 .stat-card:hover {
-    transform: translateY(-4px);
-    border-color: #818cf8;
-    box-shadow: 0 0 25px rgba(99, 91, 255, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
 }
 
 .stat-icon {
     font-size: 36px;
-    background: rgba(99, 91, 255, 0.15);
+    background: #eef2ff;
     width: 60px;
     height: 60px;
-    border-radius: 16px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(165, 180, 252, 0.2);
 }
 
 .stat-card span {
-    color: #a5b4fc;
+    color: #64748b;
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
@@ -77,9 +74,9 @@
 }
 
 .stat-card h2 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
     margin-top: 4px;
 }
 
@@ -91,21 +88,20 @@
 }
 
 .action-card {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg, 20px);
-    padding: 26px;
+    background: #ffffff;
+    border-radius: var(--radius-lg, 16px);
+    padding: 25px;
     text-decoration: none;
     color: inherit;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.4);
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
     transition: all 0.3s ease;
 }
 
 .action-card:hover {
-    transform: translateY(-5px);
-    border-color: #635bff;
-    box-shadow: 0 0 30px rgba(99, 91, 255, 0.35);
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.1);
+    border-color: #4f46e5;
 }
 
 .action-card div {
@@ -115,23 +111,22 @@
 
 .action-card h3 {
     font-size: 18px;
-    font-weight: 800;
-    color: #ffffff;
+    font-weight: 700;
+    color: #0f172a;
     margin-bottom: 6px;
 }
 
 .action-card p {
-    color: #94a3b8;
+    color: #64748b;
     font-size: 14px;
 }
 
 .dashboard-panel {
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    border-radius: var(--radius-lg, 20px);
-    padding: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+    background: #ffffff;
+    border-radius: var(--radius-lg, 16px);
+    padding: 28px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
 }
 
 .panel-header {
@@ -140,17 +135,17 @@
     align-items: center;
     margin-bottom: 24px;
     padding-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid #f1f5f9;
 }
 
 .panel-header h2 {
     font-size: 22px;
     font-weight: 800;
-    color: #ffffff;
+    color: #0f172a;
 }
 
 .panel-header a {
-    color: #a5b4fc;
+    color: #4f46e5;
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
@@ -170,31 +165,32 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 18px 22px;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 16px 20px;
+    border-radius: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     transition: all 0.2s ease;
 }
 
 .upcoming-item:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+    border-color: #cbd5e1;
 }
 
 .event-emoji {
-    font-size: 34px;
+    font-size: 32px;
 }
 
 .upcoming-item h3 {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
-    color: #ffffff;
+    color: #0f172a;
     margin-bottom: 4px;
 }
 
 .upcoming-item p {
-    color: #cbd5e1;
+    color: #64748b;
     font-size: 14px;
 }
 
