@@ -208,8 +208,8 @@ const forgotPassword = async (req, res) => {
         await user.save();
 
         // Construct reset URL for frontend reset-password.html
-        const frontendBase = process.env.FRONTEND_URL || 'http://10.78.25.248:3000';
-        const baseUrl = frontendBase.endsWith('/') ? frontendBase.slice(0, -1) : frontendBase;
+        const origin = process.env.FRONTEND_URL || req.get('origin') || req.get('referer') || 'http://localhost:3000';
+        const baseUrl = origin.endsWith('/') ? origin.slice(0, -1) : origin;
         const resetUrl = `${baseUrl}/reset-password.html?token=${resetToken}`;
 
         // Send email
