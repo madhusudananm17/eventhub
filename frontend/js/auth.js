@@ -252,7 +252,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById("step2Otp").style.display = "block";
                     const displayPhoneEl = document.getElementById("displayPhone");
                     if (displayPhoneEl) displayPhoneEl.textContent = activePhone;
-                    showMessage(otpMessage, data.message || "OTP sent to your registered mobile number.", "success");
+
+                    let msg = data.message || "OTP sent successfully.";
+                    if (data.devOtp) {
+                        msg += ` (Verification OTP: ${data.devOtp})`;
+                    }
+                    showMessage(otpMessage, msg, "success");
                 } else {
                     showMessage(phoneMessage, data.message || "No account found with this registered mobile number.", "error");
                 }

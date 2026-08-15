@@ -102,4 +102,81 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
     }
 };
 
-module.exports = { sendPasswordResetEmail };
+/**
+ * Sends a 6-digit OTP email notification via Nodemailer.
+ */
+const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
+    const emailUser = process.env.EMAIL_USER;
+    const emailPass = process.env.EMAIL_PASSWORD;
+    const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
+    const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
+    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser}>`;
+
+    const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #06131d; color: #ffffff; margin: 0; padding: 20px; }
+                .container { max-width: 580px; margin: 0 auto; background: #0d1d2a; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3); padding: 32px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+                .header { text-align: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; margin-bottom: 24px; }
+                .logo { font-size: 24px; font-weight: 800; color: #ffffff; text-decoration: none; }
+                .badge { display: inline-block; background: rgba(16,185,129,0.2); color: #34d399; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; margin-top: 8px; }
+                .content { font-size: 15px; line-height: 1.6; color: #cbd5e1; text-align: center; }
+                .otp-box { background: rgba(16, 185, 129, 0.15); border: 2px dashed #10b981; font-size: 32px; font-weight: 800; color: #fbbf24; letter-spacing: 8px; padding: 16px; border-radius: 12px; margin: 24px 0; display: inline-block; width: 80%; }
+                .footer { font-size: 12px; color: #64748b; text-align: center; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 16px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="logo">🎫 EventHub</div>
+                    <div class="badge">Verification Code</div>
+                </div>
+                <div class="content">
+                    <p>Hello <strong>${userName || 'Valued User'}</strong>,</p>
+                    <p>Here is your 6-digit Email Recovery Verification OTP (valid for <strong>${expireMins} minutes</strong>):</p>
+                    
+                    <div class="otp-box">${otp}</div>
+                    
+                    <p style="font-size: 13px; color: #94a3b8;">If you did not request this OTP, please ignore this message.</p>
+                </div>
+                <div class="footer">
+                    © 2026 EventHub Karnataka. All rights reserved.
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+    if (emailUser && emailPass) {
+        try {
+            const transporter = nodemailer.createTransport({
+                host: emailHost,
+                port: emailPort,
+                secure: false,
+                auth: { user: emailUser, pass: emailPass },
+                tls: { rejectUnauthorized: false }
+            });
+
+            const info = await transporter.sendMail({
+                from: emailFrom,
+                to: toEmail,
+                subject: `📱 EventHub Email Recovery OTP: ${otp}`,
+                html: htmlContent
+            });
+
+            console.log(`✅ Recovery OTP email sent to ${toEmail}! MessageId: ${info.messageId}`);
+            return true;
+        } catch (error) {
+            console.error(`❌ Error sending OTP email to ${toEmail}:`, error.message);
+            return false;
+        }
+    }
+    return true;
+};
+
+module.exports = {
+    sendPasswordResetEmail,
+    sendOtpEmail
+};

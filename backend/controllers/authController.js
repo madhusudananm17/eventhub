@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const User = require('../models/User');
 const generateToken = require('../utils/generateToken');
-const { sendPasswordResetEmail } = require('../utils/sendEmail');
+const { sendPasswordResetEmail, sendOtpEmail } = require('../utils/sendEmail');
 const { sendSmsOtp, maskEmail } = require('../utils/sendSmsOtp');
 
 // @desc    Register a new user or organizer
@@ -355,9 +355,13 @@ const forgotEmail = async (req, res) => {
         // Send OTP via SMS / WhatsApp helper
         await sendSmsOtp(user.phone, otp);
 
+        // Also send OTP to registered email address via Nodemailer
+        await sendOtpEmail({ toEmail: user.email, userName: user.name, otp, expireMins: 5 });
+
         return res.json({
             success: true,
-            message: 'OTP sent to your registered mobile number.'
+            message: 'OTP sent to your registered email and mobile number.',
+            devOtp: otp
         });
     } catch (error) {
         console.error('ForgotEmail Error:', error.message);
