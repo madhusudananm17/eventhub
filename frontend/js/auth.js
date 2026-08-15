@@ -139,24 +139,30 @@ document.addEventListener("DOMContentLoaded", function () {
     if (resetPasswordForm) {
         const urlParams = new URLSearchParams(window.location.search);
         const tokenFromUrl = urlParams.get("token");
+        const hiddenTokenInput = document.getElementById("resetToken");
+        const manualTokenGroup = document.getElementById("manualTokenGroup");
+        const manualTokenInput = document.getElementById("manualTokenInput");
 
-        if (!tokenFromUrl) {
-            showMessage(resetMessage, "Reset link is missing token or has expired. Please request a new one.", "error");
-            if (resetSubmitBtn) resetSubmitBtn.disabled = true;
-        } else {
-            const hiddenTokenInput = document.getElementById("resetToken");
+        if (tokenFromUrl) {
             if (hiddenTokenInput) hiddenTokenInput.value = tokenFromUrl;
+        } else {
+            if (manualTokenGroup) manualTokenGroup.style.display = "block";
+            showMessage(resetMessage, "No reset token detected in URL. Please enter your reset token below or request a new reset link.", "error");
         }
 
         resetPasswordForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
-            const token = document.getElementById("resetToken").value;
+            let token = hiddenTokenInput ? hiddenTokenInput.value : "";
+            if (!token && manualTokenInput) {
+                token = manualTokenInput.value.trim();
+            }
+
             const newPassword = document.getElementById("newPassword").value.trim();
             const confirmPassword = document.getElementById("confirmPassword").value.trim();
 
             if (!token) {
-                showMessage(resetMessage, "Reset link has expired. Please request a new one.", "error");
+                showMessage(resetMessage, "Please enter a valid reset token.", "error");
                 return;
             }
 
