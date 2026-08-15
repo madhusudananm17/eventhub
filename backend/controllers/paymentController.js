@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const Razorpay = require('razorpay');
+const crypto = require('crypto');
 const Payment = require('../models/Payment');
 const Booking = require('../models/Booking');
 const Ticket = require('../models/Ticket');
@@ -7,12 +9,129 @@ const Registration = require('../models/Registration');
 const { sendBookingConfirmationEmail } = require('../services/emailService');
 const { sendBookingConfirmationWhatsApp } = require('../services/whatsappService');
 
+// @desc    Create Razorpay Order / Demo Order (Zero-Trust Backend Pricing)
+// @route   POST /api/payments/create-order
+// @access  Private (User)
+const createPaymentOrder = async (req, res) => {
+    try {
+        const { eventId, quantity = 1 } = req.body;
+
+        if (!eventId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Event ID is required to create a payment order.'
+            });
+        }
+
+        const event = await Event.findById(eventId);
+        if (!event) {
+            return res.status(404).json({
+                success: false,
+                message: 'Event not found.'
+            });
+        }
+
+        const qty = parseInt(quantity, 10) || 1;
+
+        if (event.availableSeats < qty) {
+            return res.status(400).json({
+                success: false,
+                message: `Only ${event.availableSeats} seat(s) available for this event.`
+            });
+        }
+
+        // Calculate pricing strictly on backend
+        const pricePerTicket = Number(event.price) || 0;
+        const totalAmount = pricePerTicket * qty;
+
+        const randSuffix = Math.floor(100000 + Math.random() * 900000);
+        const bookingId = `BKG-2026-${randSuffix}`;
+
+        // Create initial pending Booking record
+        const booking = await Booking.create({
+            bookingId,
+            user: req.user._id,
+            event: event._id,
+            quantity: qty,
+            totalAmount,
+            bookingStatus: 'PENDING'
+        });
+
+        const keyId = process.env.RAZORPAY_KEY_ID;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+        // If Razorpay live credentials configured in .env
+        if (keyId && keySecret && keyId.trim() !== '' && keySecret.trim() !== '') {
+            try {
+                const razorpay = new Razorpay({
+                    key_id: keyId,
+                    key_secret: keySecret
+                });
+
+                const razorpayOrder = await razorpay.orders.create({
+                    amount: Math.round(totalAmount * 100), // Amount in paise
+                    currency: 'INR',
+                    receipt: bookingId,
+                    notes: {
+                        eventId: event._id.toString(),
+                        userId: req.user._id.toString()
+                    }
+                });
+
+                return res.json({
+                    success: true,
+                    isDemo: false,
+                    isRazorpay: true,
+                    orderId: razorpayOrder.id,
+                    bookingId: booking.bookingId,
+                    amount: totalAmount,
+                    amountPaise: razorpayOrder.amount,
+                    currency: 'INR',
+                    keyId: keyId,
+                    eventTitle: event.title
+                });
+            } catch (rzErr) {
+                console.error('Razorpay Order Creation Warning:', rzErr.message);
+                // Fallback to simulated mode if Razorpay API fails
+            }
+        }
+
+        // Development / Demo Mode Fallback (Zero crash architecture)
+        const demoOrderId = `order_demo_${Date.now()}_${randSuffix}`;
+
+        return res.json({
+            success: true,
+            isDemo: true,
+            isRazorpay: false,
+            orderId: demoOrderId,
+            bookingId: booking.bookingId,
+            amount: totalAmount,
+            currency: 'INR',
+            eventTitle: event.title,
+            message: totalAmount === 0 ? 'Free Event Order Created' : 'Demo Payment Mode (Razorpay credentials not set in .env)'
+        });
+    } catch (error) {
+        console.error('CreatePaymentOrder Error:', error.message);
+        return res.status(500).json({
+            success: false,
+            message: 'Server error creating payment order: ' + error.message
+        });
+    }
+};
+
 // @desc    Verify Payment Transaction & Automatically Generate Ticket (Zero-Trust + Idempotent)
 // @route   POST /api/payments/verify
 // @access  Private (Logged-in User)
 const verifyPayment = async (req, res) => {
     try {
-        const { bookingId, transactionId, paymentMethod = 'UPI/QR' } = req.body;
+        const {
+            bookingId,
+            transactionId,
+            paymentMethod = 'UPI/QR',
+            razorpay_order_id,
+            razorpay_payment_id,
+            razorpay_signature
+        } = req.body;
 
         if (!bookingId) {
             return res.status(400).json({
@@ -36,6 +155,22 @@ const verifyPayment = async (req, res) => {
             });
         }
 
+        // If Razorpay signature provided, verify signature
+        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+        if (razorpay_order_id && razorpay_payment_id && razorpay_signature && keySecret) {
+            const expectedSignature = crypto
+                .createHmac('sha256', keySecret)
+                .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+                .digest('hex');
+
+            if (expectedSignature !== razorpay_signature) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Razorpay payment signature verification failed.'
+                });
+            }
+        }
+
         // Find Payment Record
         let payment = await Payment.findOne({
             $or: [{ booking: booking._id }, { bookingId: booking.bookingId }]
@@ -45,7 +180,7 @@ const verifyPayment = async (req, res) => {
         const now = new Date();
 
         // Auto-generate transaction reference if missing
-        const txnRef = isFree ? 'FREE' : (transactionId && transactionId.trim().length > 0 ? transactionId.trim() : `UTR_SBI9550_${Date.now()}`);
+        const txnRef = razorpay_payment_id || (isFree ? 'FREE' : (transactionId && transactionId.trim().length > 0 ? transactionId.trim() : `TXN_${Date.now()}`));
 
         // IDEMPOTENCE CHECK: If ticket already generated for this booking, return existing ticket!
         let existingTicket = await Ticket.findOne({ booking: booking._id }).populate('event user');
@@ -96,7 +231,7 @@ const verifyPayment = async (req, res) => {
             await event.save();
         }
 
-        // 4. Generate Unique Ticket ID & Secure QR Code Payload ("TICKET_ID + BOOKING_ID")
+        // 4. Generate Unique Ticket ID & Secure QR Code Payload ("TICKET_ID+BOOKING_ID")
         const ticketRand = Math.floor(100000 + Math.random() * 900000);
         const ticketId = `EH-2026-${ticketRand}`;
         const qrCodeData = `${ticketId}+${booking.bookingId}`;
@@ -139,7 +274,7 @@ const verifyPayment = async (req, res) => {
         const populatedUser = populatedTicket.user || booking.user;
         const populatedEvent = populatedTicket.event || booking.event;
 
-        // 7. SEND EMAIL & WHATSAPP NOTIFICATIONS
+        // 7. SEND EMAIL & WHATSAPP NOTIFICATIONS (Failure does NOT cancel ticket)
         let emailSent = false;
         let whatsappSent = false;
 
@@ -150,13 +285,13 @@ const verifyPayment = async (req, res) => {
                 ticketStatus: 'Confirmed'
             });
         } catch (emailErr) {
-            console.error('VerifyPayment Email Notification Error:', emailErr.message);
+            console.error('VerifyPayment Email Notification Warning:', emailErr.message);
         }
 
         try {
             whatsappSent = await sendBookingConfirmationWhatsApp(populatedUser, populatedEvent, { ticketId });
         } catch (waErr) {
-            console.error('VerifyPayment WhatsApp Notification Error:', waErr.message);
+            console.error('VerifyPayment WhatsApp Notification Warning:', waErr.message);
         }
 
         return res.status(200).json({
@@ -178,5 +313,6 @@ const verifyPayment = async (req, res) => {
 };
 
 module.exports = {
+    createPaymentOrder,
     verifyPayment
 };

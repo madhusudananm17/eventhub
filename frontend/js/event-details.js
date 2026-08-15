@@ -172,7 +172,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const quantity = qtySelect ? parseInt(qtySelect.value, 10) : 1;
                 const isFree = currentEvent.price === 0;
 
-                // AUTO-GENERATE TRANSACTION ID IF EMPTY (NEVER BLOCK USER AFTER PAYMENT)
                 let transactionId = 'FREE';
                 if (!isFree) {
                     const userUpi = document.getElementById("upiId") ? document.getElementById("upiId").value.trim() : "";
@@ -202,7 +201,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     let userObj = null;
 
                     if (!token) {
-                        // Register or login guest user
                         const authRes = await fetch(`${API_BASE_URL}/auth/register`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -320,7 +318,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                             modalStatusBadge.style.color = `#16834b`;
                         }
 
-                        // Show Short Loading Transition
                         const form = document.getElementById("instantBookingForm");
                         const overlay = document.getElementById("ticketGenOverlay");
                         if (form) form.style.display = "none";
@@ -358,6 +355,131 @@ document.addEventListener("DOMContentLoaded", async function () {
                     executeCompleteBookingAndPaymentFlow();
                 });
             }
+
+            // =========================================================================
+            // EVENT REVIEWS AND RATINGS SYSTEM
+            // =========================================================================
+            const avgRatingBadge = document.getElementById("avgRatingBadge");
+            const totalReviewsCount = document.getElementById("totalReviewsCount");
+            const reviewsList = document.getElementById("reviewsList");
+            const addReviewForm = document.getElementById("addReviewForm");
+            const reviewComment = document.getElementById("reviewComment");
+            const selectedRatingInput = document.getElementById("selectedRating");
+            const starRatingSelect = document.getElementById("starRatingSelect");
+            const reviewMsg = document.getElementById("reviewMsg");
+
+            // Interactive Star Rating Selector
+            if (starRatingSelect) {
+                const stars = starRatingSelect.querySelectorAll("span");
+                stars.forEach(star => {
+                    star.addEventListener("click", () => {
+                        const r = parseInt(star.dataset.star, 10);
+                        selectedRatingInput.value = r;
+                        stars.forEach((s, idx) => {
+                            s.style.color = idx < r ? "#fbbf24" : "#475569";
+                        });
+                    });
+                });
+            }
+
+            // Fetch and Render Event Reviews
+            async function loadReviews() {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/events/${eventId}/reviews`);
+                    const rData = await res.json();
+
+                    if (rData.success) {
+                        const avg = rData.averageRating || 0;
+                        const count = rData.totalReviews || 0;
+
+                        if (avgRatingBadge) avgRatingBadge.textContent = `★ ${avg.toFixed(1)} / 5`;
+                        if (totalReviewsCount) totalReviewsCount.textContent = `${count} Review${count !== 1 ? 's' : ''}`;
+
+                        if (reviewsList) {
+                            if (!rData.reviews || rData.reviews.length === 0) {
+                                reviewsList.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px; background:rgba(255,255,255,0.02); border-radius:12px;">No reviews yet. Be the first registered attendee to leave a review!</div>`;
+                            } else {
+                                reviewsList.innerHTML = rData.reviews.map(rev => {
+                                    const userName = rev.user ? rev.user.name : "Attendee";
+                                    const starsHtml = "★".repeat(rev.rating) + "☆".repeat(5 - rev.rating);
+                                    const revDate = new Date(rev.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+
+                                    return `
+                                        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 18px; border-radius: 14px;">
+                                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                                <strong style="color:#ffffff; font-size:15px;">${userName}</strong>
+                                                <span style="color:#fbbf24; font-size:16px;">${starsHtml} (${rev.rating}/5)</span>
+                                            </div>
+                                            <p style="color:#cbd5e1; font-size:14px; margin:0 0 8px 0;">"${rev.comment}"</p>
+                                            <span style="color:#64748b; font-size:12px;">Submitted on ${revDate}</span>
+                                        </div>
+                                    `;
+                                }).join("");
+                            }
+                        }
+                    }
+                } catch(err) {
+                    console.error("Load reviews error:", err);
+                }
+            }
+
+            // Submit Review Handler
+            if (addReviewForm) {
+                addReviewForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        if (reviewMsg) {
+                            reviewMsg.style.color = "#fca5a5";
+                            reviewMsg.textContent = "Please login first.";
+                        }
+                        return;
+                    }
+
+                    const rating = parseInt(selectedRatingInput.value, 10) || 5;
+                    const comment = reviewComment.value.trim();
+
+                    try {
+                        const submitBtn = document.getElementById("submitReviewBtn");
+                        if (submitBtn) submitBtn.disabled = true;
+
+                        const res = await fetch(`${API_BASE_URL}/events/${eventId}/reviews`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ rating, comment })
+                        });
+
+                        const rData = await res.json();
+                        if (submitBtn) submitBtn.disabled = false;
+
+                        if (rData.success) {
+                            if (reviewMsg) {
+                                reviewMsg.style.color = "#34d399";
+                                reviewMsg.textContent = "✓ Review submitted successfully.";
+                            }
+                            reviewComment.value = "";
+                            loadReviews();
+                        } else {
+                            if (reviewMsg) {
+                                reviewMsg.style.color = "#fca5a5";
+                                reviewMsg.textContent = rData.message || "Failed to submit review.";
+                            }
+                        }
+                    } catch(err) {
+                        console.error("Submit review error:", err);
+                        if (reviewMsg) {
+                            reviewMsg.style.color = "#fca5a5";
+                            reviewMsg.textContent = "Error connecting to server.";
+                        }
+                    }
+                });
+            }
+
+            // Initial load of reviews
+            loadReviews();
 
         } else {
             alert("Event not found.");

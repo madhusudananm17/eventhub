@@ -3,192 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Organizer Ticket Verification | EventHub</title>
+    <title>EventHub | Ticket Verification</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
+    <!-- HTML5 QR Code Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="../index.html" class="logo">🎟️ EventHub Organizer</a>
-        <div class="nav-links">
-            <a href="dashboard.html">Dashboard</a>
-            <a href="manage-events.html">Manage Events</a>
-            <a href="verify-ticket.html" class="active">🔍 Verify Tickets</a>
-            <a href="attendees.html">Attendees</a>
-            <button id="logoutBtn" class="btn-secondary" style="margin-left:15px;">Logout</button>
+    <!-- ================= NAVBAR ================= -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">
+                <img src="../images/logo.jpg" alt="EventHub Logo" class="logo-img">
+            </a>
+            <nav class="nav-menu" id="navMenu">
+                <a href="../index.html">Home</a>
+                <a href="../events.html">Events</a>
+                <a href="dashboard.html">Organizer Dashboard</a>
+                <a href="#" id="logoutBtn" class="register-btn">Logout</a>
+            </nav>
+            <button class="menu-btn" id="menuBtn">☰</button>
         </div>
-    </div>
-</nav>
+    </header>
 
-<section class="dashboard-section" style="padding:40px 20px;">
-    <div class="container" style="max-width:650px; margin:0 auto;">
-        
-        <div style="background:white; padding:30px; border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,0.08); text-align:center;">
-            <div style="font-size:42px; margin-bottom:10px;">🔍</div>
-            <h1 style="font-size:24px; color:#111; margin-bottom:6px;">Ticket Entry Verification</h1>
-            <p style="color:#666; font-size:14px; margin-bottom:24px;">Scan or type the attendee Ticket ID or QR Code payload ("TICKET_ID + BOOKING_ID") to verify authenticity and admit attendees.</p>
+    <!-- ================= VERIFY TICKET PAGE ================= -->
+    <section class="dashboard-page">
+        <div class="container" style="max-width: 800px;">
+            <div class="dashboard-header" style="text-align: center; margin-bottom: 30px;">
+                <h1>🎫 Ticket Verification & Admission</h1>
+                <p>Scan ticket QR code or enter ticket code manually to verify admission status.</p>
+            </div>
 
-            <!-- SCAN / INPUT FORM -->
-            <form id="ticketVerifyForm" style="display:flex; gap:10px; margin-bottom:25px;">
-                <input type="text" id="verifyInput" placeholder="Scan QR code or type TKT-2026-XXXXXX" required style="flex:1; padding:12px 16px; border:2px solid #635bff; border-radius:10px; font-size:15px; font-weight:600;">
-                <button type="submit" id="verifySubmitBtn" style="background:#635bff; color:white; border:none; padding:12px 24px; border-radius:10px; font-weight:700; font-size:15px; cursor:pointer;">
-                    Verify Pass →
-                </button>
-            </form>
+            <!-- CAMERA SCANNER CARD -->
+            <div class="dashboard-card" style="margin-bottom: 30px;">
+                <h3 style="color: #34d399; margin-bottom: 15px; text-align: center;">📷 Camera QR Scanner</h3>
+                <div id="reader" style="width: 100%; max-width: 450px; margin: 0 auto; border-radius: 12px; overflow: hidden;"></div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <button id="startScanBtn" class="btn-primary" style="padding: 10px 20px; font-size: 14px;">Start Camera Scanner</button>
+                    <button id="stopScanBtn" class="btn-secondary" style="padding: 10px 20px; font-size: 14px; display: none;">Stop Scanner</button>
+                </div>
+            </div>
 
-            <!-- VERIFICATION RESULT BOX -->
-            <div id="verifyResultBox" style="display:none; text-align:left; border-radius:14px; padding:20px; border:2px solid #ccc; margin-top:20px;">
-                <div id="resultStatusHeader" style="font-size:18px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px;"></div>
+            <!-- MANUAL CODE ENTRY FALLBACK -->
+            <div class="dashboard-card" style="margin-bottom: 30px;">
+                <h3 style="color: #34d399; margin-bottom: 15px;">⌨️ Manual Ticket Code Entry</h3>
+                <form id="verifyForm" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    <input type="text" id="manualCode" placeholder="Enter Ticket Code (e.g. EH-2026-982347)" required style="flex: 1; min-width: 250px; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(16,185,129,0.3); background: #06131d; color: #fff; outline: none;">
+                    <button type="submit" class="btn-primary" style="padding: 12px 24px; font-weight: 800;">Verify Ticket →</button>
+                </form>
+            </div>
+
+            <!-- VERIFICATION RESULT DISPLAY -->
+            <div id="resultCard" class="dashboard-card" style="display: none; text-align: center;">
+                <div id="statusBadge" style="font-size: 18px; font-weight: 800; padding: 12px; border-radius: 10px; margin-bottom: 20px;"></div>
                 
-                <div id="resultDetailsGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px; margin-bottom:20px;">
-                    <div>• <strong>Ticket ID:</strong> <span id="resTicketId">-</span></div>
-                    <div>• <strong>Booking ID:</strong> <span id="resBookingId">-</span></div>
-                    <div>• <strong>Event:</strong> <span id="resEventTitle">-</span></div>
-                    <div>• <strong>Customer:</strong> <span id="resCustomerName">-</span></div>
-                    <div>• <strong>Email / Phone:</strong> <span id="resCustomerContact">-</span></div>
-                    <div>• <strong>Quantity:</strong> <span id="resQuantity">1 Ticket</span></div>
-                    <div>• <strong>Payment Status:</strong> <span id="resPaymentStatus" style="color:#16834b; font-weight:700;">PAID</span></div>
-                    <div>• <strong>Ticket Status:</strong> <span id="resTicketStatus" style="font-weight:700;">CONFIRMED</span></div>
+                <div id="ticketDetails" style="text-align: left; background: #06131d; padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                    <p style="margin-bottom: 8px;"><strong>Event Title:</strong> <span id="resEventTitle" style="color: #34d399;">-</span></p>
+                    <p style="margin-bottom: 8px;"><strong>Date & Time:</strong> <span id="resEventTime">-</span></p>
+                    <p style="margin-bottom: 8px;"><strong>Venue & Location:</strong> <span id="resVenue">-</span></p>
+                    <p style="margin-bottom: 8px;"><strong>Ticket Holder:</strong> <span id="resHolderName" style="color: #fbbf24;">-</span></p>
+                    <p style="margin-bottom: 8px;"><strong>Ticket Code:</strong> <span id="resTicketCode" style="font-family: monospace; color: #34d399; font-weight: 800;">-</span></p>
+                    <p style="margin-bottom: 0;"><strong>Admission Status:</strong> <span id="resTicketStatus">-</span></p>
                 </div>
 
-                <!-- ADMIT / MARK USED BUTTON -->
-                <button id="markUsedBtn" style="width:100%; background:#16834b; color:white; border:none; padding:12px; border-radius:10px; font-weight:700; font-size:14px; cursor:pointer; display:none;">
-                    ✅ Mark as Used & Admit Attendee →
-                </button>
+                <div style="margin-top: 20px;">
+                    <button id="admitBtn" class="btn-primary" style="padding: 14px 28px; font-size: 16px; display: none;">✅ Admit Attendee (Mark as Used)</button>
+                </div>
             </div>
         </div>
+    </section>
 
-    </div>
-</section>
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <h2>🎫 EventHub</h2>
+                <p>Discover, register and experience amazing events around Karnataka.</p>
+            </div>
+            <div class="footer-bottom" style="width: 100%;">
+                <p>© 2026 EventHub. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
 
-<script src="../js/main.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const token = localStorage.getItem("token");
-    const userRaw = localStorage.getItem("user");
-    if (!token || !userRaw) {
-        window.location.href = "../login.html";
-        return;
-    }
-    const user = JSON.parse(userRaw);
-    if (user.role !== 'organizer' && user.role !== 'admin') {
-        alert("Access restricted to Organizers and Admins.");
-        window.location.href = "../index.html";
-        return;
-    }
-
-    let activeTicketId = null;
-
-    const verifyForm = document.getElementById("ticketVerifyForm");
-    const verifyInput = document.getElementById("verifyInput");
-    const resultBox = document.getElementById("verifyResultBox");
-    const headerEl = document.getElementById("resultStatusHeader");
-    const markUsedBtn = document.getElementById("markUsedBtn");
-
-    verifyForm.addEventListener("submit", async function(e) {
-        e.preventDefault();
-        const inputVal = verifyInput.value.trim();
-        if (!inputVal) return;
-
-        resultBox.style.display = "none";
-
-        try {
-            const res = await fetch(`${API_BASE_URL}/tickets/verify`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ ticketId: inputVal })
-            });
-
-            const data = await res.json();
-            resultBox.style.display = "block";
-
-            if (data.isValid && data.ticket) {
-                const t = data.ticket;
-                activeTicketId = t.ticketId || t._id;
-                const ev = t.event || {};
-                const u = t.user || {};
-
-                if (data.isUsed) {
-                    resultBox.style.borderColor = "#9a6700";
-                    resultBox.style.background = "#fff9e6";
-                    headerEl.innerHTML = `⚠️ ${data.message}`;
-                    markUsedBtn.style.display = "none";
-                } else {
-                    resultBox.style.borderColor = "#16834b";
-                    resultBox.style.background = "#f0fdf4";
-                    headerEl.innerHTML = `✅ Ticket Valid - Ready for Entry`;
-                    markUsedBtn.style.display = "block";
-                    markUsedBtn.disabled = false;
-                    markUsedBtn.innerHTML = `✅ Mark as Used & Admit Attendee →`;
-                }
-
-                document.getElementById("resTicketId").textContent = t.ticketId || '-';
-                document.getElementById("resBookingId").textContent = t.bookingId || '-';
-                document.getElementById("resEventTitle").textContent = ev.title || '-';
-                document.getElementById("resCustomerName").textContent = u.name || '-';
-                document.getElementById("resCustomerContact").textContent = `${u.email || ''} (${u.phone || ''})`;
-                document.getElementById("resQuantity").textContent = `${t.quantity || 1} Ticket(s)`;
-                document.getElementById("resPaymentStatus").textContent = data.payment ? data.payment.paymentStatus : 'PAID';
-                document.getElementById("resTicketStatus").textContent = t.ticketStatus || 'CONFIRMED';
-
-            } else {
-                resultBox.style.borderColor = "#d93025";
-                resultBox.style.background = "#fff5f5";
-                headerEl.innerHTML = `❌ Invalid Ticket: Ticket does not exist or payment has not been verified.`;
-                markUsedBtn.style.display = "none";
-
-                document.getElementById("resTicketId").textContent = '-';
-                document.getElementById("resBookingId").textContent = '-';
-                document.getElementById("resEventTitle").textContent = '-';
-                document.getElementById("resCustomerName").textContent = '-';
-                document.getElementById("resCustomerContact").textContent = '-';
-                document.getElementById("resQuantity").textContent = '-';
-                document.getElementById("resPaymentStatus").textContent = 'UNPAID / INVALID';
-                document.getElementById("resTicketStatus").textContent = 'INVALID';
-            }
-        } catch(err) {
-            console.error("Verification Error:", err);
-            alert("Error verifying ticket.");
-        }
-    });
-
-    markUsedBtn.addEventListener("click", async function() {
-        if (!activeTicketId) return;
-
-        try {
-            markUsedBtn.disabled = true;
-            markUsedBtn.textContent = "⏳ Admitting Attendee...";
-
-            const res = await fetch(`${API_BASE_URL}/tickets/mark-used`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ ticketId: activeTicketId })
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                alert("✅ " + data.message);
-                verifyForm.dispatchEvent(new Event("submit"));
-            } else {
-                alert("⚠️ " + (data.message || "Failed to mark ticket as used."));
-            }
-        } catch(err) {
-            console.error("Mark Used Error:", err);
-        } finally {
-            markUsedBtn.disabled = false;
-        }
-    });
-});
-</script>
-
+    <script src="../js/main.js"></script>
+    <script src="../js/verify-ticket.js"></script>
 </body>
 </html>

@@ -441,14 +441,64 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
 
-            // QR Code Generation ("TICKET_ID + BOOKING_ID")
+            // QR Code Generation & PDF Ticket Download
             const qrImg = document.getElementById("ticketQrImage");
             const downloadQrBtn = document.getElementById("downloadQrBtn");
-            const qrContent = `${targetTicket.ticketId}+${targetTicket.bookingId}`;
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrContent)}`;
+            const downloadPdfBtn = document.getElementById("downloadPdfBtn");
+
+            const tktCode = targetTicket.ticketId || queryId || 'TKT';
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(tktCode)}`;
 
             if (qrImg) qrImg.src = qrUrl;
-            if (downloadQrBtn) downloadQrBtn.href = qrUrl;
+            if (downloadQrBtn) {
+                downloadQrBtn.href = qrUrl;
+                downloadQrBtn.download = `EventHub_QR_${tktCode}.png`;
+            }
+
+            if (downloadPdfBtn) {
+                downloadPdfBtn.onclick = async function(e) {
+                    e.preventDefault();
+                    const token = localStorage.getItem("token");
+                    if (!token) {
+                        alert("Please login first.");
+                        return;
+                    }
+                    try {
+                        downloadPdfBtn.disabled = true;
+                        downloadPdfBtn.textContent = "Generating PDF...";
+
+                        const res = await fetch(`${API_BASE_URL}/tickets/${encodeURIComponent(tktCode)}/pdf`, {
+                            headers: { "Authorization": `Bearer ${token}` }
+                        });
+
+                        if (!res.ok) {
+                            const errData = await res.json();
+                            alert(errData.message || "Failed to download ticket PDF.");
+                            downloadPdfBtn.disabled = false;
+                            downloadPdfBtn.textContent = "📄 Download PDF Ticket";
+                            return;
+                        }
+
+                        const blob = await res.blob();
+                        const pdfUrl = window.URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = pdfUrl;
+                        a.download = `EventHub_Ticket_${tktCode}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(pdfUrl);
+
+                        downloadPdfBtn.disabled = false;
+                        downloadPdfBtn.textContent = "📄 Download PDF Ticket";
+                    } catch(err) {
+                        console.error("PDF Download error:", err);
+                        downloadPdfBtn.disabled = false;
+                        downloadPdfBtn.textContent = "📄 Download PDF Ticket";
+                        alert("Error connecting to server for PDF download.");
+                    }
+                };
+            }
 
         } catch (err) {
             console.error("Ticket Load Error:", err);

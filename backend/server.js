@@ -24,8 +24,10 @@ const organizerRoutes = require('./routes/organizerRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
 
 app.use('/api/auth', authRoutes);
+app.use('/api/events/:id/reviews', reviewRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/registrations', registrationRoutes);
 app.use('/api/organizer', organizerRoutes);
