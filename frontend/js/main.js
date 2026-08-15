@@ -1,4 +1,6 @@
-const API_BASE_URL = "http://localhost:5000/api";
+const currentHostname = window.location.hostname || "localhost";
+const currentProtocol = window.location.protocol || "http:";
+const API_BASE_URL = `${currentProtocol}//${currentHostname}:5000/api`;
 
 // Reset any saved dark mode theme
 try {

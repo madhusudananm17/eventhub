@@ -207,9 +207,14 @@ const forgotPassword = async (req, res) => {
 
         await user.save();
 
-        // Construct reset URL for frontend reset-password.html
-        const origin = process.env.FRONTEND_URL || req.get('origin') || req.get('referer') || 'http://localhost:3000';
-        const baseUrl = origin.endsWith('/') ? origin.slice(0, -1) : origin;
+        // Construct reset URL dynamically from client origin or host
+        let baseUrl = process.env.FRONTEND_URL || req.get('origin') || req.get('referer');
+        if (!baseUrl) {
+            const host = req.get('host') || 'localhost:5000';
+            const hostOnly = host.split(':')[0];
+            baseUrl = `${req.protocol}://${hostOnly}:3000`;
+        }
+        baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
         const resetUrl = `${baseUrl}/reset-password.html?token=${resetToken}`;
 
         // Send email
