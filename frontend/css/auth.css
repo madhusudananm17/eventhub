@@ -96,20 +96,27 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 18px;
     padding: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #34d399;
     user-select: none;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    transition: all 0.2s ease;
     opacity: 0.8;
 }
 
 .toggle-password-btn:hover {
     opacity: 1;
-    transform: scale(1.15);
+    color: #6ee7b7;
+    transform: scale(1.1);
+}
+
+.toggle-password-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    pointer-events: none;
 }
 
 .auth-form .submit-btn {

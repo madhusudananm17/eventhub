@@ -39,21 +39,26 @@ function logoutUser() {
 
 // Global DOM Content Loaded Handler
 document.addEventListener("DOMContentLoaded", () => {
-    // Global Password Visibility Toggle (Eye Icon)
+    // Global Password Visibility Toggle (SVG Eye / Slashed Eye Icon)
     document.addEventListener("click", (e) => {
         const toggleBtn = e.target.closest(".toggle-password-btn");
         if (toggleBtn) {
             e.preventDefault();
             const wrapper = toggleBtn.closest(".password-wrapper");
             const input = wrapper ? wrapper.querySelector("input") : toggleBtn.previousElementSibling;
+            const eyeShow = toggleBtn.querySelector(".eye-show");
+            const eyeHide = toggleBtn.querySelector(".eye-hide");
+
             if (input) {
                 if (input.type === "password") {
                     input.type = "text";
-                    toggleBtn.textContent = "🙈";
+                    if (eyeShow) eyeShow.style.display = "none";
+                    if (eyeHide) eyeHide.style.display = "block";
                     toggleBtn.setAttribute("title", "Hide Password");
                 } else {
                     input.type = "password";
-                    toggleBtn.textContent = "👁️";
+                    if (eyeShow) eyeShow.style.display = "block";
+                    if (eyeHide) eyeHide.style.display = "none";
                     toggleBtn.setAttribute("title", "Show Password");
                 }
             }
