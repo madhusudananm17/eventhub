@@ -39,6 +39,27 @@ function logoutUser() {
 
 // Global DOM Content Loaded Handler
 document.addEventListener("DOMContentLoaded", () => {
+    // Global Password Visibility Toggle (Eye Icon)
+    document.addEventListener("click", (e) => {
+        const toggleBtn = e.target.closest(".toggle-password-btn");
+        if (toggleBtn) {
+            e.preventDefault();
+            const wrapper = toggleBtn.closest(".password-wrapper");
+            const input = wrapper ? wrapper.querySelector("input") : toggleBtn.previousElementSibling;
+            if (input) {
+                if (input.type === "password") {
+                    input.type = "text";
+                    toggleBtn.textContent = "🙈";
+                    toggleBtn.setAttribute("title", "Hide Password");
+                } else {
+                    input.type = "password";
+                    toggleBtn.textContent = "👁️";
+                    toggleBtn.setAttribute("title", "Show Password");
+                }
+            }
+        }
+    });
+
     // Ensure any injected dark mode button is removed
     const toggleBtn = document.getElementById("themeToggleBtn");
     if (toggleBtn) {

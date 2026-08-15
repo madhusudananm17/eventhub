@@ -78,6 +78,40 @@
     box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
 }
 
+/* Password Toggle Wrapper & Eye Button */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 48px;
+}
+
+.toggle-password-btn {
+    position: absolute;
+    right: 12px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #34d399;
+    user-select: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    opacity: 0.8;
+}
+
+.toggle-password-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
 .auth-form .submit-btn {
     width: 100%;
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
