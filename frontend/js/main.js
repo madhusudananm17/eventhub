@@ -80,12 +80,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Navigation mobile menu toggle
-    const menuBtn = document.getElementById("menuBtn");
-    const navMenu = document.getElementById("navMenu");
+    const menuBtn = document.getElementById("menuBtn") || document.querySelector(".menu-btn");
+    const navMenu = document.getElementById("navMenu") || document.querySelector(".nav-menu") || document.querySelector(".nav-links");
 
     if (menuBtn && navMenu) {
-        menuBtn.addEventListener("click", () => {
+        menuBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             navMenu.classList.toggle("show");
+            navMenu.classList.toggle("active");
         });
     }
 

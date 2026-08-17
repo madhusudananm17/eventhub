@@ -848,12 +848,49 @@ a {
 }
 
 @media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
     .menu-btn {
-        display: block;
+        display: block !important;
+        font-size: 26px;
+        color: #ffffff;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 1001;
     }
+
+    .nav-menu,
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: #0d1d2a;
+        border-bottom: 2px solid #10b981;
+        flex-direction: column;
+        padding: 20px;
+        gap: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        z-index: 1000;
+    }
+
+    .nav-menu.show,
+    .nav-menu.active,
+    .nav-links.show,
+    .nav-links.active {
+        display: flex !important;
+    }
+
+    .nav-menu a,
+    .nav-links a {
+        padding: 12px 18px;
+        border-radius: 8px;
+        font-size: 15px;
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
     .hero-text h1 {
         font-size: 38px;
     }
