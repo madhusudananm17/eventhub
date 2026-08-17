@@ -20,10 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
         searchInput.value = initialSearch;
     }
 
-    async function fetchEvents() {
+    async function fetchEvents(retryCount = 0) {
         try {
             if (eventsGrid) {
-                eventsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #667085;">Loading events...</div>`;
+                eventsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #34d399; font-weight: 700;">${retryCount > 0 ? '⏳ Waking up live cloud server... Retrying (Attempt ' + (retryCount + 1) + ')...' : '⏳ Loading events...'}</div>`;
             }
 
             const response = await fetch(`${API_BASE_URL}/events`);
@@ -38,8 +38,14 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } catch (error) {
             console.error("Error fetching events:", error);
-            if (eventsGrid) {
-                eventsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: red;">Failed to load events. Is the backend running?</div>`;
+            if (retryCount < 3) {
+                setTimeout(() => {
+                    fetchEvents(retryCount + 1);
+                }, 3000);
+            } else {
+                if (eventsGrid) {
+                    eventsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #fca5a5;">Failed to load events. <br><button onclick="location.reload()" style="margin-top:10px; padding:8px 16px; background:#10b981; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700;">Tap to Refresh 🔄</button></div>`;
+                }
             }
         }
     }

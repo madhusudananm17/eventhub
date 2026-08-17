@@ -1,14 +1,10 @@
 const currentHostname = window.location.hostname || "localhost";
 const currentProtocol = window.location.protocol || "http:";
 
-// Target live Render backend when on Netlify/Vercel/cloud, or local backend when on localhost
-const API_BASE_URL = (
-    currentHostname !== "localhost" && 
-    currentHostname !== "127.0.0.1" && 
-    !currentHostname.startsWith("192.168.")
-)
-    ? "https://eventhub-backend-api.onrender.com/api"
-    : `${currentProtocol}//${currentHostname}:5000/api`;
+// Target live Render backend API for mobile devices, cloud hosting, and external access
+const API_BASE_URL = (currentHostname === "localhost" || currentHostname === "127.0.0.1")
+    ? `${currentProtocol}//${currentHostname}:5000/api`
+    : "https://eventhub-backend-api.onrender.com/api";
 
 // Reset any saved dark mode theme
 try {
