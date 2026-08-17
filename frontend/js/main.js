@@ -1,6 +1,10 @@
 const currentHostname = window.location.hostname || "localhost";
 const currentProtocol = window.location.protocol || "http:";
-const API_BASE_URL = `${currentProtocol}//${currentHostname}:5000/api`;
+
+// Target live Render backend when on Vercel/cloud, or local backend when on localhost
+const API_BASE_URL = (currentHostname.includes("vercel.app") || currentHostname.includes("onrender.com"))
+    ? "https://eventhub-backend-api.onrender.com/api"
+    : `${currentProtocol}//${currentHostname}:5000/api`;
 
 // Reset any saved dark mode theme
 try {
