@@ -92,27 +92,24 @@ a {
 }
 
 .logo {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 10px;
     text-decoration: none;
-    letter-spacing: -0.5px;
 }
 
-.logo-img {
-    height: 80px;
+.logo-img,
+.nav-logo-img {
+    height: 48px;
     width: auto;
-    max-width: 190px;
-    border-radius: 8px;
+    max-width: 220px;
     object-fit: contain;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-    transition: all 0.2s ease;
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
 }
 
-.logo:hover .logo-img {
+.logo:hover .logo-img,
+.logo:hover .nav-logo-img {
     transform: scale(1.04);
 }
 
