@@ -10,8 +10,9 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  */
 const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
     return new Promise((resolve) => {
+        const senderEmail = process.env.EMAIL_USER || fromUser || 'madhusudanan819@gmail.com';
         const postData = JSON.stringify({
-            sender: { name: 'EventHub Security', email: fromUser || 'noreply@eventhub.com' },
+            sender: { name: 'EventHub Tickets', email: senderEmail },
             to: [{ email: toEmail }],
             subject: subject,
             htmlContent: html,
@@ -36,7 +37,7 @@ const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
             res.on('data', chunk => body += chunk);
             res.on('end', () => {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
-                    console.log(`✅ [Email Service] Delivered email to ${toEmail} via Brevo HTTPS API!`);
+                    console.log(`✅ [Email Service] Delivered email to ${toEmail} via Brevo HTTPS API! Response: ${body}`);
                     resolve(true);
                 } else {
                     console.warn(`⚠️ [Email Service] Brevo HTTPS returned ${res.statusCode}: ${body}`);
@@ -45,7 +46,11 @@ const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
             });
         });
 
-        req.on('error', () => resolve(false));
+        req.on('error', (e) => {
+            console.warn(`⚠️ [Email Service] Brevo HTTPS Error: ${e.message}`);
+            resolve(false);
+        });
+
         req.on('timeout', () => { req.destroy(); resolve(false); });
         req.write(postData);
         req.end();
