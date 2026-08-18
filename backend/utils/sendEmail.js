@@ -10,7 +10,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const sendViaResendHttps = (apiKey, from, to, subject, html) => {
     return new Promise((resolve) => {
         const postData = JSON.stringify({
-            from: from || 'EventHub Security <onboarding@resend.dev>',
+            from: 'EventHub Security <onboarding@resend.dev>',
             to: Array.isArray(to) ? to : [to],
             subject: subject,
             html: html
