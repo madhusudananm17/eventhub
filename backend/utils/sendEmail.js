@@ -5,19 +5,19 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 // Helper function to create robust Nodemailer transporter with strict timeouts
 const createTransporter = (emailUser, emailPass) => {
-    const emailService = process.env.EMAIL_SERVICE || 'gmail';
-    const cleanPass = emailPass.replace(/\s+/g, '');
+    const cleanPass = (emailPass || '').replace(/\s+/g, '');
+    const emailService = (process.env.EMAIL_SERVICE || 'gmail').toLowerCase();
 
-    if (emailService.toLowerCase() === 'gmail') {
+    if (emailService === 'gmail' || !process.env.EMAIL_HOST) {
         return nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: emailUser,
                 pass: cleanPass
             },
-            connectionTimeout: 5000,
-            greetingTimeout: 5000,
-            socketTimeout: 5000,
+            connectionTimeout: 8000,
+            greetingTimeout: 8000,
+            socketTimeout: 8000,
             tls: {
                 rejectUnauthorized: false
             }
@@ -25,7 +25,7 @@ const createTransporter = (emailUser, emailPass) => {
     }
 
     const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
-    const emailPort = parseInt(process.env.EMAIL_PORT || '465', 10);
+    const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
     return nodemailer.createTransport({
         host: emailHost,
         port: emailPort,
@@ -34,9 +34,9 @@ const createTransporter = (emailUser, emailPass) => {
             user: emailUser,
             pass: cleanPass
         },
-        connectionTimeout: 5000,
-        greetingTimeout: 5000,
-        socketTimeout: 5000,
+        connectionTimeout: 8000,
+        greetingTimeout: 8000,
+        socketTimeout: 8000,
         tls: {
             rejectUnauthorized: false
         }
@@ -117,14 +117,14 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
             });
 
             console.log(`✅ Reset email successfully delivered to ${toEmail}! MessageId: ${info.messageId}`);
-            return true;
+            return { success: true, messageId: info.messageId };
         } catch (error) {
             console.error(`❌ Nodemailer error sending to ${toEmail}:`, error.message);
-            return false;
+            return { success: false, error: error.message };
         }
     } else {
         console.log(`ℹ️ EMAIL_USER / EMAIL_PASSWORD not set in environment.`);
-        return true;
+        return { success: false, error: 'EMAIL_USER or EMAIL_PASSWORD environment variable is missing on server.' };
     }
 };
 
@@ -184,13 +184,13 @@ const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
             });
 
             console.log(`✅ Recovery OTP email sent to ${toEmail}! MessageId: ${info.messageId}`);
-            return true;
+            return { success: true, messageId: info.messageId };
         } catch (error) {
             console.error(`❌ Error sending OTP email to ${toEmail}:`, error.message);
-            return false;
+            return { success: false, error: error.message };
         }
     }
-    return true;
+    return { success: false, error: 'EMAIL_USER or EMAIL_PASSWORD environment variable is missing on server.' };
 };
 
 module.exports = {

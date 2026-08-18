@@ -216,17 +216,18 @@ const forgotPassword = async (req, res) => {
         const resetUrl = `${baseUrl}/reset-password.html?token=${resetToken}`;
 
         // Send email strictly via Nodemailer
-        const emailSent = await sendPasswordResetEmail({
+        const emailResult = await sendPasswordResetEmail({
             toEmail: user.email,
             userName: user.name,
             resetUrl,
             expireMins: 15
         });
 
-        if (!emailSent) {
+        if (!emailResult || !emailResult.success) {
+            const errDetail = emailResult ? emailResult.error : 'Unknown SMTP error';
             return res.status(500).json({
                 success: false,
-                message: 'Could not send email to your inbox. Please verify EMAIL_USER and EMAIL_PASSWORD credentials.'
+                message: `Failed to deliver email: ${errDetail}`
             });
         }
 
