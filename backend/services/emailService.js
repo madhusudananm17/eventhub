@@ -6,13 +6,60 @@ const User = require('../models/User');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
- * Sends email via Resend HTTPS API (Port 443 - never blocked by Render cloud firewall)
+ * Sends email via Brevo HTTPS API (Port 443 - free 300 emails/day to ANY recipient address)
  */
-const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
+const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
+    return new Promise((resolve) => {
+        const postData = JSON.stringify({
+            sender: { name: 'EventHub Security', email: fromUser || 'noreply@eventhub.com' },
+            to: [{ email: toEmail }],
+            subject: subject,
+            htmlContent: html,
+            textContent: text
+        });
+
+        const options = {
+            hostname: 'api.brevo.com',
+            port: 443,
+            path: '/v3/smtp/email',
+            method: 'POST',
+            headers: {
+                'api-key': apiKey.trim(),
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData)
+            },
+            timeout: 10000
+        };
+
+        const req = https.request(options, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    console.log(`✅ [Email Service] Delivered email to ${toEmail} via Brevo HTTPS API!`);
+                    resolve(true);
+                } else {
+                    console.warn(`⚠️ [Email Service] Brevo HTTPS returned ${res.statusCode}: ${body}`);
+                    resolve(false);
+                }
+            });
+        });
+
+        req.on('error', () => resolve(false));
+        req.on('timeout', () => { req.destroy(); resolve(false); });
+        req.write(postData);
+        req.end();
+    });
+};
+
+/**
+ * Sends email via Resend HTTPS API (Port 443)
+ */
+const sendViaResendHttps = (apiKey, from, toEmail, subject, html, text) => {
     return new Promise((resolve) => {
         const postData = JSON.stringify({
             from: 'EventHub Security <onboarding@resend.dev>',
-            to: Array.isArray(to) ? to : [to],
+            to: [toEmail],
             subject: subject,
             html: html,
             text: text
@@ -36,25 +83,17 @@ const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
             res.on('data', chunk => body += chunk);
             res.on('end', () => {
                 if (res.statusCode >= 200 && res.statusCode < 300) {
-                    console.log(`✅ [Email Service] Booking ticket email delivered to ${to} via Resend HTTPS API!`);
+                    console.log(`✅ [Email Service] Delivered email to ${toEmail} via Resend HTTPS API!`);
                     resolve(true);
                 } else {
-                    console.warn(`⚠️ [Email Service] Resend HTTPS API returned ${res.statusCode}: ${body}. Falling back to Nodemailer SMTP.`);
+                    console.warn(`⚠️ [Email Service] Resend HTTPS returned ${res.statusCode}: ${body}`);
                     resolve(false);
                 }
             });
         });
 
-        req.on('error', (e) => {
-            console.warn(`⚠️ [Email Service] Resend HTTPS Error: ${e.message}. Falling back to Nodemailer SMTP.`);
-            resolve(false);
-        });
-
-        req.on('timeout', () => {
-            req.destroy();
-            resolve(false);
-        });
-
+        req.on('error', () => resolve(false));
+        req.on('timeout', () => { req.destroy(); resolve(false); });
         req.write(postData);
         req.end();
     });
@@ -79,9 +118,9 @@ const createTransporter = () => {
             user,
             pass: cleanPass
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 10000,
+        connectionTimeout: 8000,
+        greetingTimeout: 8000,
+        socketTimeout: 8000,
         tls: {
             rejectUnauthorized: false
         }
@@ -90,10 +129,6 @@ const createTransporter = () => {
 
 /**
  * Send Booking Confirmation Email dynamically to the authenticated user who booked the ticket.
- * 
- * @param {Object|String} user - User object or User ID
- * @param {Object} event - Event object ({ title, date, time, location, venue })
- * @param {Object} registration - Registration object ({ ticketId, registrationDate, ticketStatus })
  */
 const sendBookingConfirmationEmail = async (user, event, registration) => {
     try {
@@ -113,7 +148,6 @@ const sendBookingConfirmationEmail = async (user, event, registration) => {
             return false;
         }
 
-        // DYNAMIC RECIPIENT EMAIL (Never hard-coded, never defaults to EMAIL_USER)
         const recipientEmail = String(recipientUser.email).trim().toLowerCase();
         const userName = recipientUser.name || 'Attendee';
 
@@ -209,35 +243,45 @@ Thank you for booking with EventHub!
 </html>
 `;
 
-        // 1. Try Resend HTTPS API (Port 443 - zero block on Render)
+        const emailSender = process.env.EMAIL_USER;
+
+        // Priority 1: Brevo HTTPS API (Port 443 - 300 free emails/day to ANY recipient)
+        const brevoApiKey = process.env.BREVO_API_KEY;
+        if (brevoApiKey) {
+            const brevoOk = await sendViaBrevoHttps(brevoApiKey, emailSender, recipientEmail, subject, htmlContent, textContent);
+            if (brevoOk) return true;
+        }
+
+        // Priority 2: Resend HTTPS API (Port 443)
         const resendApiKey = process.env.RESEND_API_KEY;
         if (resendApiKey) {
             const resendOk = await sendViaResendHttps(resendApiKey, null, recipientEmail, subject, htmlContent, textContent);
             if (resendOk) return true;
         }
 
-        // 2. Fallback to Nodemailer Gmail SMTP
+        // Priority 3: Nodemailer Gmail SMTP
         const transporter = createTransporter();
-        if (!transporter) {
-            console.log(`[Email Service] Skipped email to ${recipientEmail} (EMAIL_USER/EMAIL_PASSWORD unconfigured on server).`);
-            return false;
+        if (transporter) {
+            try {
+                const fromAddress = process.env.EMAIL_FROM || `"EventHub Tickets" <${emailSender}>`;
+                const info = await transporter.sendMail({
+                    from: fromAddress,
+                    to: recipientEmail,
+                    subject,
+                    text: textContent,
+                    html: htmlContent
+                });
+                console.log(`✅ [Email Service] Delivered to ${recipientEmail} via Gmail Nodemailer! (MessageID: ${info.messageId})`);
+                return true;
+            } catch (err) {
+                console.warn(`⚠️ [Email Service] Gmail SMTP failed (${err.message}).`);
+            }
         }
 
-        const emailSender = process.env.EMAIL_USER;
-        const fromAddress = process.env.EMAIL_FROM || `"EventHub Tickets" <${emailSender}>`;
-
-        const info = await transporter.sendMail({
-            from: fromAddress,
-            to: recipientEmail,
-            subject,
-            text: textContent,
-            html: htmlContent
-        });
-
-        console.log(`✅ [Email Service] Booking confirmation email successfully sent to recipient: ${recipientEmail} (MessageID: ${info.messageId})`);
-        return true;
+        console.warn(`[Email Service] Could not deliver email to ${recipientEmail}. Please verify BREVO_API_KEY or EMAIL_USER credentials on server.`);
+        return false;
     } catch (error) {
-        console.error('[Email Service Error] Failed to send email to recipient:', error.message);
+        console.error('[Email Service Error] Failed to send email:', error.message);
         return false;
     }
 };
