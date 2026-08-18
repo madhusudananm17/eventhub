@@ -215,19 +215,24 @@ const forgotPassword = async (req, res) => {
         baseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
         const resetUrl = `${baseUrl}/reset-password.html?token=${resetToken}`;
 
-        // Send email
-        await sendPasswordResetEmail({
+        // Send email strictly via Nodemailer
+        const emailSent = await sendPasswordResetEmail({
             toEmail: user.email,
             userName: user.name,
             resetUrl,
             expireMins: 15
         });
 
+        if (!emailSent) {
+            return res.status(500).json({
+                success: false,
+                message: 'Could not send email to your inbox. Please verify EMAIL_USER and EMAIL_PASSWORD credentials.'
+            });
+        }
+
         return res.json({
             success: true,
-            message: 'Password reset link sent to your registered email.',
-            resetUrl,
-            resetToken
+            message: 'Password reset link sent to your registered email.'
         });
     } catch (error) {
         console.error('ForgotPassword Error:', error.message);
