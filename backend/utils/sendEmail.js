@@ -3,15 +3,45 @@ const nodemailer = require('nodemailer');
 // Disable TLS unauthorized certificate rejection for local development email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
+// Helper function to create robust Nodemailer transporter
+const createTransporter = (emailUser, emailPass) => {
+    const emailService = process.env.EMAIL_SERVICE || 'gmail';
+    if (emailService.toLowerCase() === 'gmail') {
+        return nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: emailUser,
+                pass: emailPass.replace(/\s+/g, '') // remove spaces from app password
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+    }
+
+    const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
+    const emailPort = parseInt(process.env.EMAIL_PORT || '465', 10);
+    return nodemailer.createTransport({
+        host: emailHost,
+        port: emailPort,
+        secure: emailPort === 465,
+        auth: {
+            user: emailUser,
+            pass: emailPass.replace(/\s+/g, '')
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
+};
+
 /**
  * Sends a password reset email via Nodemailer using configured SMTP credentials.
  */
 const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins = 15 }) => {
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASSWORD;
-    const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
-    const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
-    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser}>`;
+    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser || 'noreply@eventhub.com'}>`;
 
     const htmlContent = `
         <!DOCTYPE html>
@@ -70,19 +100,7 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
 
     if (emailUser && emailPass) {
         try {
-            const transporter = nodemailer.createTransport({
-                host: emailHost,
-                port: emailPort,
-                secure: false, // 587 uses STARTTLS
-                auth: {
-                    user: emailUser,
-                    pass: emailPass
-                },
-                tls: {
-                    rejectUnauthorized: false
-                }
-            });
-
+            const transporter = createTransporter(emailUser, emailPass);
             const info = await transporter.sendMail({
                 from: emailFrom,
                 to: toEmail,
@@ -108,9 +126,7 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
 const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASSWORD;
-    const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
-    const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
-    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser}>`;
+    const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser || 'noreply@eventhub.com'}>`;
 
     const htmlContent = `
         <!DOCTYPE html>
@@ -151,14 +167,7 @@ const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
 
     if (emailUser && emailPass) {
         try {
-            const transporter = nodemailer.createTransport({
-                host: emailHost,
-                port: emailPort,
-                secure: false,
-                auth: { user: emailUser, pass: emailPass },
-                tls: { rejectUnauthorized: false }
-            });
-
+            const transporter = createTransporter(emailUser, emailPass);
             const info = await transporter.sendMail({
                 from: emailFrom,
                 to: toEmail,
