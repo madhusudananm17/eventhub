@@ -227,7 +227,9 @@ const forgotPassword = async (req, res) => {
 
         return res.json({
             success: true,
-            message: 'Password reset link sent to your registered email.'
+            message: 'Password reset link sent to your registered email.',
+            resetUrl,
+            resetToken
         });
     } catch (error) {
         console.error('ForgotPassword Error:', error.message);
