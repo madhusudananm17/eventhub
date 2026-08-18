@@ -10,7 +10,8 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  */
 const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
     return new Promise((resolve) => {
-        const senderEmail = process.env.EMAIL_USER || fromUser || 'madhusudanan819@gmail.com';
+        // Sender MUST match Brevo verified sender address: madhusudananm819@gmail.com
+        const senderEmail = 'madhusudananm819@gmail.com';
         const postData = JSON.stringify({
             sender: { name: 'EventHub Tickets', email: senderEmail },
             to: [{ email: toEmail }],
