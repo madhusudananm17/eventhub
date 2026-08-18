@@ -3,16 +3,21 @@ const nodemailer = require('nodemailer');
 // Disable TLS unauthorized certificate rejection for local development email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-// Helper function to create robust Nodemailer transporter
+// Helper function to create robust Nodemailer transporter with strict timeouts
 const createTransporter = (emailUser, emailPass) => {
     const emailService = process.env.EMAIL_SERVICE || 'gmail';
+    const cleanPass = emailPass.replace(/\s+/g, '');
+
     if (emailService.toLowerCase() === 'gmail') {
         return nodemailer.createTransport({
             service: 'gmail',
             auth: {
                 user: emailUser,
-                pass: emailPass.replace(/\s+/g, '') // remove spaces from app password
+                pass: cleanPass
             },
+            connectionTimeout: 5000,
+            greetingTimeout: 5000,
+            socketTimeout: 5000,
             tls: {
                 rejectUnauthorized: false
             }
@@ -27,8 +32,11 @@ const createTransporter = (emailUser, emailPass) => {
         secure: emailPort === 465,
         auth: {
             user: emailUser,
-            pass: emailPass.replace(/\s+/g, '')
+            pass: cleanPass
         },
+        connectionTimeout: 5000,
+        greetingTimeout: 5000,
+        socketTimeout: 5000,
         tls: {
             rejectUnauthorized: false
         }
