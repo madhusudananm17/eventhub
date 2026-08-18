@@ -5,7 +5,7 @@ const https = require('https');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 /**
- * Sends email via Resend HTTPS API (Port 443 - never blocked by Render cloud firewall)
+ * Sends email via Resend HTTPS API (Port 443)
  */
 const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
     return new Promise((resolve) => {
@@ -38,14 +38,14 @@ const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
                     console.log(`✅ [Email Service] Booking ticket email delivered to ${to} via Resend HTTPS API!`);
                     resolve(true);
                 } else {
-                    console.error(`❌ [Email Service] Resend HTTPS API Error (${res.statusCode}): ${body}`);
+                    console.warn(`⚠️ [Email Service] Resend HTTPS API returned ${res.statusCode}: ${body}. Falling back to Nodemailer SMTP.`);
                     resolve(false);
                 }
             });
         });
 
         req.on('error', (e) => {
-            console.error(`❌ [Email Service] Resend HTTPS Request Error: ${e.message}`);
+            console.warn(`⚠️ [Email Service] Resend HTTPS Error: ${e.message}. Falling back to Nodemailer SMTP.`);
             resolve(false);
         });
 
@@ -63,8 +63,6 @@ const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
  * Creates Nodemailer Transporter using Environment Variables
  */
 const createTransporter = () => {
-    const host = process.env.EMAIL_HOST || 'smtp.gmail.com';
-    const port = parseInt(process.env.EMAIL_PORT || '587', 10);
     const user = process.env.EMAIL_USER;
     const pass = process.env.EMAIL_PASSWORD;
 
@@ -72,17 +70,18 @@ const createTransporter = () => {
         return null;
     }
 
+    const cleanPass = pass.replace(/\s+/g, '');
+
+    // Try native Gmail service transport
     return nodemailer.createTransport({
-        host,
-        port,
-        secure: port === 465,
+        service: 'gmail',
         auth: {
             user,
-            pass: pass.replace(/\s+/g, '')
+            pass: cleanPass
         },
-        connectionTimeout: 6000,
-        greetingTimeout: 6000,
-        socketTimeout: 6000,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
         tls: {
             rejectUnauthorized: false
         }
@@ -90,10 +89,7 @@ const createTransporter = () => {
 };
 
 /**
- * Send Booking Confirmation Email
- * @param {Object} user - Registered user object ({ name, email })
- * @param {Object} event - Event object ({ title, date, time, location, venue })
- * @param {Object} registration - Registration object ({ ticketId, registrationDate, ticketStatus })
+ * Send Booking Confirmation Email to ANY user email address
  */
 const sendBookingConfirmationEmail = async (user, event, registration) => {
     try {
@@ -103,6 +99,10 @@ const sendBookingConfirmationEmail = async (user, event, registration) => {
         }
 
         const resendApiKey = process.env.RESEND_API_KEY;
+        const emailUser = process.env.EMAIL_USER;
+        const emailPass = process.env.EMAIL_PASSWORD;
+        const recipientEmail = user.email.trim();
+
         const eventTitle = event.title || 'Event';
         const eventDate = event.date ? (String(event.date).includes('T') ? String(event.date).split('T')[0] : event.date) : 'N/A';
         const eventTime = event.time || 'N/A';
@@ -182,30 +182,31 @@ Thank you for using EventHub!
 </html>
 `;
 
-        // Priority 1: Resend HTTPS API
+        // 1. Try Resend HTTPS API first
         if (resendApiKey) {
-            return await sendViaResendHttps(resendApiKey, null, user.email, subject, htmlContent, textContent);
+            const resendOk = await sendViaResendHttps(resendApiKey, null, recipientEmail, subject, htmlContent, textContent);
+            if (resendOk) return true;
         }
 
-        // Priority 2: Nodemailer SMTP
-        const transporter = createTransporter();
-        if (!transporter) {
-            console.log(`[Email Service] Skipped email to ${user.email} (SMTP unconfigured).`);
-            return false;
+        // 2. Fallback to Nodemailer Gmail SMTP (Sends to ANY recipient address)
+        if (emailUser && emailPass) {
+            const transporter = createTransporter();
+            if (transporter) {
+                const fromAddress = process.env.EMAIL_FROM || `"EventHub Tickets" <${emailUser}>`;
+                const info = await transporter.sendMail({
+                    from: fromAddress,
+                    to: recipientEmail,
+                    subject,
+                    text: textContent,
+                    html: htmlContent
+                });
+                console.log(`✅ [Email Service] Booking ticket email sent to ${recipientEmail} via Gmail Nodemailer! (MessageID: ${info.messageId})`);
+                return true;
+            }
         }
 
-        const fromAddress = process.env.EMAIL_FROM || process.env.EMAIL_USER || '"EventHub Tickets" <no-reply@eventhub.com>';
-
-        const info = await transporter.sendMail({
-            from: fromAddress,
-            to: user.email,
-            subject,
-            text: textContent,
-            html: htmlContent
-        });
-
-        console.log(`[Email Service] Booking confirmation email sent to ${user.email} (MessageID: ${info.messageId}).`);
-        return true;
+        console.warn(`[Email Service] Could not send email to ${recipientEmail}. Please verify EMAIL_USER and EMAIL_PASSWORD credentials.`);
+        return false;
     } catch (error) {
         console.error('[Email Service Error] Failed to send email:', error.message);
         return false;
