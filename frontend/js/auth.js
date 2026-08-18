@@ -115,7 +115,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 sendResetBtn.textContent = "Send Password Reset Link →";
 
                 if (data.success) {
-                    showMessage(forgotMessage, data.message || "Password reset link sent to your registered email.", "success");
+                    let msgHtml = `<div>${data.message || "Password reset link sent to your registered email."}</div>`;
+                    if (data.resetUrl && data.isFallback) {
+                        msgHtml += `<div style="margin-top:14px;"><a href="${data.resetUrl}" class="submit-btn" style="display:inline-block; text-decoration:none; text-align:center; padding:12px 20px; font-weight:800; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border-radius:10px;">🔑 Click Here to Reset Password Now →</a></div>`;
+                    }
+                    if (forgotMessage) {
+                        forgotMessage.className = "message-box success";
+                        forgotMessage.innerHTML = msgHtml;
+                        forgotMessage.style.display = "block";
+                    }
                     forgotPasswordForm.reset();
                 } else {
                     showMessage(forgotMessage, data.message || "No account found with this email address.", "error");

@@ -1,9 +1,64 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
 
 // Disable TLS unauthorized certificate rejection for email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-// Helper function to create robust Nodemailer transporter for cloud hosting (Render)
+/**
+ * Sends email via Resend HTTPS API (Port 443 - never blocked by Render cloud firewall)
+ */
+const sendViaResendHttps = (apiKey, from, to, subject, html) => {
+    return new Promise((resolve) => {
+        const postData = JSON.stringify({
+            from: from || 'EventHub Security <onboarding@resend.dev>',
+            to: Array.isArray(to) ? to : [to],
+            subject: subject,
+            html: html
+        });
+
+        const options = {
+            hostname: 'api.resend.com',
+            port: 443,
+            path: '/emails',
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey.trim()}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData)
+            },
+            timeout: 10000
+        };
+
+        const req = https.request(options, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    console.log(`✅ Resend HTTPS API email delivered to ${to}! Response: ${body}`);
+                    resolve({ success: true });
+                } else {
+                    console.error(`❌ Resend HTTPS API Error (${res.statusCode}): ${body}`);
+                    resolve({ success: false, error: `Resend API Error (${res.statusCode}): ${body}` });
+                }
+            });
+        });
+
+        req.on('error', (e) => {
+            console.error(`❌ Resend HTTPS Request Error: ${e.message}`);
+            resolve({ success: false, error: e.message });
+        });
+
+        req.on('timeout', () => {
+            req.destroy();
+            resolve({ success: false, error: 'Resend HTTPS API request timed out' });
+        });
+
+        req.write(postData);
+        req.end();
+    });
+};
+
+// Helper function to create Nodemailer transporter for SMTP
 const createTransporter = (emailUser, emailPass) => {
     const cleanPass = (emailPass || '').replace(/\s+/g, '');
     const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
@@ -12,26 +67,25 @@ const createTransporter = (emailUser, emailPass) => {
     return nodemailer.createTransport({
         host: emailHost,
         port: emailPort,
-        secure: emailPort === 465, // true for 465, false for 587
-        requireTLS: emailPort === 587,
+        secure: emailPort === 465,
         auth: {
             user: emailUser,
             pass: cleanPass
         },
-        connectionTimeout: 15000,
-        greetingTimeout: 15000,
-        socketTimeout: 15000,
+        connectionTimeout: 6000,
+        greetingTimeout: 6000,
+        socketTimeout: 6000,
         tls: {
-            rejectUnauthorized: false,
-            ciphers: 'SSLv3'
+            rejectUnauthorized: false
         }
     });
 };
 
 /**
- * Sends a password reset email via Nodemailer using configured SMTP credentials.
+ * Sends a password reset email via Nodemailer or HTTPS Resend API.
  */
 const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins = 15 }) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASSWORD;
     const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser || 'noreply@eventhub.com'}>`;
@@ -91,6 +145,12 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
     console.log(`Reset URL: ${resetUrl}`);
     console.log(`======================================================\n`);
 
+    // Priority 1: Resend HTTPS API (Port 443 - never blocked on Render cloud)
+    if (resendApiKey) {
+        return await sendViaResendHttps(resendApiKey, emailFrom, toEmail, '🔑 EventHub Password Reset Request', htmlContent);
+    }
+
+    // Priority 2: Nodemailer SMTP
     if (emailUser && emailPass) {
         try {
             const transporter = createTransporter(emailUser, emailPass);
@@ -107,16 +167,16 @@ const sendPasswordResetEmail = async ({ toEmail, userName, resetUrl, expireMins 
             console.error(`❌ Nodemailer error sending to ${toEmail}:`, error.message);
             return { success: false, error: error.message };
         }
-    } else {
-        console.log(`ℹ️ EMAIL_USER / EMAIL_PASSWORD not set in environment.`);
-        return { success: false, error: 'EMAIL_USER or EMAIL_PASSWORD environment variable is missing on server.' };
     }
+
+    return { success: false, error: 'EMAIL_USER or EMAIL_PASSWORD environment variable is missing on server.' };
 };
 
 /**
- * Sends a 6-digit OTP email notification via Nodemailer.
+ * Sends a 6-digit OTP email notification via Nodemailer or Resend HTTPS API.
  */
 const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
+    const resendApiKey = process.env.RESEND_API_KEY;
     const emailUser = process.env.EMAIL_USER;
     const emailPass = process.env.EMAIL_PASSWORD;
     const emailFrom = process.env.EMAIL_FROM || `"EventHub Security" <${emailUser || 'noreply@eventhub.com'}>`;
@@ -157,6 +217,10 @@ const sendOtpEmail = async ({ toEmail, userName, otp, expireMins = 5 }) => {
         </body>
         </html>
     `;
+
+    if (resendApiKey) {
+        return await sendViaResendHttps(resendApiKey, emailFrom, toEmail, `📱 EventHub Email Recovery OTP: ${otp}`, htmlContent);
+    }
 
     if (emailUser && emailPass) {
         try {
