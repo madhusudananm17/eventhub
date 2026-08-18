@@ -1,63 +1,7 @@
 const nodemailer = require('nodemailer');
-const https = require('https');
 
-// Disable TLS unauthorized certificate rejection for local development email dispatch
+// Disable TLS unauthorized certificate rejection for email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
-/**
- * Sends email via Resend HTTPS API (Port 443)
- */
-const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
-    return new Promise((resolve) => {
-        const postData = JSON.stringify({
-            from: 'EventHub Security <onboarding@resend.dev>',
-            to: Array.isArray(to) ? to : [to],
-            subject: subject,
-            html: html,
-            text: text
-        });
-
-        const options = {
-            hostname: 'api.resend.com',
-            port: 443,
-            path: '/emails',
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${apiKey.trim()}`,
-                'Content-Type': 'application/json',
-                'Content-Length': Buffer.byteLength(postData)
-            },
-            timeout: 10000
-        };
-
-        const req = https.request(options, (res) => {
-            let body = '';
-            res.on('data', chunk => body += chunk);
-            res.on('end', () => {
-                if (res.statusCode >= 200 && res.statusCode < 300) {
-                    console.log(`✅ [Email Service] Booking ticket email delivered to ${to} via Resend HTTPS API!`);
-                    resolve(true);
-                } else {
-                    console.warn(`⚠️ [Email Service] Resend HTTPS API returned ${res.statusCode}: ${body}. Falling back to Nodemailer SMTP.`);
-                    resolve(false);
-                }
-            });
-        });
-
-        req.on('error', (e) => {
-            console.warn(`⚠️ [Email Service] Resend HTTPS Error: ${e.message}. Falling back to Nodemailer SMTP.`);
-            resolve(false);
-        });
-
-        req.on('timeout', () => {
-            req.destroy();
-            resolve(false);
-        });
-
-        req.write(postData);
-        req.end();
-    });
-};
 
 /**
  * Creates Nodemailer Transporter using Environment Variables
@@ -72,16 +16,16 @@ const createTransporter = () => {
 
     const cleanPass = pass.replace(/\s+/g, '');
 
-    // Try native Gmail service transport
+    // Native Gmail SMTP Service (Sends to ANY recipient user email address without domain restriction)
     return nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user,
             pass: cleanPass
         },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 10000,
+        connectionTimeout: 12000,
+        greetingTimeout: 12000,
+        socketTimeout: 12000,
         tls: {
             rejectUnauthorized: false
         }
@@ -89,7 +33,10 @@ const createTransporter = () => {
 };
 
 /**
- * Send Booking Confirmation Email to ANY user email address
+ * Send Booking Confirmation Email strictly to the user who booked the ticket
+ * @param {Object} user - Registered user object ({ name, email })
+ * @param {Object} event - Event object ({ title, date, time, location, venue })
+ * @param {Object} registration - Registration object ({ ticketId, registrationDate, ticketStatus })
  */
 const sendBookingConfirmationEmail = async (user, event, registration) => {
     try {
@@ -98,10 +45,8 @@ const sendBookingConfirmationEmail = async (user, event, registration) => {
             return false;
         }
 
-        const resendApiKey = process.env.RESEND_API_KEY;
-        const emailUser = process.env.EMAIL_USER;
-        const emailPass = process.env.EMAIL_PASSWORD;
-        const recipientEmail = user.email.trim();
+        // Target recipient: The EXACT email address of the user who booked the ticket
+        const recipientEmail = String(user.email).trim().toLowerCase();
 
         const eventTitle = event.title || 'Event';
         const eventDate = event.date ? (String(event.date).includes('T') ? String(event.date).split('T')[0] : event.date) : 'N/A';
@@ -182,33 +127,27 @@ Thank you for using EventHub!
 </html>
 `;
 
-        // 1. Try Resend HTTPS API first
-        if (resendApiKey) {
-            const resendOk = await sendViaResendHttps(resendApiKey, null, recipientEmail, subject, htmlContent, textContent);
-            if (resendOk) return true;
+        const transporter = createTransporter();
+        if (!transporter) {
+            console.log(`[Email Service] Skipped email to ${recipientEmail} (EMAIL_USER/EMAIL_PASSWORD unconfigured).`);
+            return false;
         }
 
-        // 2. Fallback to Nodemailer Gmail SMTP (Sends to ANY recipient address)
-        if (emailUser && emailPass) {
-            const transporter = createTransporter();
-            if (transporter) {
-                const fromAddress = process.env.EMAIL_FROM || `"EventHub Tickets" <${emailUser}>`;
-                const info = await transporter.sendMail({
-                    from: fromAddress,
-                    to: recipientEmail,
-                    subject,
-                    text: textContent,
-                    html: htmlContent
-                });
-                console.log(`✅ [Email Service] Booking ticket email sent to ${recipientEmail} via Gmail Nodemailer! (MessageID: ${info.messageId})`);
-                return true;
-            }
-        }
+        const emailUser = process.env.EMAIL_USER;
+        const fromAddress = process.env.EMAIL_FROM || `"EventHub Tickets" <${emailUser}>`;
 
-        console.warn(`[Email Service] Could not send email to ${recipientEmail}. Please verify EMAIL_USER and EMAIL_PASSWORD credentials.`);
-        return false;
+        const info = await transporter.sendMail({
+            from: fromAddress,
+            to: recipientEmail,
+            subject,
+            text: textContent,
+            html: htmlContent
+        });
+
+        console.log(`✅ [Email Service] Booking confirmation email successfully delivered to recipient ${recipientEmail}! (MessageID: ${info.messageId})`);
+        return true;
     } catch (error) {
-        console.error('[Email Service Error] Failed to send email:', error.message);
+        console.error('[Email Service Error] Failed to send email to recipient:', error.message);
         return false;
     }
 };
