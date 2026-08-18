@@ -1,44 +1,29 @@
 const nodemailer = require('nodemailer');
 
-// Disable TLS unauthorized certificate rejection for local development email dispatch
+// Disable TLS unauthorized certificate rejection for email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-// Helper function to create robust Nodemailer transporter with strict timeouts
+// Helper function to create robust Nodemailer transporter for cloud hosting (Render)
 const createTransporter = (emailUser, emailPass) => {
     const cleanPass = (emailPass || '').replace(/\s+/g, '');
-    const emailService = (process.env.EMAIL_SERVICE || 'gmail').toLowerCase();
-
-    if (emailService === 'gmail' || !process.env.EMAIL_HOST) {
-        return nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: emailUser,
-                pass: cleanPass
-            },
-            connectionTimeout: 8000,
-            greetingTimeout: 8000,
-            socketTimeout: 8000,
-            tls: {
-                rejectUnauthorized: false
-            }
-        });
-    }
-
     const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
     const emailPort = parseInt(process.env.EMAIL_PORT || '587', 10);
+
     return nodemailer.createTransport({
         host: emailHost,
         port: emailPort,
-        secure: emailPort === 465,
+        secure: emailPort === 465, // true for 465, false for 587
+        requireTLS: emailPort === 587,
         auth: {
             user: emailUser,
             pass: cleanPass
         },
-        connectionTimeout: 8000,
-        greetingTimeout: 8000,
-        socketTimeout: 8000,
+        connectionTimeout: 15000,
+        greetingTimeout: 15000,
+        socketTimeout: 15000,
         tls: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
+            ciphers: 'SSLv3'
         }
     });
 };
