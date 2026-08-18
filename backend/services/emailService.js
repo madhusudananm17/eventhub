@@ -1,8 +1,64 @@
 const nodemailer = require('nodemailer');
+const https = require('https');
 const User = require('../models/User');
 
 // Disable TLS unauthorized certificate rejection for email dispatch
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+/**
+ * Sends email via Resend HTTPS API (Port 443 - never blocked by Render cloud firewall)
+ */
+const sendViaResendHttps = (apiKey, from, to, subject, html, text) => {
+    return new Promise((resolve) => {
+        const postData = JSON.stringify({
+            from: 'EventHub Security <onboarding@resend.dev>',
+            to: Array.isArray(to) ? to : [to],
+            subject: subject,
+            html: html,
+            text: text
+        });
+
+        const options = {
+            hostname: 'api.resend.com',
+            port: 443,
+            path: '/emails',
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey.trim()}`,
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(postData)
+            },
+            timeout: 10000
+        };
+
+        const req = https.request(options, (res) => {
+            let body = '';
+            res.on('data', chunk => body += chunk);
+            res.on('end', () => {
+                if (res.statusCode >= 200 && res.statusCode < 300) {
+                    console.log(`✅ [Email Service] Booking ticket email delivered to ${to} via Resend HTTPS API!`);
+                    resolve(true);
+                } else {
+                    console.warn(`⚠️ [Email Service] Resend HTTPS API returned ${res.statusCode}: ${body}. Falling back to Nodemailer SMTP.`);
+                    resolve(false);
+                }
+            });
+        });
+
+        req.on('error', (e) => {
+            console.warn(`⚠️ [Email Service] Resend HTTPS Error: ${e.message}. Falling back to Nodemailer SMTP.`);
+            resolve(false);
+        });
+
+        req.on('timeout', () => {
+            req.destroy();
+            resolve(false);
+        });
+
+        req.write(postData);
+        req.end();
+    });
+};
 
 /**
  * Creates Nodemailer Transporter using Environment Variables
@@ -17,16 +73,15 @@ const createTransporter = () => {
 
     const cleanPass = pass.replace(/\s+/g, '');
 
-    // Native Gmail SMTP Service (Sends to ANY recipient user email address dynamically)
     return nodemailer.createTransport({
         service: 'gmail',
         auth: {
             user,
             pass: cleanPass
         },
-        connectionTimeout: 12000,
-        greetingTimeout: 12000,
-        socketTimeout: 12000,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000,
         tls: {
             rejectUnauthorized: false
         }
@@ -154,6 +209,14 @@ Thank you for booking with EventHub!
 </html>
 `;
 
+        // 1. Try Resend HTTPS API (Port 443 - zero block on Render)
+        const resendApiKey = process.env.RESEND_API_KEY;
+        if (resendApiKey) {
+            const resendOk = await sendViaResendHttps(resendApiKey, null, recipientEmail, subject, htmlContent, textContent);
+            if (resendOk) return true;
+        }
+
+        // 2. Fallback to Nodemailer Gmail SMTP
         const transporter = createTransporter();
         if (!transporter) {
             console.log(`[Email Service] Skipped email to ${recipientEmail} (EMAIL_USER/EMAIL_PASSWORD unconfigured on server).`);
