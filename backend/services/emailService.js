@@ -10,8 +10,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
  */
 const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
     return new Promise((resolve) => {
-        // Sender MUST match Brevo verified sender address: madhusudananm819@gmail.com
-        const senderEmail = 'madhusudananm819@gmail.com';
+        const senderEmail = process.env.EMAIL_USER || 'madhusudananm819@gmail.com';
         const postData = JSON.stringify({
             sender: { name: 'EventHub Tickets', email: senderEmail },
             to: [{ email: toEmail }],
@@ -19,6 +18,8 @@ const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
             htmlContent: html,
             textContent: text
         });
+
+        console.log(`[Email Service] Attempting Brevo HTTPS dispatch to: ${toEmail} from ${senderEmail}...`);
 
         const options = {
             hostname: 'api.brevo.com',
@@ -41,18 +42,22 @@ const sendViaBrevoHttps = (apiKey, fromUser, toEmail, subject, html, text) => {
                     console.log(`✅ [Email Service] Delivered email to ${toEmail} via Brevo HTTPS API! Response: ${body}`);
                     resolve(true);
                 } else {
-                    console.warn(`⚠️ [Email Service] Brevo HTTPS returned ${res.statusCode}: ${body}`);
+                    console.error(`❌ [Email Service] Brevo HTTPS Error (${res.statusCode}): ${body}`);
                     resolve(false);
                 }
             });
         });
 
         req.on('error', (e) => {
-            console.warn(`⚠️ [Email Service] Brevo HTTPS Error: ${e.message}`);
+            console.error(`❌ [Email Service] Brevo HTTPS Request Error: ${e.message}`);
             resolve(false);
         });
 
-        req.on('timeout', () => { req.destroy(); resolve(false); });
+        req.on('timeout', () => {
+            req.destroy();
+            resolve(false);
+        });
+
         req.write(postData);
         req.end();
     });
